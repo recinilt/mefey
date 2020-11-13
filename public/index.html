@@ -85,12 +85,41 @@
       <br>
       Son maaliyet:<span style="color: red;">{{sonmaaliyet()}} </span>  TL<br>
       
+      <hr>
+      <h5 class="baslik">%X KARLA BİRLEŞİK ÇARPAN</h5>
+      Anapara: <input type="number" data-ng-model="anapara4"> lira<br>
+      Adet: <input type="number" data-ng-model="adet4"> TL<br><br>
+      oran: %<input type="number" data-ng-model="oran4"><br>
+      adet başına kesinti: <input type="number" data-ng-model="kesinti4"> TL<br>
+      <br>
+      Sonuç: <span style="color: red;">{{sonuc4()}} </span>  TL<br>
+      Kar yüzdesi: %<span>{{(((sonuc4()-anapara4)/anapara4)*100).toFixed(0)}}</span><br>
+      
         
       </div>
       
       <script>
       var app = angular.module('myApp', []);
       app.controller('myCtrl', function($scope) {
+
+        //%X KARLA BİRLEŞİK ÇARPAN:
+        $scope.anapara4=10000;
+        $scope.adet4=200;
+        $scope.oran4=0.2;
+        $scope.kesinti4=0;
+
+        $scope.sonuc4 = function(){
+          var sum = Number($scope.anapara4);
+      var i=0;
+      for(i=0;i<Number($scope.adet4);i++){
+      sum=sum + (sum*Number($scope.oran4*0.01));
+      if($scope.kesinti4){
+          sum=sum-($scope.kesinti4);
+      }
+      }
+      return Number(sum).toFixed(2);
+        }
+      //////////////////////////////////  
 
         $scope.ilklot=100;
         $scope.ilkmaaliyet= 10;
@@ -226,7 +255,7 @@ $scope.removeItem = function (x) {
 
 
 
-
+<!-- 
 <hr>
 <h5 class="baslik">%X KARLA BİRLEŞİK ÇARPAN</h5>
 <div id="mydiv1"></div>
@@ -237,11 +266,14 @@ $scope.removeItem = function (x) {
 <p>adet başına kesinti: <input type="number" name="" id="kesinti"></p>
 <button id="buton">hesapla</button>
 <p>sonuç: <span id="sonuc"></span></p>
+ -->
 
-
-<script src="js/jquery-3.4.1.min.js"></script>
+<!-- <script src="js/jquery-3.4.1.min.js"></script> -->
 <script>
-  $(document).ready(function () {
+
+  //$(document).ready(function () {
+
+    /*
       console.log("document ready");
 
       
@@ -272,6 +304,8 @@ $scope.removeItem = function (x) {
       }
       return sum;
   }
+
+  */
   //$("#mydiv2").html(a);
      
   /*
@@ -283,7 +317,7 @@ $scope.removeItem = function (x) {
   //document.write(obj.names[1].first);
   console.log(obj.names[1].first);
       */
-  });
+  //});
 
  
 
