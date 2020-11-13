@@ -87,10 +87,10 @@
       
       <hr>
       <h5 class="baslik">%X KARLA BİRLEŞİK ÇARPAN</h5>
-      Anapara: <input type="number" data-ng-model="anapara4"> lira<br>
-      Adet: <input type="number" data-ng-model="adet4"> TL<br><br>
-      oran: %<input type="number" data-ng-model="oran4"><br>
-      adet başına kesinti: <input type="number" data-ng-model="kesinti4"> TL<br>
+      Anapara: <input type="number" data-ng-model="anapara4"> TL<br>
+      Günlük kazanç oranı: %<input type="number" data-ng-model="oran4"><br>
+      Kaç gün: <input type="number" data-ng-model="adet4"><br><br>
+      Günlük kesinti: <input type="number" data-ng-model="kesinti4"><br>
       <br>
       Sonuç: <span style="color: red;">{{sonuc4()}} </span>  TL<br>
       Kar yüzdesi: %<span>{{(((sonuc4()-anapara4)/anapara4)*100).toFixed(0)}}</span><br>
