@@ -55,6 +55,63 @@
   <div class="container">
   <div data-ng-app="myApp" data-ng-controller="myCtrl">
     <!--  -->
+
+    <h6 class="baslik">%X KARLA BİRLEŞİK ÇARPAN</h6>
+      <div class="col-lg-4">
+        <div class="input-group mb-3">
+          <span class="input-group-text text-primary">Anapara: </span>
+          <input type="number"  class="form-control"  data-ng-model="anapara4"> TL<br>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text text-primary">Günlük kazanç oranı: %</span>
+          <input type="number"  class="form-control"  data-ng-model="oran4"><br>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text text-primary">Kaç gün: </span>
+          <input type="number"  class="form-control"  data-ng-model="adet4"><br>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text text-primary">Günlük kesinti: </span>
+          <input type="number"  class="form-control"  data-ng-model="kesinti4"> TL<br>
+        </div>
+      </div>
+
+
+      
+      <br>
+      Sonuç: <span style="color: red;">{{sonuc4()}} </span>  TL<br>
+      Kar yüzdesi: %<span style="color: blue;">{{(((sonuc4()-anapara4)/anapara4)*100).toFixed(0)}}</span><br>
+      Kaç kat kazanç: <span style="color: green;">{{(((sonuc4()-anapara4)/anapara4)).toFixed(2)}}</span>
+      <hr>
+      
+      <!--  -->
+      <h6 class="baslik">MAALİYET HESAPLAMA:</h6>
+      <div class="col-lg-4">
+        <div class="input-group mb-3">
+          <span class="input-group-text text-primary">İlk Lot Sayısı: </span>
+          <input type="number"  class="form-control"  data-ng-model="ilklot"> adet<br>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text text-primary">İlk Hisse Maaliyeti: </span>
+          <input type="number"  class="form-control"  data-ng-model="ilkmaaliyet"> TL<br>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text text-primary">İkinci Lot Sayısı: </span>
+          <input type="number"  class="form-control"  data-ng-model="ikincilot"> adet<br>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text text-primary">İkinci Hisse Maaliyeti: </span>
+          <input type="number"  class="form-control"  data-ng-model="ikincimaaliyet"> TL<br>
+        </div>
+      </div>
+
+
+      <br>
+      Son maaliyet:<span style="color: red;">{{sonmaaliyet()}} </span>  TL<br>
+      
+      <hr>
+      <!--  -->
+
       <h6 class="baslik">%X KAR İÇİN KAÇTAN SATMAN GEREKLİ?  :</h6>
       <div class="col-lg-4">
       <div class="input-group mb-3">
@@ -113,58 +170,8 @@
 
       <hr>
       <!--  -->
-      <h6 class="baslik">MAALİYET HESAPLAMA:</h6>
-      <div class="col-lg-4">
-        <div class="input-group mb-3">
-          <span class="input-group-text text-primary">İlk Lot Sayısı: </span>
-          <input type="number"  class="form-control"  data-ng-model="ilklot"> adet<br>
-        </div>
-        <div class="input-group mb-3">
-          <span class="input-group-text text-primary">İlk Hisse Maaliyeti: </span>
-          <input type="number"  class="form-control"  data-ng-model="ilkmaaliyet"> TL<br>
-        </div>
-        <div class="input-group mb-3">
-          <span class="input-group-text text-primary">İkinci Lot Sayısı: </span>
-          <input type="number"  class="form-control"  data-ng-model="ikincilot"> adet<br>
-        </div>
-        <div class="input-group mb-3">
-          <span class="input-group-text text-primary">İkinci Hisse Maaliyeti: </span>
-          <input type="number"  class="form-control"  data-ng-model="ikincimaaliyet"> TL<br>
-        </div>
-      </div>
-
-
-      <br>
-      Son maaliyet:<span style="color: red;">{{sonmaaliyet()}} </span>  TL<br>
       
-      <hr>
-      <!--  -->
-      <h6 class="baslik">%X KARLA BİRLEŞİK ÇARPAN</h6>
-      <div class="col-lg-4">
-        <div class="input-group mb-3">
-          <span class="input-group-text text-primary">Anapara: </span>
-          <input type="number"  class="form-control"  data-ng-model="anapara4"> TL<br>
-        </div>
-        <div class="input-group mb-3">
-          <span class="input-group-text text-primary">Günlük kazanç oranı: %</span>
-          <input type="number"  class="form-control"  data-ng-model="oran4"><br>
-        </div>
-        <div class="input-group mb-3">
-          <span class="input-group-text text-primary">Kaç gün: </span>
-          <input type="number"  class="form-control"  data-ng-model="adet4"><br>
-        </div>
-        <div class="input-group mb-3">
-          <span class="input-group-text text-primary">Günlük kesinti: </span>
-          <input type="number"  class="form-control"  data-ng-model="kesinti4"> TL<br>
-        </div>
-      </div>
-
-
       
-      <br>
-      Sonuç: <span style="color: red;">{{sonuc4()}} </span>  TL<br>
-      Kar yüzdesi: %<span style="color: blue;">{{(((sonuc4()-anapara4)/anapara4)*100).toFixed(0)}}</span><br>
-      Kaç kat kazanç: <span style="color: green;">{{(((sonuc4()-anapara4)/anapara4)).toFixed(2)}}</span>
       <br><br><br><br>
       
         
