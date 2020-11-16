@@ -173,6 +173,43 @@
       
       
       <br><br><br><br>
+
+      <!--  -->
+      <h6 class="baslik">ATR Sistemi</h6>
+      <div class="col-lg-4">
+        <div class="input-group mb-3">
+          <span class="input-group-text text-primary">Hisse Fiyatı: </span>
+          <input type="number"  class="form-control"  data-ng-model="hisse5"> TL<br>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text text-primary">ATR Seviyesi: </span>
+          <input type="number"  class="form-control"  data-ng-model="atr5"> TL<br>
+        </div>
+        
+      </div>
+
+
+      <br>
+      Stop Loss: <span style="color: red;">{{hisse5 - (2*atr5)}} </span>  TL<br>
+      -1. basamak: <span style="color: red;">{{hisse5 - (1*atr5)}} </span>  TL<br>
+      0. basamak: <span style="color: red;">{{hisse5}} </span>  TL<br>
+      1. basamak: <span style="color: red;">{{hisse5 + (1*atr5)}} </span>  TL<br>
+      2. basamak: <span style="color: red;">{{hisse5 + (2*atr5)}} </span>  TL<br>
+      3. basamak: <span style="color: red;">{{hisse5 + (3*atr5)}} </span>  TL<br>
+      4. basamak: <span style="color: red;">{{hisse5 + (4*atr5)}} </span>  TL<br>
+      5. basamak: <span style="color: red;">{{hisse5 + (5*atr5)}} </span>  TL<br>
+      6. basamak: <span style="color: red;">{{hisse5 + (6*atr5)}} </span>  TL<br>
+      7. basamak: <span style="color: red;">{{hisse5 + (7*atr5)}} </span>  TL<br>
+      8. basamak: <span style="color: red;">{{hisse5 + (8*atr5)}} </span>  TL<br>
+      9. basamak: <span style="color: red;">{{hisse5 + (9*atr5)}} </span>  TL<br>
+      10. basamak: <span style="color: red;">{{hisse5 + (10*atr5)}} </span>  TL<br>
+      11. basamak: <span style="color: red;">{{hisse5 + (11*atr5)}} </span>  TL<br>
+      12. basamak: <span style="color: red;">{{hisse5 + (12*atr5)}} </span>  TL<br>
+      13. basamak: <span style="color: red;">{{hisse5 + (13*atr5)}} </span>  TL<br>
+      
+      <hr>
+      <!--  -->
+
       
         
       </div>
