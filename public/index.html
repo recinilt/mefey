@@ -81,7 +81,7 @@
       <br>
       Sonuç: <span style="color: red;">{{sonuc4()}} </span>  TL<br>
       Kar yüzdesi: %<span style="color: blue;">{{(((sonuc4()-anapara4)/anapara4)*100).toFixed(0)}}</span><br>
-      Kaç kat kazanç: <span style="color: green;">{{(((sonuc4()-anapara4)/anapara4)).toFixed(2)}}</span>
+      Kaç kat kazanç: <span style="color: green;">{{(((sonuc4()-anapara4)/anapara4)).toFixed(5)}}</span>
       <hr>
 
       <!--  -->
@@ -190,22 +190,22 @@
 
 
       <br>
-      Stop Loss: <span style="color: red;">{{(hisse5 - (1.5*atr5)).toFixed(2)}} </span>  TL<br>
-      -1. basamak: <span style="color: red;">{{(hisse5 - (1*atr5)).toFixed(2)}} </span>  TL<br>
-      0. basamak: <span style="color: blue;">{{(hisse5).toFixed(2)}} </span>  TL<br>
-      1. basamak: <span style="color: red;">{{(hisse5 + (1*atr5)).toFixed(2)}} </span>  TL<br>
-      2. basamak: <span style="color: red;">{{(hisse5 + (2*atr5)).toFixed(2)}} </span>  TL<br>
-      3. basamak: <span style="color: red;">{{(hisse5 + (3*atr5)).toFixed(2)}} </span>  TL<br>
-      4. basamak: <span style="color: red;">{{(hisse5 + (4*atr5)).toFixed(2)}} </span>  TL<br>
-      5. basamak: <span style="color: red;">{{(hisse5 + (5*atr5)).toFixed(2)}} </span>  TL<br>
-      6. basamak: <span style="color: red;">{{(hisse5 + (6*atr5)).toFixed(2)}} </span>  TL<br>
-      7. basamak: <span style="color: red;">{{(hisse5 + (7*atr5)).toFixed(2)}} </span>  TL<br>
-      8. basamak: <span style="color: red;">{{(hisse5 + (8*atr5)).toFixed(2)}} </span>  TL<br>
-      9. basamak: <span style="color: red;">{{(hisse5 + (9*atr5)).toFixed(2)}} </span>  TL<br>
-      10. basamak: <span style="color: red;">{{(hisse5 + (10*atr5)).toFixed(2)}} </span>  TL<br>
-      11. basamak: <span style="color: red;">{{(hisse5 + (11*atr5)).toFixed(2)}} </span>  TL<br>
-      12. basamak: <span style="color: red;">{{(hisse5 + (12*atr5)).toFixed(2)}} </span>  TL<br>
-      13. basamak: <span style="color: red;">{{(hisse5 + (13*atr5)).toFixed(2)}} </span>  TL<br>
+      Stop Loss: <span style="color: red;">{{(hisse5 - (1.5*atr5)).toFixed(5)}} </span>  TL<br>
+      -1. basamak: <span style="color: red;">{{(hisse5 - (1*atr5)).toFixed(5)}} </span>  TL<br>
+      0. basamak: <span style="color: blue;">{{(hisse5).toFixed(5)}} </span>  TL<br>
+      1. basamak: <span style="color: red;">{{(hisse5 + (1*atr5)).toFixed(5)}} </span>  TL<br>
+      2. basamak: <span style="color: red;">{{(hisse5 + (2*atr5)).toFixed(5)}} </span>  TL<br>
+      3. basamak: <span style="color: red;">{{(hisse5 + (3*atr5)).toFixed(5)}} </span>  TL<br>
+      4. basamak: <span style="color: red;">{{(hisse5 + (4*atr5)).toFixed(5)}} </span>  TL<br>
+      5. basamak: <span style="color: red;">{{(hisse5 + (5*atr5)).toFixed(5)}} </span>  TL<br>
+      6. basamak: <span style="color: red;">{{(hisse5 + (6*atr5)).toFixed(5)}} </span>  TL<br>
+      7. basamak: <span style="color: red;">{{(hisse5 + (7*atr5)).toFixed(5)}} </span>  TL<br>
+      8. basamak: <span style="color: red;">{{(hisse5 + (8*atr5)).toFixed(5)}} </span>  TL<br>
+      9. basamak: <span style="color: red;">{{(hisse5 + (9*atr5)).toFixed(5)}} </span>  TL<br>
+      10. basamak: <span style="color: red;">{{(hisse5 + (10*atr5)).toFixed(5)}} </span>  TL<br>
+      11. basamak: <span style="color: red;">{{(hisse5 + (11*atr5)).toFixed(5)}} </span>  TL<br>
+      12. basamak: <span style="color: red;">{{(hisse5 + (12*atr5)).toFixed(5)}} </span>  TL<br>
+      13. basamak: <span style="color: red;">{{(hisse5 + (13*atr5)).toFixed(5)}} </span>  TL<br>
       
       <hr>
       <!--  -->
@@ -237,12 +237,12 @@
           
           $scope.hisseSon= function(){
           $scope.toplam=$scope.maaliyet + ($scope.maaliyet * $scope.kar * 0.01);
-          $scope.toplam=$scope.toplam.toFixed(2);
+          $scope.toplam=$scope.toplam.toFixed(5);
           return $scope.toplam;
           }
 
           $scope.netkar1 = function(){
-            return Number(($scope.hisseSon() * $scope.adet) - ($scope.maaliyet * $scope.adet)).toFixed(2);
+            return Number(($scope.hisseSon() * $scope.adet) - ($scope.maaliyet * $scope.adet)).toFixed(5);
           }
 
           
@@ -330,19 +330,19 @@ $scope.removeItem = function (x) {
           $scope.fark = $scope.fiyat2 - $scope.maaliyet2;
           $scope.farkyuz = $scope.fark / $scope.maaliyet2;
           $scope.farkyuz *= 100;
-          $scope.farkyuz = Number($scope.farkyuz).toFixed(2);
+          $scope.farkyuz = Number($scope.farkyuz).toFixed(5);
           return $scope.farkyuz;
           }
 
           $scope.mytutar2 = function(){
             $scope.tutar2 = $scope.adet2 * $scope.fiyat2;
-            $scope.tutar2 = Number($scope.tutar2).toFixed(2);
+            $scope.tutar2 = Number($scope.tutar2).toFixed(5);
             return $scope.tutar2;
           }
 
           $scope.mykar2 = function(){
             $scope.kar3 =  ($scope.adet2 * $scope.fiyat2) - ($scope.adet2 * $scope.maaliyet2);
-            $scope.kar3 = Number($scope.kar3).toFixed(2);
+            $scope.kar3 = Number($scope.kar3).toFixed(5);
             return $scope.kar3;
           }
           //////////////////////////
@@ -356,7 +356,7 @@ $scope.removeItem = function (x) {
 
         $scope.sonmaaliyet= function(){
           var ortalama=(($scope.ilklot * $scope.ilkmaaliyet) + ($scope.ikincilot * $scope.ikincimaaliyet))/($scope.ilklot+$scope.ikincilot);
-          ortalama=ortalama.toFixed(2);
+          ortalama=ortalama.toFixed(5);
           return ortalama;
           }
           ///////////////
@@ -377,7 +377,7 @@ $scope.removeItem = function (x) {
           sum=sum-($scope.kesinti4);
       }
       }
-      return Number(sum).toFixed(2);
+      return Number(sum).toFixed(5);
         }
       //////////////////////////////////
 
@@ -421,7 +421,7 @@ $scope.removeItem = function (x) {
       var myoran=$("#oran").val();
       var mykesinti=$("#kesinti").val();
           var mysonuc=kademeli(myanapara,myadet,myoran,mykesinti);
-          mysonuc = Number(mysonuc).toFixed(2);
+          mysonuc = Number(mysonuc).toFixed(5);
           $("#sonuc").html(mysonuc);
           console.log(myoran);
       });
