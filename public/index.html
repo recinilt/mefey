@@ -172,7 +172,26 @@
 
       <hr>
       <!--  -->
+      <h6 class="baslik">X HİSSESİ NE KADARLIK OLSUN?  :</h6>
+      <div class="col-lg-4">
+        
+        <div class="input-group mb-3" style="position: relative;">
+          <span class="input-group-text text-primary">1 lot Hisse maaliyeti: </span>
+          <input type="number"  class="form-control" data-ng-init="maaliyet3=100" data-ng-model="maaliyet3"><span style="position: absolute; right: 5px;">TL</span> <br>
+        </div>
+        <div class="input-group mb-3" style="position: relative;">
+          <span class="input-group-text text-primary">Kaç liralık alacaksın?: </span>
+          <input type="number"  class="form-control"  data-ng-init="fiyat3=10" data-ng-model="fiyat3"><span style="position: absolute; right: 5px;">TL</span> <br>
+        </div>
+      </div>
+
       
+      <br>
+      Eline kaç lot geçecek? <span style="color: red;"> {{(fiyat3/maaliyet3).toFixed(8)}}</span><br>
+      
+      
+
+      <hr>
       
       <br><br><br><br>
 
