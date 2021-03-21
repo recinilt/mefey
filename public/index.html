@@ -192,6 +192,27 @@
       
 
       <hr>
+      <!--  -->
+      <h6 class="baslik">ELİNDEKİ LOT KAÇ TL YAPAR? :</h6>
+      <div class="col-lg-4">
+        
+        <div class="input-group mb-3" style="position: relative;">
+          <span class="input-group-text text-primary">1 lot Hisse maaliyeti: </span>
+          <input type="number"  class="form-control" data-ng-init="maaliyet4=1852" data-ng-model="maaliyet4"><span style="position: absolute; right: 5px;">TL</span> <br>
+        </div>
+        <div class="input-group mb-3" style="position: relative;">
+          <span class="input-group-text text-primary">Kaç lotun var?: </span>
+          <input type="number"  class="form-control"  data-ng-init="fiyat4=0.008" data-ng-model="fiyat4"><span style="position: absolute; right: 5px;">TL</span> <br>
+        </div>
+      </div>
+
+      
+      <br>
+      Eline TL geçecek? <span style="color: red;"> {{(fiyat4*maaliyet4).toFixed(8)}}</span><br>
+      
+      
+
+      <hr>
       
       <br><br><br><br>
 
