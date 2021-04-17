@@ -127,7 +127,9 @@
       <hr>
       <!--  -->
 
-      <h6 class="baslik">%X KAR İÇİN KAÇTAN SATMAN GEREKLİ?  :</h6>
+      <h6 class="baslik"><span class="material-icons">
+        favorite_border
+        </span>%X KAR İÇİN KAÇTAN SATMAN GEREKLİ?  :</h6>
       <div class="col-lg-4">
       <div class="input-group mb-3" style="position: relative;">
         <span class="input-group-text text-primary">Lot sayısı: </span>
@@ -160,7 +162,9 @@
 
       <hr>
       <!--  -->
-      <h6 class="baslik">SATMAK İSTEDİĞİN KAZANÇ ORANI NE?  :</h6>
+      <h6 class="baslik"><span class="material-icons">
+        grade
+        </span>SATMAK İSTEDİĞİN KAZANÇ ORANI NE?  :</h6>
       <div class="col-lg-4">
         <div class="input-group mb-3" style="position: relative;">
           <span class="input-group-text text-primary">Lot sayısı: </span>
@@ -184,8 +188,39 @@
       Elde ettiğin net kar: <span style="color: blue;">{{mykar2()}} </span>  TL<br>
 
       <hr>
+
+
+      <h6 class="baslik"><span class="material-icons">
+        verified
+        </span>PDDD/DD  :</h6>
+      <div class="col-lg-4">
+        <div class="input-group mb-3" style="position: relative;">
+          <span class="input-group-text text-primary">PD/DD: </span>
+          <input type="number"  class="form-control" data-ng-init="PDDD=0.5" data-ng-model="PDDD"><span style="position: absolute; right: 5px;"></span> <br>
+        </div>
+        <div class="input-group mb-3" style="position: relative;">
+          <span class="input-group-text text-primary">DEFTER DEĞERİ:</span>
+          <input type="number"  class="form-control" data-ng-init="defterDegeri=3" data-ng-model="defterDegeri"><span style="position: absolute; right: 5px;">TL</span> <br>
+        </div>
+        <div class="input-group mb-3" style="position: relative;">
+          <span class="input-group-text text-primary">1 LOT FİYATI: </span>
+          <input type="number"  class="form-control" data-ng-init="simdikiFiyat=20" data-ng-model="simdikiFiyat"><span style="position: absolute; right: 5px;">TL</span> <br>
+        </div>
+      </div>
+
+      
+      <br>
+      PDDD/DD <span style="color: red;">{{(PDDD/defterDegeri).toFixed(2)}}</span><br>
+      
+      İlk Hedef: <span style="color:green;">{{((simdikiFiyat/(PDDD/defterDegeri))).toFixed(2)}}</span> TL {{(((simdikiFiyat/(PDDD/defterDegeri)))/simdikiFiyat).toFixed(1)}}x<br>
+      İkinci Hedef:  <span style="color: blue;">{{(((simdikiFiyat/(PDDD/defterDegeri))*1.6)).toFixed(2)}} </span>  TL {{((((simdikiFiyat/(PDDD/defterDegeri))*1.6))/simdikiFiyat).toFixed(1)}}x<br>
+      <a href="https://www.borsagundem.com/piyasa-ekrani/hisse-detay/ASELS" target="_blank">Aselsan</a>
+
+      <hr>
       <!--  -->
-      <h6 class="baslik">X HİSSESİ NE KADARLIK OLSUN?  :</h6>
+      <h6 class="baslik"><span class="material-icons">
+        pets
+        </span>X HİSSESİ NE KADARLIK OLSUN?  :</h6>
       <div class="col-lg-4">
         
         <div class="input-group mb-3" style="position: relative;">
@@ -205,7 +240,9 @@
       
 
       <hr>
-      <h6 class="baslik">ELİNDEKİ LOT KAÇ TL YAPAR? :</h6>
+      <h6 class="baslik"><span class="material-icons">
+        shopping_bag
+        </span>ELİNDEKİ LOT KAÇ TL YAPAR? :</h6>
       <div class="col-lg-4">
         
         <div class="input-group mb-3" style="position: relative;">
@@ -226,7 +263,9 @@
 
       <hr>
       <!--  -->
-      <h6 class="baslik">İÇLER DIŞLAR ÇARPIMI</h6>
+      <h6 class="baslik"><span class="material-icons">
+        android
+        </span>İÇLER DIŞLAR ÇARPIMI</h6>
       <div class="col-lg-4">
         
         <div class="input-group mb-3" style="position: relative;">
@@ -252,7 +291,9 @@
 
       <hr>
 
-      <h6 class="baslik">TERS ORANTI</h6>
+      <h6 class="baslik"><span class="material-icons">
+        highlight_off
+        </span>TERS ORANTI</h6>
       <div class="col-lg-4">
         
         <div class="input-group mb-3" style="position: relative;">
@@ -287,7 +328,9 @@
       <br><br><br><br>
 
       <!--  -->
-      <h6 class="baslik">ATR Sistemi</h6>
+      <h6 class="baslik"><span class="material-icons">
+        flutter_dash
+        </span>ATR Sistemi</h6>
       <div class="col-lg-4">
         <div class="input-group mb-3" style="position: relative;">
           <span class="input-group-text text-primary">Hisse Fiyatı: </span>
