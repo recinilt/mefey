@@ -102,6 +102,59 @@
       <hr>
 
       <!--  -->
+
+
+
+
+
+
+
+
+<!--  -->
+
+<h6 class="baslik"><span class="material-icons">reorder</span> GRID TRADING</h6>
+<div class="col-lg-4">
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">Şuanki fiyat: </span>
+    <input type="number"  class="form-control"  data-ng-init="gridFiyat=16.22" data-ng-model="gridFiyat"><span style="position: absolute; right: 5px;"> USD</span><br>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text text-primary">Grid aralık oranı: %</span>
+    <input type="number"  class="form-control" data-ng-init="gridOran=0.5"  data-ng-model="gridOran"><br>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text text-primary">Kaç adet grid: </span>
+    <input type="number"  class="form-control" data-ng-init="gridAdet=20"  data-ng-model="gridAdet"><br>
+  </div>
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">Adetlik alım: </span>
+    <input type="number"  class="form-control" data-ng-init="gridAlim=10"  data-ng-model="gridAlim"><span style="position: absolute; right: 5px;"> USD</span><br>
+  </div>
+</div>
+
+
+
+<br>
+Kaç USD gerekli? <span style="color: red;">{{(gridAlim * gridAdet).toFixed(5)}} </span>  USD<br>
+Üst limit: <span style="color: blue;">{{(gridFiyat + (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
+Alt limit: <span style="color: blue;">{{(gridFiyat - (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
+Adetlik Lot: <span style="color: green;"> {{(gridAlim/gridFiyat).toFixed(5)}} </span><br>
+<hr>
+
+<!--  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
       <h6 class="baslik"><span class="material-icons">fingerprint</span> MAALİYET HESAPLAMA:</h6>
       <div class="col-lg-4">
         <div class="input-group mb-3" style="position: relative;">
