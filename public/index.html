@@ -138,11 +138,78 @@
 Kaç USD gerekli? <span style="color: red;">{{(gridAlim * gridAdet).toFixed(5)}} </span>  USD<br>
 Üst limit: <span style="color: blue;">{{(gridFiyat + (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
 Alt limit: <span style="color: blue;">{{(gridFiyat - (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
-Adetlik Lot: <span style="color: green;"> {{(gridAlim/gridFiyat).toFixed(5)}} </span><br>
+Adetlik Lot: <span style="color: green;"> {{(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat)).toFixed(5)}} </span><br>
 <hr>
 
 <!--  -->
 
+<!--  -->
+
+<h6 class="baslik"><span class="material-icons">reorder</span> GRID TRADING AŞAĞIYA</h6>
+<div class="col-lg-4">
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">Üst limit: </span>
+    <input type="number"  class="form-control"  data-ng-init="gridUstLimit=16.22" data-ng-model="gridUstLimit"><span style="position: absolute; right: 5px;"> USD</span><br>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text text-primary">Grid aralık oranı: %</span>
+    <input type="number"  class="form-control" data-ng-init="gridUstOran=0.5"  data-ng-model="gridUstOran"><br>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text text-primary">Kaç adet grid: </span>
+    <input type="number"  class="form-control" data-ng-init="gridUstAdet=20"  data-ng-model="gridUstAdet"><br>
+  </div>
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">Adetlik alım: </span>
+    <input type="number"  class="form-control" data-ng-init="gridUstAlim=10"  data-ng-model="gridUstAlim"><span style="position: absolute; right: 5px;"> USD</span><br>
+  </div>
+</div>
+
+
+
+<br>
+Kaç USD gerekli? <span style="color: red;">{{(gridUstAlim * gridUstAdet).toFixed(5)}} </span>  USD<br>
+Üst limit: <span style="color: blue;">{{gridUstLimit.toFixed(5)}}</span><br>
+Alt limit: <span style="color: blue;">{{(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet))).toFixed(5)}}</span><br>
+Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/((1-(gridUstAdet*gridUstOran*0.01))*gridUstLimit)).toFixed(5)}} </span><br>
+Aşağıya %: <span style="color: blue;">{{(gridUstOran*gridUstAdet).toFixed(2)}}</span><br>
+<!-- Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/gridUstLimit).toFixed(5)}} </span><br> -->
+<hr>
+
+<!--  -->
+<!--  -->
+
+<h6 class="baslik"><span class="material-icons">reorder</span> GRID TRADING YUKARIYA</h6>
+<div class="col-lg-4">
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">Alt limit: </span>
+    <input type="number"  class="form-control"  data-ng-init="gridAltLimit=16.22" data-ng-model="gridAltLimit"><span style="position: absolute; right: 5px;"> USD</span><br>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text text-primary">Grid aralık oranı: %</span>
+    <input type="number"  class="form-control" data-ng-init="gridAltOran=0.5"  data-ng-model="gridAltOran"><br>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text text-primary">Kaç adet grid: </span>
+    <input type="number"  class="form-control" data-ng-init="gridAltAdet=20"  data-ng-model="gridAltAdet"><br>
+  </div>
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">Adetlik alım: </span>
+    <input type="number"  class="form-control" data-ng-init="gridAltAlim=10"  data-ng-model="gridAltAlim"><span style="position: absolute; right: 5px;"> USD</span><br>
+  </div>
+</div>
+
+
+
+<br>
+Kaç USD gerekli? <span style="color: red;">{{(gridAltAlim * gridAltAdet).toFixed(5)}} </span>  USD<br>
+Alt limit: <span style="color: blue;">{{gridAltLimit.toFixed(5)}}</span><br>
+Üst limit: <span style="color: blue;">{{(gridAltLimit + (gridAltLimit*(gridAltOran*0.01) * (gridAltAdet))).toFixed(5)}}</span><br>
+Adetlik Lot: <span style="color: green;"> {{(gridAltAlim/gridAltLimit).toFixed(5)}} </span><br>
+Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}</span><br>
+<hr>
+
+<!--  -->
 
 
 
