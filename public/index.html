@@ -202,9 +202,9 @@ Aşağıya %: <span style="color: blue;">{{(gridUstOran*gridUstAdet).toFixed(2)}
 
 
 <br>
-Kaç USD gerekli? <span style="color: red;">{{(gridAltAlim * gridAltAdet).toFixed(5)}} </span>  USD<br>
-Alt limit: <span style="color: blue;">{{gridAltLimit.toFixed(5)}}</span><br>
+Kaç USD gerekli? <span style="color: red;">{{((gridAltAlim * gridAltAdet)*(1 + ((gridAltAdet/2)*gridAltOran*0.01))).toFixed(5)}} </span>  USD<br>
 Üst limit: <span style="color: blue;">{{(gridAltLimit + (gridAltLimit*(gridAltOran*0.01) * (gridAltAdet))).toFixed(5)}}</span><br>
+Alt limit: <span style="color: blue;">{{gridAltLimit.toFixed(5)}}</span><br>
 Adetlik Lot: <span style="color: green;"> {{(gridAltAlim/gridAltLimit).toFixed(5)}} </span><br>
 Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}</span><br>
 <hr>
