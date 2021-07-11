@@ -393,7 +393,7 @@ Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}
       <hr>
       <!--  -->
       <h6 class="baslik"><span class="material-icons">
-        android
+        timer
         </span>KAÇ DK GEÇMİŞ?</h6>
       <div class="col-lg-4">
         
@@ -405,9 +405,9 @@ Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}
         </div>
         <div class="input-group mb-3" style="position: relative;">
           <span class="input-group-text text-primary">2. SAAT: </span>
-          <input type="number"  class="form-control" data-ng-init="saat2=17" data-ng-model="saat2"><span style="position: absolute; right: 5px;"></span> 
+          <input type="number"  class="form-control" data-ng-init="saat2=zaman.getHours()" data-ng-model="saat2"><span style="position: absolute; right: 5px;"></span> 
           <span class="input-group-text text-primary">2. DK.: </span>
-          <input type="number"  class="form-control" data-ng-init="dk2=4" data-ng-model="dk2"><span style="position: absolute; right: 5px;"></span> <br>
+          <input type="number"  class="form-control" data-ng-init="dk2=zaman.getMinutes()" data-ng-model="dk2"><span style="position: absolute; right: 5px;"></span> <br>
         </div>
         
       </div>
@@ -543,6 +543,23 @@ Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}
       var app = angular.module('myApp', []);
       app.controller('myCtrl', function($scope) {
 
+
+        //KAÇ DK GEÇMİŞ?
+        //var d = new Date();
+//a = d.getDay();     // getting the weekday
+$scope.zaman=new Date();
+//$scope.saat2=d.getHours();
+//$scope.dk2=d.getMinutes();
+
+//getDate();          // day as a number (1-31)
+//getDay();           // weekday as a number (0-6)
+//getFullYear();      // four digit year (yyyy)
+//getHours();         // hour (0-23)
+//getMilliseconds();  // milliseconds (0-999)
+//getMinutes();       // minutes (0-59)
+//getMonth();         // month (0-11)
+//getSeconds();       // seconds (0-59)
+//getTime();          // milliseconds since 1970
           
           //%X KAR ETMEK İÇİN KAÇTAN SATMAN GEREKLİ?
          $scope.adet=1;
