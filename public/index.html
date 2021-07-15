@@ -135,9 +135,6 @@
 
 
 <br>
-<!-- Kaç USD gerekli? <span style="color: red;">{{(gridAlim * gridAdet).toFixed(5)}} </span>  USD<br> -->
-<!-- Kaç USD gerekli? <span style="color: red;">{{((((gridAlim/gridFiyat) * (gridAdet/2) * gridFiyat)) + (gridFiyat * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet)).toFixed(5)}} </span>  USD<br> -->
-<!-- Kaç USD gerekli? <span style="color: red;">{{(((gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat))*gridFiyat*gridAdet/2)+(gridFiyat * (1-(((gridAdet*gridOran)/4)*0.01))*(gridAdet/2))).toFixed(5)}} </span>  USD<br> -->
 Kaç USD gerekli? <span style="color: red;">{{((gridFiyat * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)+(((gridAlim/gridFiyat) * gridAdet * gridFiyat/2))).toFixed(5)}} </span>  USD<br> 
 Üst limit: <span style="color: blue;">{{(gridFiyat + (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
 Alt limit: <span style="color: blue;">{{(gridFiyat - (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
