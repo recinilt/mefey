@@ -116,7 +116,7 @@
 <div class="col-lg-4">
   <div class="input-group mb-3" style="position: relative;">
     <span class="input-group-text text-primary">Şuanki fiyat: </span>
-    <input type="number"  class="form-control"  data-ng-init="gridFiyat=16.22" data-ng-model="gridFiyat"><span style="position: absolute; right: 5px;"> USD</span><br>
+    <input type="number"  class="form-control"  data-ng-init="gridFiyat=20" data-ng-model="gridFiyat"><span style="position: absolute; right: 5px;"> USD</span><br>
   </div>
   <div class="input-group mb-3">
     <span class="input-group-text text-primary">Grid aralık oranı: %</span>
@@ -124,18 +124,21 @@
   </div>
   <div class="input-group mb-3">
     <span class="input-group-text text-primary">Kaç adet grid: </span>
-    <input type="number"  class="form-control" data-ng-init="gridAdet=20"  data-ng-model="gridAdet"><br>
+    <input type="number"  class="form-control" data-ng-init="gridAdet=100"  data-ng-model="gridAdet"><br>
   </div>
   <div class="input-group mb-3" style="position: relative;">
     <span class="input-group-text text-primary">Adetlik alım: </span>
-    <input type="number"  class="form-control" data-ng-init="gridAlim=10.1"  data-ng-model="gridAlim"><span style="position: absolute; right: 5px;"> USD</span><br>
+    <input type="number"  class="form-control" data-ng-init="gridAlim=10.2"  data-ng-model="gridAlim"><span style="position: absolute; right: 5px;"> USD</span><br>
   </div>
 </div>
 
 
 
 <br>
-Kaç USD gerekli? <span style="color: red;">{{(gridAlim * gridAdet).toFixed(5)}} </span>  USD<br>
+<!-- Kaç USD gerekli? <span style="color: red;">{{(gridAlim * gridAdet).toFixed(5)}} </span>  USD<br> -->
+<!-- Kaç USD gerekli? <span style="color: red;">{{((((gridAlim/gridFiyat) * (gridAdet/2) * gridFiyat)) + (gridFiyat * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet)).toFixed(5)}} </span>  USD<br> -->
+<!-- Kaç USD gerekli? <span style="color: red;">{{(((gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat))*gridFiyat*gridAdet/2)+(gridFiyat * (1-(((gridAdet*gridOran)/4)*0.01))*(gridAdet/2))).toFixed(5)}} </span>  USD<br> -->
+Kaç USD gerekli? <span style="color: red;">{{((gridFiyat * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)+(((gridAlim/gridFiyat) * gridAdet * gridFiyat/2))).toFixed(5)}} </span>  USD<br> 
 Üst limit: <span style="color: blue;">{{(gridFiyat + (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
 Alt limit: <span style="color: blue;">{{(gridFiyat - (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
 Adetlik Lot: <span style="color: green;"> {{(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat)).toFixed(5)}} </span><br>
@@ -149,7 +152,7 @@ Adetlik Lot: <span style="color: green;"> {{(gridAlim/((1-((gridAdet/2)*gridOran
 <div class="col-lg-4">
   <div class="input-group mb-3" style="position: relative;">
     <span class="input-group-text text-primary">Üst limit: </span>
-    <input type="number"  class="form-control"  data-ng-init="gridUstLimit=16.22" data-ng-model="gridUstLimit"><span style="position: absolute; right: 5px;"> USD</span><br>
+    <input type="number"  class="form-control"  data-ng-init="gridUstLimit=20" data-ng-model="gridUstLimit"><span style="position: absolute; right: 5px;"> USD</span><br>
   </div>
   <div class="input-group mb-3">
     <span class="input-group-text text-primary">Grid aralık oranı: %</span>
@@ -157,11 +160,11 @@ Adetlik Lot: <span style="color: green;"> {{(gridAlim/((1-((gridAdet/2)*gridOran
   </div>
   <div class="input-group mb-3">
     <span class="input-group-text text-primary">Kaç adet grid: </span>
-    <input type="number"  class="form-control" data-ng-init="gridUstAdet=20"  data-ng-model="gridUstAdet"><br>
+    <input type="number"  class="form-control" data-ng-init="gridUstAdet=50"  data-ng-model="gridUstAdet"><br>
   </div>
   <div class="input-group mb-3" style="position: relative;">
     <span class="input-group-text text-primary">Adetlik alım: </span>
-    <input type="number"  class="form-control" data-ng-init="gridUstAlim=10.1"  data-ng-model="gridUstAlim"><span style="position: absolute; right: 5px;"> USD</span><br>
+    <input type="number"  class="form-control" data-ng-init="gridUstAlim=10.2"  data-ng-model="gridUstAlim"><span style="position: absolute; right: 5px;"> USD</span><br>
   </div>
 </div>
 
@@ -184,11 +187,11 @@ Aşağıya %: <span style="color: blue;">{{(gridUstOran*gridUstAdet).toFixed(2)}
 <div class="col-lg-4">
   <div class="input-group mb-3" style="position: relative;">
     <span class="input-group-text text-primary">Şuanki Fiyat: </span>
-    <input type="number"  class="form-control"  data-ng-init="gridAltFiyat=10" data-ng-model="gridAltFiyat"><span style="position: absolute; right: 5px;"> USD</span><br>
+    <input type="number"  class="form-control"  data-ng-init="gridAltFiyat=20" data-ng-model="gridAltFiyat"><span style="position: absolute; right: 5px;"> USD</span><br>
   </div>
   <div class="input-group mb-3" style="position: relative;">
     <span class="input-group-text text-primary">Alt limit: </span>
-    <input type="number"  class="form-control"  data-ng-init="gridAltLimit=16.22" data-ng-model="gridAltLimit"><span style="position: absolute; right: 5px;"> USD</span><br>
+    <input type="number"  class="form-control"  data-ng-init="gridAltLimit=20" data-ng-model="gridAltLimit"><span style="position: absolute; right: 5px;"> USD</span><br>
   </div>
   <div class="input-group mb-3">
     <span class="input-group-text text-primary">Grid aralık oranı: %</span>
@@ -196,11 +199,11 @@ Aşağıya %: <span style="color: blue;">{{(gridUstOran*gridUstAdet).toFixed(2)}
   </div>
   <div class="input-group mb-3">
     <span class="input-group-text text-primary">Kaç adet grid: </span>
-    <input type="number"  class="form-control" data-ng-init="gridAltAdet=20"  data-ng-model="gridAltAdet"><br>
+    <input type="number"  class="form-control" data-ng-init="gridAltAdet=50"  data-ng-model="gridAltAdet"><br>
   </div>
   <div class="input-group mb-3" style="position: relative;">
     <span class="input-group-text text-primary">Adetlik alım: </span>
-    <input type="number"  class="form-control" data-ng-init="gridAltAlim=10.1"  data-ng-model="gridAltAlim"><span style="position: absolute; right: 5px;"> USD</span><br>
+    <input type="number"  class="form-control" data-ng-init="gridAltAlim=10.2"  data-ng-model="gridAltAlim"><span style="position: absolute; right: 5px;"> USD</span><br>
   </div>
 </div>
 
