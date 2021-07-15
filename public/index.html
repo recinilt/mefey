@@ -217,6 +217,93 @@ Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}
 
 <!--  -->
 
+<!--  -->
+<h6 class="baslik"><span class="material-icons">
+  timer
+  </span>KAÇ DK GEÇMİŞ?</h6>
+<div class="col-lg-4">
+  
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">1. SAAT: </span>
+    <input type="number"  class="form-control" data-ng-init="saat1=13" data-ng-model="saat1"><span style="position: absolute; right: 5px;"></span> 
+    <span class="input-group-text text-primary">1. DK.: </span>
+    <input type="number"  class="form-control" data-ng-init="dk1=4" data-ng-model="dk1"><span style="position: absolute; right: 5px;"></span> <br>
+  </div>
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">2. SAAT: </span>
+    <input type="number"  class="form-control" data-ng-init="saat2=zaman.getHours()" data-ng-model="saat2"><span style="position: absolute; right: 5px;"></span> 
+    <span class="input-group-text text-primary">2. DK.: </span>
+    <input type="number"  class="form-control" data-ng-init="dk2=zaman.getMinutes()" data-ng-model="dk2"><span style="position: absolute; right: 5px;"></span> <br>
+  </div>
+  
+</div>
+
+
+<br>
+Kaç Dk. Geçmiş?: <span style="color: red;"> {{(saat2*60 + dk2)-(saat1*60 + dk1)}}</span><br>
+Yani Kaç Saat Geçmiş?: <span style="color: blue;"> {{(((saat2*60 + dk2)-(saat1*60 + dk1))/60).toFixed(1)}}</span><br>
+Bir gün: {{60*24}} dk
+
+<!--  -->
+<hr>
+
+
+<!--  -->
+<h6 class="baslik"><span class="material-icons">
+  android
+  </span>İÇLER DIŞLAR ÇARPIMI</h6>   
+<div class="col-lg-4">
+  
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">1. SAYI: </span>
+    <input type="number"  class="form-control" data-ng-init="idc1=10" data-ng-model="idc1"><span style="position: absolute; right: 5px;"></span> 
+    <span class="input-group-text text-primary">2. SAYI: </span>
+    <input type="number"  class="form-control" data-ng-init="idc2=4" data-ng-model="idc2"><span style="position: absolute; right: 5px;"></span> <br>
+  </div>
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">3. SAYI: </span>
+    <input type="number"  class="form-control" data-ng-init="idc3=24" data-ng-model="idc3"><span style="position: absolute; right: 5px;"></span> 
+    <span class="input-group-text text-primary">SONUÇ: </span>
+    <input type="number"  class="form-control" data-ng-model="((idc3*idc2)/idc1)"><br>
+  </div>
+  
+</div>
+
+
+<br>
+
+
+
+
+<hr>
+
+<h6 class="baslik"><span class="material-icons">
+  highlight_off
+  </span>TERS ORANTI</h6>
+<div class="col-lg-4">
+  
+  <div class="input-group mb-3" style="position: relative;">
+    
+    <input type="number"  class="form-control" data-ng-init="to1=20" data-ng-model="to1"><span > X </span> 
+    
+    <input type="number"  class="form-control" data-ng-init="to2=4" data-ng-model="to2"><span> = </span>
+    
+    <input type="number"  class="form-control" data-ng-init="to3=10" data-ng-model="to3"><span> X </span> 
+    <span class="input-group-text text-primary">SONUÇ: </span>
+    <input type="number"  class="form-control" data-ng-model="((to1*to2)/to3)"><br>
+    <br>
+  </div>
+  
+  
+</div>
+
+
+<br>
+
+
+<!--  -->
+
+<hr>
 
 
 
@@ -392,94 +479,7 @@ Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}
       
 
       <hr>
-      <!--  -->
-      <h6 class="baslik"><span class="material-icons">
-        timer
-        </span>KAÇ DK GEÇMİŞ?</h6>
-      <div class="col-lg-4">
-        
-        <div class="input-group mb-3" style="position: relative;">
-          <span class="input-group-text text-primary">1. SAAT: </span>
-          <input type="number"  class="form-control" data-ng-init="saat1=13" data-ng-model="saat1"><span style="position: absolute; right: 5px;"></span> 
-          <span class="input-group-text text-primary">1. DK.: </span>
-          <input type="number"  class="form-control" data-ng-init="dk1=4" data-ng-model="dk1"><span style="position: absolute; right: 5px;"></span> <br>
-        </div>
-        <div class="input-group mb-3" style="position: relative;">
-          <span class="input-group-text text-primary">2. SAAT: </span>
-          <input type="number"  class="form-control" data-ng-init="saat2=zaman.getHours()" data-ng-model="saat2"><span style="position: absolute; right: 5px;"></span> 
-          <span class="input-group-text text-primary">2. DK.: </span>
-          <input type="number"  class="form-control" data-ng-init="dk2=zaman.getMinutes()" data-ng-model="dk2"><span style="position: absolute; right: 5px;"></span> <br>
-        </div>
-        
-      </div>
-
-      
-      <br>
-      Kaç Dk. Geçmiş?: <span style="color: red;"> {{(saat2*60 + dk2)-(saat1*60 + dk1)}}</span><br>
-      Yani Kaç Saat Geçmiş?: <span style="color: blue;"> {{(((saat2*60 + dk2)-(saat1*60 + dk1))/60).toFixed(1)}}</span><br>
-      Bir gün: {{60*24}} dk
-      
-      <!--  -->
-      <hr>
-
-      
-      <!--  -->
-      <h6 class="baslik"><span class="material-icons">
-        android
-        </span>İÇLER DIŞLAR ÇARPIMI</h6>   
-      <div class="col-lg-4">
-        
-        <div class="input-group mb-3" style="position: relative;">
-          <span class="input-group-text text-primary">1. SAYI: </span>
-          <input type="number"  class="form-control" data-ng-init="idc1=10" data-ng-model="idc1"><span style="position: absolute; right: 5px;"></span> 
-          <span class="input-group-text text-primary">2. SAYI: </span>
-          <input type="number"  class="form-control" data-ng-init="idc2=4" data-ng-model="idc2"><span style="position: absolute; right: 5px;"></span> <br>
-        </div>
-        <div class="input-group mb-3" style="position: relative;">
-          <span class="input-group-text text-primary">3. SAYI: </span>
-          <input type="number"  class="form-control" data-ng-init="idc3=24" data-ng-model="idc3"><span style="position: absolute; right: 5px;"></span> 
-          <span class="input-group-text text-primary">SONUÇ: </span>
-          <input type="number"  class="form-control" data-ng-model="((idc3*idc2)/idc1)"><br>
-        </div>
-        
-      </div>
-
-      
-      <br>
-      
-      
-      
-
-      <hr>
-
-      <h6 class="baslik"><span class="material-icons">
-        highlight_off
-        </span>TERS ORANTI</h6>
-      <div class="col-lg-4">
-        
-        <div class="input-group mb-3" style="position: relative;">
-          
-          <input type="number"  class="form-control" data-ng-init="to1=20" data-ng-model="to1"><span > X </span> 
-          
-          <input type="number"  class="form-control" data-ng-init="to2=4" data-ng-model="to2"><span> = </span>
-          
-          <input type="number"  class="form-control" data-ng-init="to3=10" data-ng-model="to3"><span> X </span> 
-          <span class="input-group-text text-primary">SONUÇ: </span>
-          <input type="number"  class="form-control" data-ng-model="((to1*to2)/to3)"><br>
-          <br>
-        </div>
-        
-        
-      </div>
-
-      
-      <br>
-      
-      
-      <!--  -->
-
-      <hr>
-      
+            
       
 
       
