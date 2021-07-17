@@ -139,6 +139,7 @@ Kaç USD gerekli? <span style="color: red;">{{((gridFiyat * (1-(((gridAdet*gridO
 Üst limit: <span style="color: blue;">{{(gridFiyat + (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
 Alt limit: <span style="color: blue;">{{(gridFiyat - (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
 Adetlik Lot: <span style="color: green;"> {{(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat)).toFixed(5)}} </span><br>
+Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat))).toFixed(5)}} </span> lot ve <span style="color: red;">{{(((gridFiyat) * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)).toFixed(5)}} </span>  USD<br>
 <hr>
 
 <!--  -->
@@ -173,6 +174,7 @@ Kaç USD gerekli? <span style="color: red;">{{(gridUstLimit * (1-(((gridUstAdet*
 Üst limit: <span style="color: blue;">{{gridUstLimit.toFixed(5)}}</span><br>
 Alt limit: <span style="color: blue;">{{(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet))).toFixed(5)}}</span><br>
 Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/((1-(gridUstAdet*gridUstOran*0.01))*gridUstLimit)).toFixed(5)}} </span><br>
+Toplam Lot: <span style="color: green;"> {{(gridUstAdet*(gridUstAlim/((1-(gridUstAdet*gridUstOran*0.01))*gridUstLimit))).toFixed(5)}} </span><br>
 Aşağıya %: <span style="color: blue;">{{(gridUstOran*gridUstAdet).toFixed(2)}}</span><br>
 <!-- Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/gridUstLimit).toFixed(5)}} </span><br> -->
 <hr>
@@ -212,6 +214,7 @@ Kaç USD gerekli? <span style="color: red;">{{(((gridAltAlim/gridAltLimit) * gri
 Üst limit: <span style="color: blue;">{{(gridAltLimit + (gridAltLimit*(gridAltOran*0.01) * (gridAltAdet))).toFixed(5)}}</span><br>
 Alt limit: <span style="color: blue;">{{gridAltLimit.toFixed(5)}}</span><br>
 Adetlik Lot: <span style="color: green;"> {{(gridAltAlim/gridAltLimit).toFixed(5)}} </span><br>
+Toplam Lot: <span style="color: green;"> {{(gridAltAdet*(gridAltAlim/gridAltLimit)).toFixed(5)}} </span><br>
 Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}</span><br>
 <hr>
 
