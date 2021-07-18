@@ -170,7 +170,15 @@ Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gri
 
 <br>
 <!-- Kaç USD gerekli? <span style="color: red;">{{(gridUstAlim * gridUstAdet).toFixed(5)}} </span>  USD<br> -->
-Kaç USD gerekli? <span style="color: red;">{{(gridUstLimit * (1-(((gridUstAdet*gridUstOran)/2)*0.01))*gridUstAdet).toFixed(5)}} </span>  USD<br>
+<!-- Kaç USD gerekli? <span style="color: red;">{{(gridUstLimit * (1-(((gridUstAdet*gridUstOran)/2)*0.01))*gridUstAdet).toFixed(5)}} </span>  USD<br> -->
+Kaç USD gerekli? <span style="color: red;">{{(
+  gridUstAdet * (
+  (gridUstAlim/(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet))))    *    
+  (gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet)))    +    
+  (gridUstAlim/(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet))))    *  
+  gridUstLimit  
+  ) /2
+  ).toFixed(5)}} </span>  USD<br>
 Üst limit: <span style="color: blue;">{{gridUstLimit.toFixed(5)}}</span><br>
 Alt limit: <span style="color: blue;">{{(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet))).toFixed(5)}}</span><br>
 <!-- Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/((1-(gridUstAdet*gridUstOran*0.01))*gridUstLimit)).toFixed(5)}} </span><br> -->
