@@ -135,11 +135,32 @@
 
 
 <br>
-Kaç USD gerekli? <span style="color: red;">{{((gridFiyat * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)+(((gridAlim/gridFiyat) * gridAdet * gridFiyat/2))).toFixed(5)}} </span>  USD<br> 
+<!-- Kaç USD gerekli? <span style="color: red;">{{((gridFiyat * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)+(((gridAlim/gridFiyat) * gridAdet * gridFiyat/2))).toFixed(5)}} </span>  USD<br>  -->
+Kaç USD gerekli? <span style="color: red;">{{(
+  (gridAdet/2) * (
+  (gridAlim/(gridFiyat - (gridFiyat*(gridOran*0.01) * ((gridAdet/2)))))    *    
+  (gridFiyat - (gridFiyat*(gridOran*0.01) * ((gridAdet/2))))    +    
+  (gridAlim/(gridFiyat - (gridFiyat*(gridOran*0.01) * ((gridAdet/2)))))    *  
+  gridFiyat  
+  ) /2
+  +
+  (gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat)) * gridFiyat * (gridAdet/2)
+).toFixed(5)}} </span>  USD<br> 
+
 Üst limit: <span style="color: blue;">{{(gridFiyat + (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
 Alt limit: <span style="color: blue;">{{(gridFiyat - (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
 Adetlik Lot: <span style="color: green;"> {{(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat)).toFixed(5)}} </span><br>
-Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat))).toFixed(5)}} </span> lot ve <span style="color: red;">{{(((gridFiyat) * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)).toFixed(5)}} </span>  USD<br>
+<!-- Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat))).toFixed(5)}} </span> lot ve <span style="color: red;">{{(((gridFiyat) * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)).toFixed(5)}} </span>  USD<br> -->
+Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat))).toFixed(5)}} </span> lot ve 
+<span style="color: red;">{{(
+  (gridAdet/2) * (
+  (gridAlim/(gridFiyat - (gridFiyat*(gridOran*0.01) * ((gridAdet/2)))))    *    
+  (gridFiyat - (gridFiyat*(gridOran*0.01) * ((gridAdet/2))))    +    
+  (gridAlim/(gridFiyat - (gridFiyat*(gridOran*0.01) * ((gridAdet/2)))))    *  
+  gridFiyat  
+  ) /2
+).toFixed(5)}} </span>  USD<br>
+
 <hr>
 
 <!--  -->
