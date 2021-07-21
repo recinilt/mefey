@@ -257,12 +257,16 @@ Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}
 <div class="col-lg-4">
   
   <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">1. GÜN: </span>
+    <input type="number"  class="form-control" data-ng-init="gun1=12" data-ng-model="gun1"><span style="position: absolute; right: 5px;"></span>
     <span class="input-group-text text-primary">1. SAAT: </span>
     <input type="number"  class="form-control" data-ng-init="saat1=13" data-ng-model="saat1"><span style="position: absolute; right: 5px;"></span> 
     <span class="input-group-text text-primary">1. DK.: </span>
     <input type="number"  class="form-control" data-ng-init="dk1=4" data-ng-model="dk1"><span style="position: absolute; right: 5px;"></span> <br>
   </div>
   <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">2. GÜN: </span>
+    <input type="number"  class="form-control" data-ng-init="gun2=zaman.getDate()" data-ng-model="gun2"><span style="position: absolute; right: 5px;"></span>
     <span class="input-group-text text-primary">2. SAAT: </span>
     <input type="number"  class="form-control" data-ng-init="saat2=zaman.getHours()" data-ng-model="saat2"><span style="position: absolute; right: 5px;"></span> 
     <span class="input-group-text text-primary">2. DK.: </span>
@@ -273,8 +277,9 @@ Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}
 
 
 <br>
-Kaç Dk. Geçmiş?: <span style="color: red;"> {{(saat2*60 + dk2)-(saat1*60 + dk1)}}</span><br>
-Yani Kaç Saat Geçmiş?: <span style="color: blue;"> {{(((saat2*60 + dk2)-(saat1*60 + dk1))/60).toFixed(1)}}</span><br>
+Kaç Dk. Geçmiş?: <span style="color: red;"> {{(gun2*1440 + saat2*60 + dk2)-(gun1*1440 + saat1*60 + dk1)}}</span><br>
+Yani Kaç Saat Geçmiş?: <span style="color: blue;"> {{(((gun2*1440 + saat2*60 + dk2)-(gun1*1440 + saat1*60 + dk1))/60).toFixed(1)}}</span><br>
+Yani Kaç Gün Geçmiş?: <span style="color: fuchsia;"> {{(((gun2*1440 + saat2*60 + dk2)-(gun1*1440 + saat1*60 + dk1))/1440).toFixed(1)}}</span><br>
 Bir gün: {{60*24}} dk
 
 <!--  -->
