@@ -99,7 +99,7 @@
       <br>
       Sonuç: <span style="color: red;">{{sonuc4()}} </span>  TL<br>
       Kar yüzdesi: %<span style="color: blue;">{{(((sonuc4()-anapara4)/anapara4)*100).toFixed(0)}}</span><br>
-      Kaç kat kazanç: <span style="color: green;">{{(((sonuc4()-anapara4)/anapara4)).toFixed(5)}}</span>
+      Kaç kat kazanç: <span style="color: green;">{{(((sonuc4()-anapara4)/anapara4)).toFixed(8)}}</span>
       <hr>
 
       <!--  -->
@@ -136,7 +136,7 @@
 
 
 <br>
-<!-- Kaç USD gerekli? <span style="color: red;">{{((gridFiyat * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)+(((gridAlim/gridFiyat) * gridAdet * gridFiyat/2))).toFixed(5)}} </span>  USD<br>  -->
+<!-- Kaç USD gerekli? <span style="color: red;">{{((gridFiyat * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)+(((gridAlim/gridFiyat) * gridAdet * gridFiyat/2))).toFixed(8)}} </span>  USD<br>  -->
 Kaç USD gerekli? <span style="color: red;">{{(
   (gridAdet/2) * (
   (gridAlim/(gridFiyat - (gridFiyat*(gridOran*0.01) * ((gridAdet/2)))))    *    
@@ -146,13 +146,13 @@ Kaç USD gerekli? <span style="color: red;">{{(
   ) /2
   +
   (gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat)) * gridFiyat * (gridAdet/2)
-).toFixed(5)}} </span>  USD<br> 
+).toFixed(8)}} </span>  USD<br> 
 
-Üst limit: <span style="color: blue;">{{(gridFiyat + (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
-Alt limit: <span style="color: blue;">{{(gridFiyat - (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(5)}}</span><br>
-Adetlik Lot: <span style="color: green;"> {{(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat)).toFixed(5)}} </span><br>
-<!-- Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat))).toFixed(5)}} </span> lot ve <span style="color: red;">{{(((gridFiyat) * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)).toFixed(5)}} </span>  USD<br> -->
-Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat))).toFixed(5)}} </span> lot ve 
+Üst limit: <span style="color: blue;">{{(gridFiyat + (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(8)}}</span><br>
+Alt limit: <span style="color: blue;">{{(gridFiyat - (gridFiyat*(gridOran*0.01) * (gridAdet/2))).toFixed(8)}}</span><br>
+Adetlik Lot: <span style="color: green;"> {{(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat)).toFixed(8)}} </span><br>
+<!-- Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat))).toFixed(8)}} </span> lot ve <span style="color: red;">{{(((gridFiyat) * (1-(((gridAdet*gridOran)/4)*0.01))*gridAdet/2)).toFixed(8)}} </span>  USD<br> -->
+Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gridAdet/2)*gridOran*0.01))*gridFiyat))).toFixed(8)}} </span> lot ve 
 <span style="color: red;">{{(
   (gridAdet/2) * (
   (gridAlim/(gridFiyat - (gridFiyat*(gridOran*0.01) * ((gridAdet/2)))))    *    
@@ -160,7 +160,7 @@ Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gri
   (gridAlim/(gridFiyat - (gridFiyat*(gridOran*0.01) * ((gridAdet/2)))))    *  
   gridFiyat  
   ) /2
-).toFixed(5)}} </span>  USD<br>
+).toFixed(8)}} </span>  USD<br>
 
 <hr>
 
@@ -191,8 +191,8 @@ Toplam Gereken: <span style="color: green;"> {{((gridAdet/2)*(gridAlim/((1-((gri
 
  
 <br>
-<!-- Kaç USD gerekli? <span style="color: red;">{{(gridUstAlim * gridUstAdet).toFixed(5)}} </span>  USD<br> -->
-<!-- Kaç USD gerekli? <span style="color: red;">{{(gridUstLimit * (1-(((gridUstAdet*gridUstOran)/2)*0.01))*gridUstAdet).toFixed(5)}} </span>  USD<br> -->
+<!-- Kaç USD gerekli? <span style="color: red;">{{(gridUstAlim * gridUstAdet).toFixed(8)}} </span>  USD<br> -->
+<!-- Kaç USD gerekli? <span style="color: red;">{{(gridUstLimit * (1-(((gridUstAdet*gridUstOran)/2)*0.01))*gridUstAdet).toFixed(8)}} </span>  USD<br> -->
 Kaç USD gerekli? <span style="color: red;">{{(
   gridUstAdet * (
   (gridUstAlim/(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet))))    *    
@@ -200,14 +200,14 @@ Kaç USD gerekli? <span style="color: red;">{{(
   (gridUstAlim/(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet))))    *  
   gridUstLimit  
   ) /2
-  ).toFixed(5)}} </span>  USD<br>
-Üst limit: <span style="color: blue;">{{gridUstLimit.toFixed(5)}}</span><br>
-Alt limit: <span style="color: blue;">{{(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet))).toFixed(5)}}</span><br>
-<!-- Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/((1-(gridUstAdet*gridUstOran*0.01))*gridUstLimit)).toFixed(5)}} </span><br> -->
-Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet)))).toFixed(5)}} </span><br>
-Toplam Lot: <span style="color: green;"> {{(gridUstAdet*(gridUstAlim/((1-(gridUstAdet*gridUstOran*0.01))*gridUstLimit))).toFixed(5)}} </span><br>
+  ).toFixed(8)}} </span>  USD<br>
+Üst limit: <span style="color: blue;">{{gridUstLimit.toFixed(8)}}</span><br>
+Alt limit: <span style="color: blue;">{{(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet))).toFixed(8)}}</span><br>
+<!-- Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/((1-(gridUstAdet*gridUstOran*0.01))*gridUstLimit)).toFixed(8)}} </span><br> -->
+Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/(gridUstLimit - (gridUstLimit*(gridUstOran*0.01) * (gridUstAdet)))).toFixed(8)}} </span><br>
+Toplam Lot: <span style="color: green;"> {{(gridUstAdet*(gridUstAlim/((1-(gridUstAdet*gridUstOran*0.01))*gridUstLimit))).toFixed(8)}} </span><br>
 Aşağıya %: <span style="color: blue;">{{(gridUstOran*gridUstAdet).toFixed(2)}}</span><br>
-<!-- Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/gridUstLimit).toFixed(5)}} </span><br> -->
+<!-- Adetlik Lot: <span style="color: green;"> {{(gridUstAlim/gridUstLimit).toFixed(8)}} </span><br> -->
 <hr>
 
 <!--  -->
@@ -240,12 +240,12 @@ Aşağıya %: <span style="color: blue;">{{(gridUstOran*gridUstAdet).toFixed(2)}
 
 
 <br>
-Kaç USD gerekli? <span style="color: red;">{{(((gridAltAlim/gridAltLimit) * gridAltAdet * gridAltFiyat)).toFixed(5)}} </span>  USD<br>
-<!-- Kaç USD gerekli? <span style="color: red;">{{((gridAltAlim * gridAltAdet)*(1 + ((gridAltAdet/2)*gridAltOran*0.01))).toFixed(5)}} </span>  USD<br> -->
-Üst limit: <span style="color: blue;">{{(gridAltLimit + (gridAltLimit*(gridAltOran*0.01) * (gridAltAdet))).toFixed(5)}}</span><br>
-Alt limit: <span style="color: blue;">{{gridAltLimit.toFixed(5)}}</span><br>
-Adetlik Lot: <span style="color: green;"> {{(gridAltAlim/gridAltLimit).toFixed(5)}} </span><br>
-Toplam Lot: <span style="color: green;"> {{(gridAltAdet*(gridAltAlim/gridAltLimit)).toFixed(5)}} </span><br>
+Kaç USD gerekli? <span style="color: red;">{{(((gridAltAlim/gridAltLimit) * gridAltAdet * gridAltFiyat)).toFixed(8)}} </span>  USD<br>
+<!-- Kaç USD gerekli? <span style="color: red;">{{((gridAltAlim * gridAltAdet)*(1 + ((gridAltAdet/2)*gridAltOran*0.01))).toFixed(8)}} </span>  USD<br> -->
+Üst limit: <span style="color: blue;">{{(gridAltLimit + (gridAltLimit*(gridAltOran*0.01) * (gridAltAdet))).toFixed(8)}}</span><br>
+Alt limit: <span style="color: blue;">{{gridAltLimit.toFixed(8)}}</span><br>
+Adetlik Lot: <span style="color: green;"> {{(gridAltAlim/gridAltLimit).toFixed(8)}} </span><br>
+Toplam Lot: <span style="color: green;"> {{(gridAltAdet*(gridAltAlim/gridAltLimit)).toFixed(8)}} </span><br>
 Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}</span><br>
 <hr>
 
@@ -385,7 +385,7 @@ Bir gün: {{60*24}} dk
       <br>
       Son maaliyet:<span style="color: red;">{{sonmaaliyet()}} </span>  TL<br>
       Toplam hisse adedi:<span style="color: rgb(4, 0, 255);">{{ilklot + ikincilot}} </span>  TL<br>
-      Toplam tutar:<span style="color: rgb(17, 0, 255);">{{(sonmaaliyet() * (ilklot + ikincilot)).toFixed(5)}} </span>  TL<br>
+      Toplam tutar:<span style="color: rgb(17, 0, 255);">{{(sonmaaliyet() * (ilklot + ikincilot)).toFixed(8)}} </span>  TL<br>
       
       <hr>
       <!--  -->
@@ -552,22 +552,22 @@ Bir gün: {{60*24}} dk
 
 
       <br>
-      Stop Loss: <span style="color: red;">{{(hisse5 - (1.5*atr5)).toFixed(5)}} </span>  TL<br>
-      -1. basamak: <span style="color: red;">{{(hisse5 - (1*atr5)).toFixed(5)}} </span>  TL<br>
-      0. basamak: <span style="color: blue;">{{(hisse5).toFixed(5)}} </span>  TL<br>
-      1. basamak: <span style="color: red;">{{(hisse5 + (1*atr5)).toFixed(5)}} </span>  TL<br>
-      2. basamak: <span style="color: red;">{{(hisse5 + (2*atr5)).toFixed(5)}} </span>  TL<br>
-      3. basamak: <span style="color: red;">{{(hisse5 + (3*atr5)).toFixed(5)}} </span>  TL<br>
-      4. basamak: <span style="color: red;">{{(hisse5 + (4*atr5)).toFixed(5)}} </span>  TL<br>
-      5. basamak: <span style="color: red;">{{(hisse5 + (5*atr5)).toFixed(5)}} </span>  TL<br>
-      6. basamak: <span style="color: red;">{{(hisse5 + (6*atr5)).toFixed(5)}} </span>  TL<br>
-      7. basamak: <span style="color: red;">{{(hisse5 + (7*atr5)).toFixed(5)}} </span>  TL<br>
-      8. basamak: <span style="color: red;">{{(hisse5 + (8*atr5)).toFixed(5)}} </span>  TL<br>
-      9. basamak: <span style="color: red;">{{(hisse5 + (9*atr5)).toFixed(5)}} </span>  TL<br>
-      10. basamak: <span style="color: red;">{{(hisse5 + (10*atr5)).toFixed(5)}} </span>  TL<br>
-      11. basamak: <span style="color: red;">{{(hisse5 + (11*atr5)).toFixed(5)}} </span>  TL<br>
-      12. basamak: <span style="color: red;">{{(hisse5 + (12*atr5)).toFixed(5)}} </span>  TL<br>
-      13. basamak: <span style="color: red;">{{(hisse5 + (13*atr5)).toFixed(5)}} </span>  TL<br>
+      Stop Loss: <span style="color: red;">{{(hisse5 - (1.5*atr5)).toFixed(8)}} </span>  TL<br>
+      -1. basamak: <span style="color: red;">{{(hisse5 - (1*atr5)).toFixed(8)}} </span>  TL<br>
+      0. basamak: <span style="color: blue;">{{(hisse5).toFixed(8)}} </span>  TL<br>
+      1. basamak: <span style="color: red;">{{(hisse5 + (1*atr5)).toFixed(8)}} </span>  TL<br>
+      2. basamak: <span style="color: red;">{{(hisse5 + (2*atr5)).toFixed(8)}} </span>  TL<br>
+      3. basamak: <span style="color: red;">{{(hisse5 + (3*atr5)).toFixed(8)}} </span>  TL<br>
+      4. basamak: <span style="color: red;">{{(hisse5 + (4*atr5)).toFixed(8)}} </span>  TL<br>
+      5. basamak: <span style="color: red;">{{(hisse5 + (5*atr5)).toFixed(8)}} </span>  TL<br>
+      6. basamak: <span style="color: red;">{{(hisse5 + (6*atr5)).toFixed(8)}} </span>  TL<br>
+      7. basamak: <span style="color: red;">{{(hisse5 + (7*atr5)).toFixed(8)}} </span>  TL<br>
+      8. basamak: <span style="color: red;">{{(hisse5 + (8*atr5)).toFixed(8)}} </span>  TL<br>
+      9. basamak: <span style="color: red;">{{(hisse5 + (9*atr5)).toFixed(8)}} </span>  TL<br>
+      10. basamak: <span style="color: red;">{{(hisse5 + (10*atr5)).toFixed(8)}} </span>  TL<br>
+      11. basamak: <span style="color: red;">{{(hisse5 + (11*atr5)).toFixed(8)}} </span>  TL<br>
+      12. basamak: <span style="color: red;">{{(hisse5 + (12*atr5)).toFixed(8)}} </span>  TL<br>
+      13. basamak: <span style="color: red;">{{(hisse5 + (13*atr5)).toFixed(8)}} </span>  TL<br>
       
       <hr>
       <!--  -->
@@ -720,12 +720,12 @@ $scope.removeItem = function (x) {
           
           $scope.hisseSon= function(){
           $scope.toplam=$scope.maaliyet + ($scope.maaliyet * $scope.kar * 0.01);
-          $scope.toplam=$scope.toplam.toFixed(5);
+          $scope.toplam=$scope.toplam.toFixed(8);
           return $scope.toplam;
           }
 
           $scope.netkar1 = function(){
-            return Number(($scope.hisseSon() * $scope.adet) - ($scope.maaliyet * $scope.adet)).toFixed(5);
+            return Number(($scope.hisseSon() * $scope.adet) - ($scope.maaliyet * $scope.adet)).toFixed(8);
           }
 
           
@@ -813,19 +813,19 @@ $scope.removeItem = function (x) {
           $scope.fark = $scope.fiyat2 - $scope.maaliyet2;
           $scope.farkyuz = $scope.fark / $scope.maaliyet2;
           $scope.farkyuz *= 100;
-          $scope.farkyuz = Number($scope.farkyuz).toFixed(5);
+          $scope.farkyuz = Number($scope.farkyuz).toFixed(8);
           return $scope.farkyuz;
           }
 
           $scope.mytutar2 = function(){
             $scope.tutar2 = $scope.adet2 * $scope.fiyat2;
-            $scope.tutar2 = Number($scope.tutar2).toFixed(5);
+            $scope.tutar2 = Number($scope.tutar2).toFixed(8);
             return $scope.tutar2;
           }
 
           $scope.mykar2 = function(){
             $scope.kar3 =  ($scope.adet2 * $scope.fiyat2) - ($scope.adet2 * $scope.maaliyet2);
-            $scope.kar3 = Number($scope.kar3).toFixed(5);
+            $scope.kar3 = Number($scope.kar3).toFixed(8);
             return $scope.kar3;
           }
           //////////////////////////
@@ -839,7 +839,7 @@ $scope.removeItem = function (x) {
 
         $scope.sonmaaliyet= function(){
           var ortalama=(($scope.ilklot * $scope.ilkmaaliyet) + ($scope.ikincilot * $scope.ikincimaaliyet))/($scope.ilklot+$scope.ikincilot);
-          ortalama=ortalama.toFixed(5);
+          ortalama=ortalama.toFixed(8);
           return ortalama;
           }
           ///////////////
@@ -860,7 +860,7 @@ $scope.removeItem = function (x) {
           sum=sum-($scope.kesinti4);
       }
       }
-      return Number(sum).toFixed(5);
+      return Number(sum).toFixed(8);
         }
       //////////////////////////////////
 
@@ -904,7 +904,7 @@ $scope.removeItem = function (x) {
       var myoran=$("#oran").val();
       var mykesinti=$("#kesinti").val();
           var mysonuc=kademeli(myanapara,myadet,myoran,mykesinti);
-          mysonuc = Number(mysonuc).toFixed(5);
+          mysonuc = Number(mysonuc).toFixed(8);
           $("#sonuc").html(mysonuc);
           console.log(myoran);
       });
