@@ -259,15 +259,16 @@ Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}
   
   <div class="input-group mb-3" style="position: relative;">
     <span class="input-group-text text-primary">1. GÜN: </span>
-    <input type="number"  class="form-control" data-ng-init="gun1=zaman.getDate()" data-ng-model="gun1"><span style="position: absolute; right: 5px;"></span>
-    
+    <input type="number"  class="form-control"  data-ng-model="gun1"><span style="position: absolute; right: 5px;"></span>
+    <button ng-click="dkKaydet()">Kaydet</button>
+      <p>{{dkErrortext}}</p>
   </div>
   <div class="input-group mb-3" style="position: relative;">
     
     <span class="input-group-text text-primary">1. SAAT: </span>
-    <input type="number"  class="form-control" data-ng-init="saat1=13" data-ng-model="saat1"><span style="position: absolute; right: 5px;"></span> 
+    <input type="number"  class="form-control"  data-ng-model="saat1"><span style="position: absolute; right: 5px;"></span> 
     <span class="input-group-text text-primary">1. DK.: </span>
-    <input type="number"  class="form-control" data-ng-init="dk1=4" data-ng-model="dk1"><span style="position: absolute; right: 5px;"></span> <br>
+    <input type="number"  class="form-control"  data-ng-model="dk1"><span style="position: absolute; right: 5px;"></span> <br>
   </div>
   <div class="input-group mb-3" style="position: relative;">
     <span class="input-group-text text-primary">2. GÜN: </span>
@@ -610,6 +611,108 @@ $scope.zaman=new Date();
 //getSeconds();       // seconds (0-59)
 //getTime();          // milliseconds since 1970
           
+  $scope.gun1=$scope.zaman.getDate();
+  $scope.saat1= 13;
+  $scope.dk1= 13;
+          
+
+
+  
+
+          if (typeof(Storage) !== "undefined") {
+            if (localStorage.getItem("dklarrrrr")){
+              var myDklar = localStorage.getItem("dklar").split("*");
+              $scope.gun1=Number(myDklar[0]);
+              $scope.saat1=Number(myDklar[1]);
+              $scope.dk1=Number(myDklar[2]);
+              console.log(myDklar);
+              
+            } else {
+            $scope.gun1=$scope.zaman.getDate();
+            $scope.saat1= 13;
+            $scope.dk1= 13;
+            }
+          } else {
+            $scope.gun1=$scope.zaman.getDate();
+            $scope.saat1= 13;
+            $scope.dk1= 13;
+          }
+
+          console.log($scope.gun1);
+
+  
+            // localStorage.setItem("hisseler", "Smith john 143 - fgr dkdm 334 - lms ksl 323");
+            
+            // console.log(myhisseler);
+            // var mylstor = myhisseler.join(" - ");
+            // localStorage.setItem("hisseler2",mylstor);
+           
+
+          
+$scope.dkKaydet = function () {
+      if (typeof(Storage) !== "undefined") {
+            
+              myDklar33 = $scope.gun1 + "*" + $scope.saat1 + "*" + $scope.dk1;
+              console.log(myDklar33);
+              localStorage.setItem("dklar" , myDklar33);
+    } 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //} else {
+  //  $scope.errortext = "The item is already in your shopping list.";
+  //}
+
+/*
+$scope.removeItem = function (x) {
+  //$scope.errortext = "";
+  $scope.products.splice(x, 1);
+
+  if (typeof(Storage) !== "undefined") {
+            //if (localStorage.getItem("hisseler")){
+              //var myhisseler = localStorage.getItem("hisseler").split(" - ");
+              $scope.mylstore = [];
+              for(var i=0; i<$scope.products.length;i++){
+                $scope.mylstore.push($scope.products[i].name + " "+ $scope.products[i].maaliyet + " "+ $scope.products[i].kar + " "+ $scope.products[i].tutar);
+              }
+              $scope.myhisseler3 = $scope.mylstore.join(" - ");
+              localStorage.setItem("hisseler",$scope.myhisseler3);
+  }
+}
+*/
+        //////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           //%X KAR ETMEK İÇİN KAÇTAN SATMAN GEREKLİ?
          $scope.adet=1;
           $scope.maaliyet= 100;
