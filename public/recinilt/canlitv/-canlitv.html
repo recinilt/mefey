@@ -12,7 +12,7 @@
     <div class="post-body entry-content" id="post-body-5415012058894726967" itemprop="description articleBody">
         <div class="HTML5Player">
         <video controls="" autoplay="" preload="metadata" style=" width:100%;  height:100%;" id="HTML5Player"  __idm_id__="980608001">
-        <source src="https://media.duhnet.tv/S2/HLS_LIVE/cnnturknp/playlist.m3u8" type="application/x-mpegURL"></video></div>
+        <source src="videoadresi" type="application/x-mpegURL"></video></div>
         <!-- <source src="videoadresi" type="application/x-mpegURL"></video></div> -->
         <div class="HTML5Player">
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/0.14.2/hls.light.min.js"></script>
@@ -20,7 +20,7 @@
         if(Hls.isSupported()) {
         var video = document.getElementById('HTML5Player');
         var hls = new Hls();
-        hls.loadSource('https://media.duhnet.tv/S2/HLS_LIVE/cnnturknp/playlist.m3u8');
+        hls.loadSource('videoadresi');
         //hls.loadSource('videoadresi');
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED,function() {
