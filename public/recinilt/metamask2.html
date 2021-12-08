@@ -14,7 +14,15 @@
     <button class="ekle">$Fidan Token Ekle</button>
 
     <a href="https://docs.metamask.io/guide/getting-started.html#basic-considerations">docs</a>
+    <br>
 
+    <div>
+      <input type="text" id="adress" placeholder="adres"><br>
+      <input type="text" id="symbol" placeholder="sembol"><br>
+      <input type="text" id="decimals"  placeholder="decimals"><br>
+      <input type="file" id="imgfile" name="imgfile"  placeholder="resim"><br>
+      <p><button id="yukle" onclick="yukle()">yükle</button></p>
+    </div>
 
 
     <script>
@@ -66,6 +74,41 @@ async function ekleyelim() {
 }
 
 
+///////////////////////////
+
+const tokenAddress = document.getElementById("adress");
+const tokenSymbol = document.getElementById("symbol");
+const tokenDecimals = document.getElementById("decimals");
+const tokenImage = document.getElementById("imgfile"); // 'http://placekitten.com/200/300';
+
+
+function yukle() {
+  
+try {
+  // wasAdded is a boolean. Like any RPC method, an error may be thrown.
+  const wasAdded = await ethereum.request({
+    method: 'wallet_watchAsset',
+    params: {
+      type: 'ERC20', // Initially only supports ERC20, but eventually more!
+      options: {
+        address: tokenAddress.value, // The address that the token is at.
+        symbol: tokenSymbol.value, // A ticker symbol or shorthand, up to 5 chars.
+        decimals: tokenDecimals.value, // The number of decimals in the token
+        image: tokenImage.files[0], // A string url of the token logo
+      },
+    },
+  });
+
+  if (wasAdded) {
+    console.log('Thanks for your interest!');
+  } else {
+    console.log('Your loss!');
+  }
+} catch (error) {
+  console.log(error);
+}
+  
+};
 
     </script>
 </body>
