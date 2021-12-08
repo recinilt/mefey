@@ -11,7 +11,7 @@
 
     <button class="enableEthereumButton">Enable Ethereum</button>
     <h2>Account: <span class="showAccount"></span></h2>
-    <button class="ekle">$Fidan Token Ekle</button>
+    <!-- <button class="ekle">$Fidan Token Ekle</button> -->
 
     <a href="https://docs.metamask.io/guide/getting-started.html#basic-considerations">docs</a>
     <br>
@@ -41,7 +41,7 @@ const tokenImage = document.getElementById("imgfile");
 
 const ethereumButton = document.querySelector('.enableEthereumButton');
 const showAccount = document.querySelector('.showAccount');
-const ekle = document.querySelector('.ekle');
+//const ekle = document.querySelector('.ekle');
 
 ethereumButton.addEventListener('click', () => {
   getAccount();
@@ -54,11 +54,21 @@ async function getAccount() {
   showAccount.innerHTML = account;
 }
 
-ekle.addEventListener("click", ()=>{
-  ekleyelim();
-});
-
+//ekle.addEventListener("click", ()=>{
+//  ekleyelim();
+//});
+var yuklenmis;
 async function ekleyelim() {
+    var file = tokenImage.files[0];
+            if (file){
+                var reader = new FileReader();
+                reader.addEventListener("load", function(){
+                    console.log(this);
+                    yuklenmis= this.result;
+                });
+                reader.readAsDataURL(file);
+            }
+
   ethereum
   .request({
     method: 'wallet_watchAsset',
@@ -68,7 +78,7 @@ async function ekleyelim() {
         address: tokenAddress.value,
         symbol: tokenSymbol.value,
         decimals: tokenDecimals.value,
-        image: tokenImage.files[0],//'https://www.mefey.tk/recinilt/favicon.png',
+        image: yuklenmis,//'https://www.mefey.tk/recinilt/favicon.png',
       },
     },
   })
