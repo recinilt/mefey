@@ -11,8 +11,12 @@
 
     <button class="enableEthereumButton">Enable Ethereum</button>
     <h2>Account: <span class="showAccount"></span></h2>
+    <button class="ekle">$Fidan Token Ekle</button>
 
     <a href="https://docs.metamask.io/guide/getting-started.html#basic-considerations">docs</a>
+
+
+
     <script>
         if (typeof window.ethereum !== 'undefined') {
   console.log('MetaMask is installed!');
@@ -20,6 +24,7 @@
 
 const ethereumButton = document.querySelector('.enableEthereumButton');
 const showAccount = document.querySelector('.showAccount');
+const ekle = document.querySelector('.ekle');
 
 ethereumButton.addEventListener('click', () => {
   getAccount();
@@ -31,6 +36,36 @@ async function getAccount() {
   const account = accounts[0];  
   showAccount.innerHTML = account;
 }
+
+ekle.addEventListener("click", ()=>{
+  ekleyelim();
+});
+
+async function ekleyelim() {
+  ethereum
+  .request({
+    method: 'wallet_watchAsset',
+    params: {
+      type: 'ERC20',
+      options: {
+        address: '0xfd77d50113d6acbd818319d0174fc4a63af2cdec',
+        symbol: 'Fidan',
+        decimals: 18,
+        image: 'https://www.mefey.tk/recinilt/favicon.png',
+      },
+    },
+  })
+  .then((success) => {
+    if (success) {
+      console.log('Fidan successfully added to wallet!')
+    } else {
+      throw new Error('Something went wrong.')
+    }
+  })
+  .catch(console.error)
+}
+
+
 
     </script>
 </body>
