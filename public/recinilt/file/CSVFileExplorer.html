@@ -20,7 +20,8 @@
         var mytext = document.getElementById("mytext");
         var sutun = document.getElementById("sutun");
         var dosya ="";
-        function yukle(){
+
+        function degisim() {
             var file = inpFile.files[0];
             if (file){
                 var reader = new FileReader();
@@ -33,6 +34,12 @@
                 }
                 reader.readAsText(file);
             };
+        }
+
+        inpFile.addEventListener("change", degisim);
+
+        function yukle(){
+            
             var liste = dosya.split("\n");
             console.log(liste[0]);
 
