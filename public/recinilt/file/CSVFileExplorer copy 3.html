@@ -8,28 +8,24 @@
 <body>
     <p>CSV File Explorer</p>
     <input type="file" id="inpFile" name="inpFile"><br>
-    <input type="text" name="sutun" id="sutun1" placeholder="Kaçıncı sütun?"> <label for="sutun1"> & </label>
-    <input type="text" name="sutun" id="sutun2" placeholder="Kaçıncı sütun?"><br>
+    <input type="text" name="sutun" id="sutun" placeholder="Kaçıncı sütun?"><br>
     <button id="yukle" onclick="yukle()">yükle</button>
     <div>
         <p id="secenekler"></p>
-        <p> <span id="mytext1"></span>  <span  id="mytext2"></span></p>
+        <p id="mytext"></p>
         
     </div>
 
     <script>
         var inpFile = document.getElementById("inpFile");
-        var mytext1 = document.getElementById("mytext1");
-        var mytext2 = document.getElementById("mytext2");
-        var sutun1 = document.getElementById("sutun1");
-        var sutun2 = document.getElementById("sutun2");
+        var mytext = document.getElementById("mytext");
+        var sutun = document.getElementById("sutun");
         var secenekler=document.getElementById("secenekler");
         var dosya ="";
 
         function degisim() {
             secenekler.innerHTML="";
-            mytext1.innerHTML="";
-            mytext2.innerHTML="";
+            mytext.innerHTML="";
             var file = inpFile.files[0];
             if (file){
                 var reader = new FileReader();
@@ -90,15 +86,11 @@
                     domm = domm + "<p>" + oo[o] + "</p>"
                 };
                 */
-                domm = domm + "<p>" + oo[sutun1.value - 1] + "   &   " + oo[sutun2.value - 1] + "</p>"
+                domm = domm + "<p>" + oo[sutun.value - 1] + "</p>"
                 domm=domm + "<hr>";
                 
             };
-            mytext1.innerHTML=domm;
-
-
-
-
+            mytext.innerHTML=domm;
         };
         
         
