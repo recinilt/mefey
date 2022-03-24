@@ -76,6 +76,20 @@
 
 <!--  -->
 
+
+      
+<!-- 
+      
+<br>
+
+
+<iframe id="SanalPiyasalar" src="https://www.ücretsiz.com/Kripto-Para-Cevirici.html" style="width:300px; height:545px;" frameborder="0"></iframe>
+<hr>
+     
+ -->
+
+
+
 <br><br><br>
 <!-- <p><a href="https://yesstyle93sc-www.chocaholicmanatee.com/#/Login?code=8RCQN5&tab=2">YesStyle</a></p> -->
 
@@ -87,6 +101,43 @@
   <h2>Account: <span class="showAccount"></span></h2>
 </p>
 <hr>
+
+
+
+<!--  -->
+
+<h6 class="baslik"><span class="material-icons">face</span> %X KARLA BİRLEŞİK ÇARPAN</h6>
+<div class="col-lg-4">
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">Anapara: </span>
+    <input type="number"  class="form-control"  data-ng-model="anapara4"><span style="position: absolute; right: 5px;"> TL</span><br>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text text-primary">Kazanç oranı: %</span>
+    <input type="number"  class="form-control"  data-ng-model="oran4"><br>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text text-primary">Kaç adet: </span>
+    <input type="number"  class="form-control"  data-ng-model="adet4"><br>
+  </div>
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">Adetlik kesinti: </span>
+    <input type="number"  class="form-control"  data-ng-model="kesinti4"><span style="position: absolute; right: 5px;"> TL</span><br>
+  </div>
+</div>
+
+
+
+<br>
+Sonuç: <span style="color: red;">{{sonuc4()}} </span>  TL<br>
+Kar yüzdesi: %<span style="color: blue;">{{(((sonuc4()-anapara4)/anapara4)*100).toFixed(0)}}</span><br>
+Kaç kat kazanç: <span style="color: green;">{{(((sonuc4()-anapara4)/anapara4)).toFixed(8)}}</span>
+<hr>
+
+<!--  -->
+<!--  -->
+
+
 
 <h6 class="baslik"><span class="material-icons">
   currency_exchange
@@ -111,6 +162,12 @@
 
 
 <hr>
+
+<!--  -->
+
+
+
+
 
 <!--  -->
 <h6 class="baslik"><span class="material-icons">
@@ -366,39 +423,6 @@ Yukarıya %: <span style="color: blue;">{{(gridAltOran*gridAltAdet).toFixed(2)}}
 
 
 
-
-
-
-<!--  -->
-
-<h6 class="baslik"><span class="material-icons">face</span> %X KARLA BİRLEŞİK ÇARPAN</h6>
-<div class="col-lg-4">
-  <div class="input-group mb-3" style="position: relative;">
-    <span class="input-group-text text-primary">Anapara: </span>
-    <input type="number"  class="form-control"  data-ng-model="anapara4"><span style="position: absolute; right: 5px;"> TL</span><br>
-  </div>
-  <div class="input-group mb-3">
-    <span class="input-group-text text-primary">Kazanç oranı: %</span>
-    <input type="number"  class="form-control"  data-ng-model="oran4"><br>
-  </div>
-  <div class="input-group mb-3">
-    <span class="input-group-text text-primary">Kaç adet: </span>
-    <input type="number"  class="form-control"  data-ng-model="adet4"><br>
-  </div>
-  <div class="input-group mb-3" style="position: relative;">
-    <span class="input-group-text text-primary">Adetlik kesinti: </span>
-    <input type="number"  class="form-control"  data-ng-model="kesinti4"><span style="position: absolute; right: 5px;"> TL</span><br>
-  </div>
-</div>
-
-
-
-<br>
-Sonuç: <span style="color: red;">{{sonuc4()}} </span>  TL<br>
-Kar yüzdesi: %<span style="color: blue;">{{(((sonuc4()-anapara4)/anapara4)*100).toFixed(0)}}</span><br>
-Kaç kat kazanç: <span style="color: green;">{{(((sonuc4()-anapara4)/anapara4)).toFixed(8)}}</span>
-<hr>
-
 <!--  -->
 
 
@@ -587,14 +611,6 @@ Kaç kat kazanç: <span style="color: green;">{{(((sonuc4()-anapara4)/anapara4))
 
       
 
-      
-      
-      <br>
-
-
-      <iframe id="SanalPiyasalar" src="https://www.ücretsiz.com/Kripto-Para-Cevirici.html" style="width:300px; height:545px;" frameborder="0"></iframe>
-      <hr>
-            
       
 
       
@@ -940,7 +956,7 @@ $scope.removeItem = function (x) {
           
 
         //%X KARLA BİRLEŞİK ÇARPAN:
-        $scope.anapara4=10000;
+        $scope.anapara4=100000;
         $scope.adet4=200;
         $scope.oran4=0.2;
         $scope.kesinti4=0;
