@@ -100,6 +100,72 @@
   <div id="hn-desi-widget"></div><script src="https://e.hesaplama.net/desi.do?bgcolor=FFFFFF&tcolor=000000&hcolor=3B8CEE&rcolor=EEEEEE&tsize=n&tfamily=n&btype=s&bsize=1px&bcolor=EEEEEE" type="text/javascript"></script>
 </p>
 <hr> -->
+
+
+<h6 class="baslik"><span class="material-icons">
+  android
+  </span>OVERSIZE Hesaplaması</h6>   
+<div class="col-lg-4">
+  
+  
+  
+    <span class="input-group-text text-primary">Product DIMENSIONS </span>
+    <input type="text"  class="form-control" data-ng-init="myDimensions='17.56 x 8.54 x 1.69 inches'" data-ng-model="myDimensions" id="myd1"> <button onclick="myDimensParse()">HESAPLA</button><br>
+    <span class="input-group-text text-primary" id="myd2"> =</span>
+    <span class="input-group-text text-primary" id="myd3">= </span>
+    
+  
+  
+  <script>
+    function myDimensParse() {
+            var myText1=document.getElementById("myd1").value;
+            const numbers = myText1.match(/\d+\.\d+|\d+/g);
+            const words = myText1.match(/\b\w+\b/g);
+      
+            console.log(`Numbers: ${numbers}`);
+            console.log(`Words: ${words}`);
+      
+            var nF=[];
+            nF.push(Number(numbers[0]));
+            nF.push(Number(numbers[1]));
+            nF.push(Number(numbers[2]));
+            nF.sort((a, b) => a - b);
+            console.log(nF);
+
+            if(myText1.includes("cm")){
+                console.log("max 45-34-26----40x30x23cm olmalı.")
+                document.getElementById("myd2").innerHTML="max 45-34-26----40x30x23cm altında olmalı.";
+                if(nF[2]>40 || nF[1]>30 || nF[0]>23){
+                    document.getElementById("myd3").innerHTML=nF[2]+"-"+nF[1]+"-"+nF[0]+"= OVERSIZE";
+                } else if((nF[2]*0.4*nF[1]*0.4*nF[0]*0.4)/139 >50){
+                    document.getElementById("myd3").innerHTML=nF[2]+"-"+nF[1]+"-"+nF[0]+"= OVERSIZE";
+                } else {
+                    document.getElementById("myd3").innerHTML=nF[2]+"-"+nF[1]+"-"+nF[0]+"= Standart Size";
+                }
+
+            } else if(myText1.includes("in") || myText1.includes('"')){
+                console.log("max 17x13x10 inch olmalı")
+                document.getElementById("myd2").innerHTML="max 17x13x10 inch altında olmalı";
+                if(nF[2]>17 || nF[1]>13 || nF[0]>10){
+                    document.getElementById("myd3").innerHTML=nF[2]+"-"+nF[1]+"-"+nF[0]+"= OVERSIZE";
+                } else if((nF[2]*nF[1]*nF[0])/139 >50){
+                    document.getElementById("myd3").innerHTML=nF[2]+"-"+nF[1]+"-"+nF[0]+"= OVERSIZE";
+                } else {
+                    document.getElementById("myd3").innerHTML=nF[2]+"-"+nF[1]+"-"+nF[0]+"= Standart Size";
+                }
+
+            } 
+            
+            //document.getElementById("myText").innerHTML = myText;
+          }
+  </script>
+</div>
+<p></p>
+<hr>
+
+
+
+
 <h6 class="baslik"><span class="material-icons">
   verified
   </span>PDDD/DD Hisse Değerleme:</h6>
@@ -117,6 +183,7 @@
     <input type="number"  class="form-control" data-ng-init="simdikiFiyat=14.94" data-ng-model="simdikiFiyat"><span style="position: absolute; right: 5px;">TL</span> <br>
   </div>
 </div>
+
 
 
 <br>
