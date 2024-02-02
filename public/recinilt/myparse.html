@@ -31,7 +31,7 @@
 
             if(myText1.includes("cm")){
                 console.log("max 45-34-26----40x30x23cm olmalı.")
-                document.getElementById("sonuc").innerHTML="max 45-34-26----40x30x23cm olmalı.";
+                document.getElementById("sonuc").innerHTML="max 45-34-26----40x30x23cm altında olmalı.";
                 if(nF[2]>40 || nF[1]>30 || nF[0]>23){
                     document.getElementById("sonuc2").innerHTML=nF[2]+"-"+nF[1]+"-"+nF[0]+"= OVERSIZE";
                 } else if((nF[2]*0.4*nF[1]*0.4*nF[0]*0.4)/139 >50){
@@ -42,7 +42,7 @@
 
             } else if(myText1.includes("in") || myText1.includes('"')){
                 console.log("max 17x13x10 inch olmalı")
-                document.getElementById("sonuc").innerHTML="max 17x13x10 inch olmalı";
+                document.getElementById("sonuc").innerHTML="max 17x13x10 inch altında olmalı";
                 if(nF[2]>17 || nF[1]>13 || nF[0]>10){
                     document.getElementById("sonuc2").innerHTML=nF[2]+"-"+nF[1]+"-"+nF[0]+"= OVERSIZE";
                 } else if((nF[2]*nF[1]*nF[0])/139 >50){
