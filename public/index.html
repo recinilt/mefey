@@ -199,6 +199,46 @@ PDDD/DD <span style="color: red;">{{(PDDD/defterDegeri).toFixed(2)}}</span><br>
 <a href="https://www.isyatirim.com.tr/tr-tr/analiz/hisse/Sayfalar/takip-listesi.aspx#page-1" target="_blank">Hisse Önerileri</a>
 
 
+<hr>
+
+<h6 class="baslik"><span class="material-icons">
+  android
+  </span>Multi Highlighter</h6>   
+<div class="col-lg-4">
+  
+  
+
+  <p><input type="text" id="aranacakKelimeler" placeholder="Virgülle, aranacak kelimeleri girin"></p>
+  <p><textarea id="paragraf" rows="10" placeholder="Paragrafı buraya yazın"></textarea></p>
+  <p id="hedefParagraf">Bu bir örnek paragraf içeriğidir. İçinde bazı kelimeler var ve bazıları yok.</p>
+  <button onclick="ara()">Ara</button>
+
+  <script>
+    function ara() {
+      // Aranacak kelimeleri alın
+    const aranacakKelimelerInput = document.getElementById("aranacakKelimeler");
+    const aranacakKelimeler = aranacakKelimelerInput.value.split(",").map(kelime => kelime.trim());
+
+    // Paragrafı alın
+    const hedefParagraf = document.getElementById("hedefParagraf");
+    const paragraf = document.getElementById("paragraf").value;
+    
+    hedefParagraf.innerHTML = paragraf;
+    // Her kelimeyi kontrol edin ve renk değiştirin
+    aranacakKelimeler.forEach(kelime => {
+        const regex = new RegExp(`\\b${kelime}\\b`, "gi");
+        
+        hedefParagraf.innerHTML = hedefParagraf.innerHTML.replace(regex, '<span style="color: red;">'+kelime+'</span>');
+    });
+    };
+    
+</script>
+
+
+
+
+</div>
+<p></p>
 
 
 
