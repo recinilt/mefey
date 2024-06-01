@@ -212,7 +212,9 @@ PDDD/DD <span style="color: red;">{{(PDDD/defterDegeri).toFixed(2)}}</span><br>
   <p><textarea id="aranacakKelimeler2" rows="6" placeholder="Mikabottaki io daki listeyi girin"></textarea></p>
   <!-- <p><input type="text" id="aranacakKelimeler" placeholder="Virgülle, aranacak kelimeleri girin"></p> -->
   <p><textarea id="paragraf2" rows="10" placeholder="Grupları buraya yapıştırın."></textarea></p>
+  <p id="kelimelerim"></p>
   <p id="hedefParagraf2">Bu bir örnek paragraf içeriğidir. İçinde bazı kelimeler var ve bazıları yok.</p>
+  
   <button onclick="ara2()">Ara</button>
 
 
@@ -251,6 +253,7 @@ while ((m = regex2.exec(str)) !== null) {
 var kelimelerim2=kelimelerim.join(",");
 //let mm=regex.exec(str);
 console.log(kelimelerim2);
+document.getElementById("kelimelerim").innerHTML="Aranacak kelimeler: " + kelimelerim2;
 
 
 
