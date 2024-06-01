@@ -220,6 +220,39 @@ PDDD/DD <span style="color: red;">{{(PDDD/defterDegeri).toFixed(2)}}</span><br>
 
 
   <script>
+
+const mygrr = `<p>Aİ: agix,fet,rlc,nmr,iq,ctxc,wld,tao,rndr</p>
+
+<p>ÇİN: neo,vet,ach,ont,iost,qtum,eos,wing,sui,sand,lever,lina,key,fil,flm,high,mdt,cocos,cfx,iris,phb,trx</p>
+
+<p>DCOMP: rndr,icp,tao,iotx,hot,tfuel,theta,flux</p>
+
+<p>DEFİ: dodo,unfi,wing,flm,dego,bel,yfi,yfii,crv,uni,cake,sushi,aave,rune,zrx,dydx,tru,burger,jto,jup,ray</p>
+
+<p>DEX: uni,cake,rune,cake,crv,1inch,lrc,zrx,sushi,knc,mdx,bsw,srm,dodo,perp,ray,idex,burger,dydx,jup</p>
+
+<p>ETH: uni,sushi,crv,ens,arb,matic,strk,op,ethfi,etc</p>
+
+<p>FAN: lazıo,alpıne,santos,psg,porto,bar,cıty,acm,juv,atm,og,asr,juv</p>
+
+<p>FİLE: fil,ar,bttc,ocean,sc,hot,flux,storj,data</p>
+
+<p>GAME: enj,axs,sand,mana,slp,gala,tlm,alice,mbox,pixel</p>
+
+<p>L1: btc,eth,ada,sol,dot,avax,algo,xtz,atom,eos,bch,etc,near,one,ftm,hbar,ksm,egld,zil,rune,sei,apt,inj</p>
+
+<p>L2: op,arb,matic,imx,strk,manta,skl</p>
+
+<p>MEME: doge,shib,pepe,bonk,floki,meme,bome,wif</p>
+
+<p>RST: jto,ethfi</p>
+
+<p>RWA: om,pendle,polyx,dusk,tru,hifi,lto,lina,lsk</p>
+
+<p>SOL: jup,wif,bonk,jup,jto,pyth,bome,fida,w</p>
+
+<p>WEB3: dot,link,fil,icp,theta,btt,hot,grt,bat,lrc,ar,stx,ens,glm,lpt,kda,mask,hive,ont,storj,audio,sc,flux,zen,rndr,cvc,reef,band</p>`
+//document.getElementById("hedefParagraf2").innerHTML=mygrr;
     function ara2() {
 /*
       const paragraf = document.getElementById("paragraf2");
@@ -265,7 +298,12 @@ document.getElementById("kelimelerim").innerHTML="Aranacak kelimeler: " + kelime
     const hedefParagraf = document.getElementById("hedefParagraf2");
     const paragraf = document.getElementById("paragraf2").value;
     
-    hedefParagraf.innerHTML = paragraf;
+    if (document.getElementById("hedefParagraf2").innerHTML==="") {
+      document.getElementById("hedefParagraf2").innerHTML=mygrr;
+    } else {
+      document.getElementById("hedefParagraf2").innerHTML = paragraf;
+    };
+    
 
     let bulunanlar=[];
     // Her kelimeyi kontrol edin ve renk değiştirin
