@@ -310,7 +310,7 @@ PDDD/DD <span style="color: red;">{{(PDDD/defterDegeri).toFixed(2)}}</span><br>
       aranacakKelimeler.forEach(kelime => {
           const regex = new RegExp(`\\b${kelime}\\b`, "gi");
           
-          hedefParagraf.innerHTML = hedefParagraf.innerHTML.replace(regex, '<span style="color: red;">'+kelime+'</span>');
+          hedefParagraf.innerHTML = hedefParagraf.innerHTML.replace(kelime, '<span style="color: red;">'+kelime+'</span>');
   
           let b;
           
