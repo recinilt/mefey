@@ -199,6 +199,115 @@ PDDD/DD <span style="color: red;">{{(PDDD/defterDegeri).toFixed(2)}}</span><br>
 <a href="https://www.isyatirim.com.tr/tr-tr/analiz/hisse/Sayfalar/takip-listesi.aspx#page-1" target="_blank">Hisse Önerileri</a>
 
 
+
+<hr>
+
+<h6 class="baslik"><span class="material-icons">
+  android
+  </span>Mikabot Yardımcısı</h6>   
+<div class="col-lg-4">
+  
+  
+
+  <p><textarea id="aranacakKelimeler2" rows="6" placeholder="Mikabottaki io daki listeyi girin"></textarea></p>
+  <!-- <p><input type="text" id="aranacakKelimeler" placeholder="Virgülle, aranacak kelimeleri girin"></p> -->
+  <p><textarea id="paragraf2" rows="10" placeholder="Grupları buraya yapıştırın."></textarea></p>
+  <p id="hedefParagraf2">Bu bir örnek paragraf içeriğidir. İçinde bazı kelimeler var ve bazıları yok.</p>
+  <button onclick="ara2()">Ara</button>
+
+
+
+  <script>
+    function ara2() {
+/*
+      const paragraf = document.getElementById("paragraf2");
+    const hedefParagraf = document.getElementById("hedefParagraf2");
+    hedefParagraf.innerHTML = paragraf;
+      const regex = new RegExp('[A-Z]{2,} ', 'gm')
+      hedefParagraf.innerHTML = hedefParagraf.innerHTML.replace(regex, '<span style="color: red;">$&</span>');
+*/
+    
+
+      const regex2 = /[A-Z]{2,} /gm;
+
+// Alternative syntax using RegExp constructor
+// const regex = new RegExp('[A-Z]{2,} ', 'gm')
+
+const str = document.getElementById("aranacakKelimeler2").value;
+let m;
+let kelimelerim=[];
+while ((m = regex2.exec(str)) !== null) {
+    // This is necessary to avoid infinite loops with zero-width matches
+    if (m.index === regex2.lastIndex) {
+        regex2.lastIndex++;
+    }
+    
+    // The result can be accessed through the `m`-variable.
+    m.forEach((match, groupIndex) => {
+        console.log(`Found match, group ${groupIndex}: ${match}`);
+        kelimelerim.push(match.trim());
+    });
+}
+var kelimelerim2=kelimelerim.join(",");
+//let mm=regex.exec(str);
+console.log(kelimelerim2);
+
+
+
+//////////////////////
+
+    const aranacakKelimeler = kelimelerim;
+
+    // Paragrafı alın
+    const hedefParagraf = document.getElementById("hedefParagraf2");
+    const paragraf = document.getElementById("paragraf2").value;
+    
+    hedefParagraf.innerHTML = paragraf;
+    // Her kelimeyi kontrol edin ve renk değiştirin
+    aranacakKelimeler.forEach(kelime => {
+        const regex = new RegExp(`\\b${kelime}\\b`, "gi");
+        
+        hedefParagraf.innerHTML = hedefParagraf.innerHTML.replace(regex, '<span style="color: red;">'+kelime+'</span>');
+    });
+    ////////////
+
+
+
+};
+
+      
+    
+      /*
+      // Aranacak kelimeleri alın
+    const aranacakKelimelerInput = document.getElementById("aranacakKelimeler2");
+    const aranacakKelimeler = aranacakKelimelerInput.value.split(" ").map(kelime => kelime.trim());
+
+    // Paragrafı alın
+    const hedefParagraf = document.getElementById("hedefParagraf2");
+    const paragraf = document.getElementById("paragraf2").value;
+    
+    hedefParagraf.innerHTML = paragraf;
+    // Her kelimeyi kontrol edin ve renk değiştirin
+    aranacakKelimeler.forEach(kelime => {
+      //const regex = /[A-Z]{2,}/gm;
+      const regex = new RegExp('[A-Z]{2,} ', 'gm')
+        //const regex = new RegExp(`\\b${kelime}\\b`, "gi");
+        
+        hedefParagraf.innerHTML = hedefParagraf.innerHTML.replace(regex, '<span style="color: red;">'+kelime+'</span>');
+    });
+    };
+    */
+</script>
+  
+
+
+
+
+</div>
+<p></p>
+
+
+
 <hr>
 
 <h6 class="baslik"><span class="material-icons">
