@@ -214,7 +214,7 @@ PDDD/DD <span style="color: red;">{{(PDDD/defterDegeri).toFixed(2)}}</span><br>
   <p><textarea id="paragraf2" rows="10" placeholder="Grupları buraya yapıştırın."></textarea></p>
   <p id="kelimelerim"></p>
   <p id="hedefParagraf2">Bu bir örnek paragraf içeriğidir. İçinde bazı kelimeler var ve bazıları yok.</p>
-  
+  <p id="bulunanlar2"></p>
   <button onclick="ara2()">Ara</button>
 
 
@@ -249,7 +249,7 @@ while ((m = regex2.exec(str)) !== null) {
         console.log(`Found match, group ${groupIndex}: ${match}`);
         kelimelerim.push(match.trim());
     });
-}
+};
 var kelimelerim2=kelimelerim.join(",");
 //let mm=regex.exec(str);
 console.log(kelimelerim2);
@@ -266,15 +266,35 @@ document.getElementById("kelimelerim").innerHTML="Aranacak kelimeler: " + kelime
     const paragraf = document.getElementById("paragraf2").value;
     
     hedefParagraf.innerHTML = paragraf;
+
+    let bulunanlar=[];
     // Her kelimeyi kontrol edin ve renk değiştirin
     aranacakKelimeler.forEach(kelime => {
         const regex = new RegExp(`\\b${kelime}\\b`, "gi");
         
         hedefParagraf.innerHTML = hedefParagraf.innerHTML.replace(regex, '<span style="color: red;">'+kelime+'</span>');
+
+        let b;
+        
+while ((b = regex.exec(hedefParagraf.innerHTML)) !== null) {
+    // This is necessary to avoid infinite loops with zero-width matches
+    if (b.index === regex.lastIndex) {
+        regex.lastIndex++;
+    }
+    
+    // The result can be accessed through the `m`-variable.
+    b.forEach((match, groupIndex) => {
+        console.log(`Found match, group ${groupIndex}: ${match}`);
+        bulunanlar.push(match.trim());
     });
+}
+
+    });
+
+    document.getElementById("bulunanlar2").innerHTML="Bulunanlar: "+bulunanlar.join(",");
     ////////////
 
-
+    
 
 };
 
@@ -324,6 +344,7 @@ document.getElementById("kelimelerim").innerHTML="Aranacak kelimeler: " + kelime
   <!-- <p><input type="text" id="aranacakKelimeler" placeholder="Virgülle, aranacak kelimeleri girin"></p> -->
   <p><textarea id="paragraf" rows="10" placeholder="Paragrafı buraya yazın"></textarea></p>
   <p id="hedefParagraf">Bu bir örnek paragraf içeriğidir. İçinde bazı kelimeler var ve bazıları yok.</p>
+  <p id="bulunanlar"></p>
   <button onclick="ara()">Ara</button>
 
   <script>
@@ -337,12 +358,39 @@ document.getElementById("kelimelerim").innerHTML="Aranacak kelimeler: " + kelime
     const paragraf = document.getElementById("paragraf").value;
     
     hedefParagraf.innerHTML = paragraf;
+
+    let bulunanlar=[];
     // Her kelimeyi kontrol edin ve renk değiştirin
     aranacakKelimeler.forEach(kelime => {
         const regex = new RegExp(`\\b${kelime}\\b`, "gi");
         
         hedefParagraf.innerHTML = hedefParagraf.innerHTML.replace(regex, '<span style="color: red;">'+kelime+'</span>');
+
+
+        let b;
+      
+        /////
+while ((b = regex.exec(hedefParagraf.innerHTML)) !== null) {
+    // This is necessary to avoid infinite loops with zero-width matches
+    if (b.index === regex.lastIndex) {
+        regex.lastIndex++;
+    }
+    
+    // The result can be accessed through the `m`-variable.
+    b.forEach((match, groupIndex) => {
+        console.log(`Found match, group ${groupIndex}: ${match}`);
+        bulunanlar.push(match.trim());
     });
+}
+/////
+
+
+
+
+    });
+
+    document.getElementById("bulunanlar").innerHTML="Bulunanlar: "+bulunanlar.join(",");
+
     };
     
 </script>
