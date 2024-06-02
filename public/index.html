@@ -202,6 +202,49 @@ PDDD/DD <span style="color: red;">{{(PDDD/defterDegeri).toFixed(2)}}</span><br>
 
 <hr>
 
+
+
+
+<h6 class="baslik"><span class="material-icons">
+  verified
+  </span>Coin Piyasa Değeri:</h6>
+<div class="col-lg-4">
+  <div class="input-group mb-3" style="position: relative;">
+    <p>Piyasa Değeri = Bireysel Coin Fiyat x Toplam Dolaşımdaki Arz</p>
+    <p>Örneğin, Bitcoin’in piyasa değerini hesaplayalım. Nisan 2021 itibariyle, tek bir Bitcoin’in fiyatı 55,165 dolar ve toplam dolaşımdaki arz 18,686,162 BTC’dir. Bu bilgileri kullanarak Bitcoin’in piyasa değerini hesaplayabiliriz:</p>
+    <p>Piyasadaki tüm coinlerin toplam değeri, yani market cap: Haziran 2024: 82 Trilyon Dolar</p>
+    <p>BTC Piyasa Değeri = 55 x 18.000.000 = 1.03 trilyon dolar.</p>
+    <p>Örnek doldurulmuş olan, AR coinin Haziran 2024 verileridir.</p>
+    <span class="input-group-text text-primary">Dolaşımdaki Arz:</span>
+    <input type="number"  class="form-control" data-ng-init="CPDDD=65454185" data-ng-model="CPDDD"><span style="position: absolute; right: 5px;"></span> <br>
+  </div>
+  
+  <div class="input-group mb-3" style="position: relative;">
+    <span class="input-group-text text-primary">1 LOT FİYATI: </span>
+    <input type="number"  class="form-control" data-ng-init="csimdikiFiyat=43.71" data-ng-model="csimdikiFiyat"><span style="position: absolute; right: 5px;">TL</span> <br>
+  </div>
+</div>
+
+<br>
+Piyasa Değeri= <span style="color: red;">{{(CPDDD*csimdikiFiyat).toFixed(0)}}</span><br>
+
+BTC'nin kaç katı? <span style="color:green;">{{((CPDDD*csimdikiFiyat)/1428000000000).toFixed(4)}}</span><br>
+BTC'nin kaçta biri? <span style="color:green;">{{(1428000000000/(CPDDD*csimdikiFiyat)).toFixed(2)}}</span><br>
+
+<a href="https://www.coingecko.com/tr/coins/bitcoin" target="_blank">BTC</a>
+<a href="https://coinmarketcap.com/tr/currencies/bitcoin/" target="_blank">BTC</a>
+<a href="https://coinmarketcap.com/tr/charts/#volume-24h" target="_blank">Piyasa</a>
+
+
+
+
+
+
+
+
+
+<hr>
+
 <h6 class="baslik"><span class="material-icons">
   android
   </span>Mikabot Yardımcısı</h6>   
