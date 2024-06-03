@@ -318,6 +318,10 @@ BTC'nin kaçta biri? <span style="color:green;">{{((cbtc*21000000)/(CPDDD*csimdi
   const str = document.getElementById("aranacakKelimeler2").value;
 
         let myarray4=str.split("\n");
+        console.log(myarray4.length);
+        if (myarray4.length==1) {
+          myarray4=str.split(",");
+        }
         const buyukHarfleBaslayanlar = myarray4.filter(eleman => /^[A-Z]/.test(eleman));
         let mykelimelerim=[];
         for (let index = 0; index < buyukHarfleBaslayanlar.length; index++) {
