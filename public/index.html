@@ -225,7 +225,7 @@ PDDD/DD <span style="color: red;">{{(PDDD/defterDegeri).toFixed(2)}}</span><br>
   </div>
   <div class="input-group mb-3" style="position: relative;">
     <span class="input-group-text text-primary">BTC Kaç Dolar? </span>
-    <input type="number"  class="form-control" data-ng-init="cbtc=68000" data-ng-model="cbtc"><span style="position: absolute; right: 5px;">$</span> <br>
+    <input id="myText5" type="number"  class="form-control" data-ng-init="cbtc=68000" data-ng-model="cbtc"><span style="position: absolute; right: 5px;">$</span> <br>
   </div>
 </div>
 
@@ -239,7 +239,34 @@ BTC'nin kaçta biri? <span style="color:green;">{{((cbtc*21000000)/(CPDDD*csimdi
 <a href="https://coinmarketcap.com/tr/currencies/bitcoin/" target="_blank">BTC</a>
 <a href="https://coinmarketcap.com/tr/charts/#volume-24h" target="_blank">Piyasa</a>
 
+<script>
+  var burl = "https://api.binance.com";
 
+var query = '/api/v1/ticker/24hr';
+    
+query += '?symbol=BTCUSDT';
+
+var url = burl + query;
+    
+var ourRequest = new XMLHttpRequest();
+
+var myText4={"hh":6}
+myText5=0.1
+
+ourRequest.open('GET',url,true);
+ourRequest.onload = function(){
+    console.log(ourRequest.responseText);
+    // String'i object'e dönüştür
+    var obj = JSON.parse(ourRequest.responseText);
+    console.log(obj); // Çıktı: { isim: 'Ahmet', yas: 30 }
+    myText5=obj.lastPrice
+    console.log(myText5)
+    document.getElementById("myText5").value=myText5;
+    
+}
+ourRequest.send();    
+console.log(myText4.hh)
+</script>
 
 
 
