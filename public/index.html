@@ -427,6 +427,33 @@ document.addEventListener('DOMContentLoaded',async function() {
 
 });
 
+function convertTurkishChars(str) {
+    const turkishChars = {
+        'ç': 'c',
+        'ğ': 'g',
+        'ı': 'i',
+        'ö': 'o',
+        'ş': 's',
+        'ü': 'u',
+        'Ç': 'c',
+        'Ğ': 'g',
+        'İ': 'i',
+        'Ö': 'o',
+        'Ş': 's',
+        'Ü': 'u'
+    };
+    return str.replace(/[çğıöşüÇĞİÖŞÜ]/g, char => turkishChars[char]).toLowerCase();
+}
+
+// Örnek kullanım
+const coinNames = ['Axie Infinity', 'Türk Lirası', 'Bitcoin', 'Ethereum', 'Çekirdek'];
+
+coinNames.forEach(name => {
+    const convertedName = convertTurkishChars(name);
+    console.log(convertedName);
+});
+
+
 function sifirla() {
     document.getElementById("coinname").innerHTML="-";
     document.getElementById("coindegeri").innerHTML="-";
@@ -441,6 +468,7 @@ async function getMarketValue() {
     var coinId=document.getElementById("mycoin").value;
     coinId=coinId.replace(/\s+/g, '-');
     coinId=coinId.toLocaleLowerCase();
+    coinId=convertTurkishChars(coinId);
     //var d="lkm".toLocaleLowerCase
     console.log(coinId)
     var mymarketvalue=0;
