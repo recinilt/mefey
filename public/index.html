@@ -335,8 +335,8 @@ console.log(myText4.hh)
           Coin Piyasa Değeri: <span id="coindegeri">-</span><br>
           Bitcoin'in Kaçta Biri: <span id="kactabiribtc"></span> . Kaç x yapsa ulaşır: <span id="xbtc">-</span> <br>
           Ethereum'un Kaçta Biri: <span id="kactabirieth"></span>  . Kaç x yapsa ulaşır: <span id="xeth">-</span> <br>
-          BNB'nin Kaçta Biri: <span id="kactabiribnb"></span>  . Kaç x yapsa ulaşır: <span id="xbnb">-</span><br>
-          <!-- PEPE'nin Kaçta Biri: <span id="kactabiripepe"></span>  . Kaç x yapsa ulaşır: <span id="xpepe">-</span> <br> -->
+          <!-- BNB'nin Kaçta Biri: <span id="kactabiribnb"></span>  . Kaç x yapsa ulaşır: <span id="xbnb">-</span><br> -->
+          PEPE'nin Kaçta Biri: <span id="kactabiripepe"></span>  . Kaç x yapsa ulaşır: <span id="xpepe">-</span> <br>
 
           
       </p>
@@ -357,7 +357,7 @@ console.log(myText4.hh)
         //const fetch = require('node-fetch');
 var btcdegeri = 0;
 var ethdegeri = 0;
-var bnbdegeri=0;
+var pepedegeri=0;
 //var dogedegeri=0;
 //var pepedegeri=0;
 
@@ -399,11 +399,11 @@ document.addEventListener('DOMContentLoaded',async function() {
     };
 
     try {
-        const response = await fetch(`https://api.coingecko.com/api/v3/coins/bnb`);
+        const response = await fetch(`https://api.coingecko.com/api/v3/coins/pepe`);
         const data = await response.json();
         const marketValue = data.market_data.market_cap.usd;
         console.log(`Coin: ${data.name}, Piyasa Değeri: ${marketValue} USD`);
-        bnbdegeri=marketValue;
+        pepedegeri=marketValue;
         document.getElementById("yukleniyor").innerHTML="Yüklendi."
     } catch (error) {
         console.error('Coin piyasası değerini alırken bir hata oluştu:', error);
@@ -508,12 +508,12 @@ function sifirla() {
     document.getElementById("coindegeri").innerHTML="-";
     document.getElementById("kactabiribtc").innerHTML="-";
     document.getElementById("kactabirieth").innerHTML="-";
-    document.getElementById("kactabiribnb").innerHTML="-";
+    document.getElementById("kactabiripepe").innerHTML="-";
     //document.getElementById("kactabiripepe").innerHTML="-";
     //document.getElementById("xcoin").innerHTML="-";
     document.getElementById("xbtc").innerHTML="-";
     document.getElementById("xeth").innerHTML="-";
-    document.getElementById("xbnb").innerHTML="-";
+    document.getElementById("xpepe").innerHTML="-";
     //document.getElementById("xpepe").innerHTML="-";
 };
 
@@ -538,12 +538,12 @@ async function getMarketValue() {
         document.getElementById("coindegeri").innerHTML=mymarketvalue;
         document.getElementById("kactabiribtc").innerHTML=(btcdegeri/mymarketvalue).toFixed(1);
         document.getElementById("kactabirieth").innerHTML=(ethdegeri/mymarketvalue).toFixed(1);
-        document.getElementById("kactabiribnb").innerHTML=(bnbdegeri/mymarketvalue).toFixed(1);
+        document.getElementById("kactabiripepe").innerHTML=(pepedegeri/mymarketvalue).toFixed(1);
         //document.getElementById("kactabiripepe").innerHTML=(pepedegeri/mymarketvalue).toFixed(1);
         //document.getElementById("xcoin").innerHTML="-";
         document.getElementById("xbtc").innerHTML=findPowerOfTwo(btcdegeri/mymarketvalue).toFixed(1);
         document.getElementById("xeth").innerHTML=findPowerOfTwo(ethdegeri/mymarketvalue).toFixed(1);
-        document.getElementById("xbnb").innerHTML=findPowerOfTwo(bnbdegeri/mymarketvalue).toFixed(1);
+        document.getElementById("xpepe").innerHTML=findPowerOfTwo(pepedegeri/mymarketvalue).toFixed(1);
         //document.getElementById("xpepe").innerHTML=findPowerOfTwo(pepedegeri/mymarketvalue);
         document.getElementById("yukleniyor").innerHTML="Yüklendi.";
 
