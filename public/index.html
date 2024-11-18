@@ -275,7 +275,10 @@ Piyasa Değeri= <span style="color: red;">{{(CPDDD*csimdikiFiyat).toFixed(0)}}</
 
 BTC'nin kaç katı? <span style="color:green;">{{((CPDDD*csimdikiFiyat)/(cbtc*21000000)).toFixed(4)}}</span><br>
 BTC'nin kaçta biri? <span style="color:green;">{{((cbtc*21000000)/(CPDDD*csimdikiFiyat)).toFixed(0)}}</span><br>
-
+<!-- Bitcoin'in Kaçta Biri: <span id="kactabiribtc2">{{(isNaN((btcdegeri/(CPDDD*csimdikiFiyat))) ? 0 : (btcdegeri/(CPDDD*csimdikiFiyat))).toFixed(1)}}</span> . Kaç x yapsa ulaşır: <span id="xbtc2">{{findPowerOfTwo(btcdegeri/(CPDDD*csimdikiFiyat)).toFixed(1)}}</span> <br> -->
+<!-- Ethereum'un Kaçta Biri: <span id="kactabirieth2">{{(ethdegeri/(CPDDD*csimdikiFiyat)).toFixed(1)}}</span>  . Kaç x yapsa ulaşır: <span id="xeth2">{{findPowerOfTwo(ethdegeri/(CPDDD*csimdikiFiyat)).toFixed(1)}}</span> <br> -->
+<!-- BNB'nin Kaçta Biri: <span id="kactabiribnb"></span>  . Kaç x yapsa ulaşır: <span id="xbnb">-</span><br> -->
+<!-- PEPE'nin Kaçta Biri: <span id="kactabiripepe2">{{(pepedegeri/(CPDDD*csimdikiFiyat)).toFixed(1)}}</span>  . Kaç x yapsa ulaşır: <span id="xpepe2">{{findPowerOfTwo(pepedegeri/(CPDDD*csimdikiFiyat)).toFixed(1)}}</span> <br> -->
 <a href="https://www.coingecko.com/tr/coins/bitcoin" target="_blank">BTC</a>
 <a href="https://coinmarketcap.com/tr/currencies/bitcoin/" target="_blank">BTC</a>
 <a href="https://coinmarketcap.com/tr/charts/#volume-24h" target="_blank">Piyasa</a>
