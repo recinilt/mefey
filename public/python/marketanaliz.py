@@ -61,11 +61,37 @@ patternSDV = r"✅✅(\w+)"
 patternSDVtek = r"✅ (\w+)"
 patternSDVasagicift = r"🔻🔻(\w+)"
 patternSDVasagitek = r"🔻 (\w+)"
+#patternCiid5m = r'\b(\w+USDT)\s+(\d+,\d+)\s+(\d+,\d+)'
+patternCiid5m = r'\b(\w+USDT)\s+(\d+,\d+)\s+(\d+,\d+)\s+(\d+)\s+(\d+,\d+)'
+patternMA = r'\b(\w+USDT)\s+(\d+,\d+)\s+(\d+,\d+)\s+(\d+)\s+(\d+,\d+)'
+patternMA2 = r'\b(\w+USDT)\s+(\d+,\d+)\s+(\d+,\d+)\s+(\d+)\s+(\d+,\d+)(?:(?=\s15m=>)|(?=\s+Symbol|(?=\s$)))'
 
 
-komutlar=["io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","iof","ssr","marketanaliz","ka","ci s d 5m","acc","grio","dayhigh","p btc","ap","io","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv"]
+komutlar=["io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","iof","ssr","marketanaliz","ka","ci s d 5m","acc","grio","dayhigh","p btc","ap","io","sdv","marketanaliz","marketanaliz","marketanaliz","marketanaliz","marketanaliz","marketanaliz","marketanaliz","marketanaliz","marketanaliz","marketanaliz","marketanaliz","marketanaliz"]
 komutlarSDV=["sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","io","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv"]
 # Eşleşmeleri bul
+
+def parse_textMA(text):
+    # "15m=>" sonrasını kaldır
+    text = text.split("15m=>")[0]
+    # Her satırı ayır
+    lines = text.split('\n')
+    
+    results = []
+    
+    for line in lines:
+        if 'USDT' in line:
+            # Regex ile USDT'li kelimeyi ve boşluklarla ayrılmış ilk dört sayıyı bul
+            matches = re.findall(r'(\b\w*USDT\b).+?(\d+,\d+)\s+(\d+,\d+)\s+(\d+)\s+(\d+,\d+)', line)
+            for match in matches:
+                # Sayılardaki virgülleri noktaya çevir ve float'a dönüştür
+                numbers = [float(num.replace(',', '.')) for num in match[1:]]
+                # Sonuçları listeye ekle
+                results.append([match[0]] + numbers)
+    
+    return results
+
+
 def get_price(symbol):
     try:
         ticker = binanceclient.get_symbol_ticker(symbol=symbol.upper())
@@ -92,7 +118,7 @@ def close_position(coin):
                 quantity=abs(float(position['positionAmt']))
             )
             print(f"Pozisyon kapatıldı: {order}")
-            time.sleep(5)  # 5 saniye bekle
+            time.sleep(3)  # 5 saniye bekle
     
 
 #close_position("pnutusdt")
@@ -148,9 +174,10 @@ def open_position(symbol, leverage, amount):
         )
         print(order)
         
-        time.sleep(5)  # 5 saniye bekle
+        time.sleep(3)  # 5 saniye bekle
     except Exception as e:
         print(f"Error: {e}")
+
 
 
 #sell position
@@ -175,16 +202,18 @@ def sell_position(symbol, leverage, amount):
         )
         print(order)
         
-        time.sleep(5)  # 5 saniye bekle
+        time.sleep(3)  # 5 saniye bekle
     except Exception as e:
         print(f"Error: {e}")
 
 
 #open_position("PNUTUSDT", myleverage, mycost)
 #accliler=[]
-SDVliler=[]
-SDVliler2=[]
-print(f"merhaba {SDVliler}")
+mylonglarCi=[]
+myshortlarCi=[]
+mypozisyonlarCi=[]
+mylonglarMA=[]
+#print(f"merhaba {SDVliler}")
 
 async def main():
     await client.start(phone=phone_number)
@@ -207,102 +236,39 @@ async def main():
 
         #pattern2 = re.compile(r'(\w+USDT)\s+\S+\s+(\S+)\s+(?:\S+\s+){7}(\S+)')    patternSDVasagicift
         # Deseni metin içinde arama------------   Sert Hareket Edenler
-        if event.raw_text.startswith("Sert Hareket Edenler"):
-            matchesSDV = re.findall(patternSDV, event.raw_text)
+        if event.raw_text.startswith("Yapay zeka,"):
 
-            # Bulunan kelimelere "USDT" ekleyerek listeye ekleme
-            coin_listSDV = [match + "USDT" for match in matchesSDV]
-
-            matchesSDV2 = re.findall(patternSDVtek, event.raw_text)
-
-            # Bulunan kelimelere "USDT" ekleyerek listeye ekleme
-            coin_listSDV2 = [match + "USDT" for match in matchesSDV2]
+            #matchesMA = re.findall(patternMA2, event.raw_text)
+            #resultMA = [[match[0], float(match[1].replace(',', '.')), float(match[2].replace(',', '.')), float(match[3]), float(match[4].replace(',', '.'))] for match in matchesMA]
+            #print(resultMA)
+            resultMA=parse_textMA(event.raw_text)
+            longacMA=[]
+            for c in resultMA:
+                if c[0] in mysymbols3:
+                    if c[0] not in longacMA:
+                        longacMA.append(c[0])
+                        print(longacMA)
             
-            matchesSDV3 = re.findall(patternSDVasagicift, event.raw_text)
+            for coin in longacMA:
+                if coin in mylonglarMA:
+                    print(f"{coin} zaten vardı")
+                else:
+                    mylonglarMA.append(coin)
+                    open_position(coin, myleverage, mycost)
+                    print(f"{coin} long açıldı")
+                    await client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
 
-            # Bulunan kelimelere "USDT" ekleyerek listeye ekleme
-            coin_listSDV3 = [match + "USDT" for match in matchesSDV3]
-
-            matchesSDV4 = re.findall(patternSDVasagitek, event.raw_text)
-
-            # Bulunan kelimelere "USDT" ekleyerek listeye ekleme
-            coin_listSDV4 = [match + "USDT" for match in matchesSDV4]
-
-
-
-            combined_list = coin_listSDV + coin_listSDV2
-            combined_list2 = coin_listSDV3 + coin_listSDV4
-            print(combined_list)
-            print(combined_list2)
-
-            #matchesKA = re.findall(patternKA, event.raw_text)
-            #mycanlicoin = re.search(patterncanlicoin, event.raw_text)
-            #canli_coin_count = int(mycanlicoin.group(1))
-            #open_position("OPUSDT", myleverage, mycost)
-            mylonglar=[]
-            myshortlar=[]
-            if 1: #len(combined_list) > 0: 
-                    print(combined_list)
-                    #usdt_listSDV = [match + 'USDT' for match in coin_listSDV]
-                    mySDVlist=[]
-                    for coin in combined_list:
-                        if coin in mysymbols3:
-                            mySDVlist.append(coin)
+            for coin in mylonglarMA:
+                if coin in longacMA:
+                    print(f"{coin} 'e zaten long açılmış.")
+                else:
+                    close_position(coin)
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    mylonglarMA.remove(coin)
+                    await client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
             
-                    for coin in mySDVlist:
-                        if coin in SDVliler:
-                            print(f"{coin} zaten vardı")
-                        else:
-                            SDVliler.append(coin)
-                            open_position(coin, myleverage, mycost)
-                            print(f"{coin} long açıldı")
-                            await client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
-            
-                    for coin in SDVliler:
-                        if coin in mySDVlist:
-                            print(f"{coin} 'e zaten long açılmış.")
-                        else:
-                            close_position(coin)
-                            print(f"{coin} pozisyonu kapatıldı.")
-                            SDVliler.remove(coin)
-                            await client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-                    #print(f"Longlar:{SDVliler}")
-                    mylonglar=SDVliler
-                    #print(mySDVlist)
-
-
-            if 2: #len(combined_list2) > 0: 
-                    print(combined_list2)
-                    #usdt_listSDV = [match + 'USDT' for match in coin_listSDV]
-                    mySDVlist=[]
-                    for coin in combined_list2:
-                        if coin in mysymbols3:
-                            mySDVlist.append(coin)
-            
-                    for coin in mySDVlist:
-                        if coin in SDVliler2:
-                            print(f"{coin} zaten vardı")
-                        else:
-                            SDVliler2.append(coin)
-                            sell_position(coin, myleverage, mycost)
-                            print(f"{coin} short açıldı")
-                            await client.send_message(alert_user, f"{coin}'a SHORT posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
-            
-                    for coin in SDVliler2:
-                        if coin in mySDVlist:
-                            print(f"{coin} 'e zaten short açılmış.")
-                        else:
-                            close_position(coin)
-                            print(f"{coin} pozisyonu kapatıldı.")
-                            SDVliler2.remove(coin)
-                            await client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-                    #print(f"Shortlar:{SDVliler2}")
-                    myshortlar=SDVliler2
-                    #print(mySDVlist)
-            
-            
-            print(f"Shortlar:{myshortlar}")
-            print(f"Longlar:{mylonglar}")
+            #print(f"Shortlar:{myshortlarCi}")
+            print(f"Longlar:{mylonglarMA}")
             
                 
 
@@ -360,9 +326,9 @@ async def main():
     while True:
 
         await client.send_message(target_user, komutlar[rastgele_sayi(0,len(komutlar)-1)])
-        await asyncio.sleep(rastgele_sayi(50,100))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
-        await client.send_message(target_user, komutlarSDV[rastgele_sayi(0,len(komutlarSDV)-1)]) #'sdv')
-        await asyncio.sleep(rastgele_sayi(50,200))
+        await asyncio.sleep(rastgele_sayi(100,200))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
+        await client.send_message(target_user, "marketanaliz") #'sdv')
+        await asyncio.sleep(rastgele_sayi(300,400))
 
 with client:
     client.loop.run_until_complete(main())

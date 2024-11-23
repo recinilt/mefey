@@ -16,7 +16,41 @@ kactanbuyuk=17
 binance_api="PhtkBtWNspyWWUwjQX9rDekZPxVAN6blRvnBUzQsrhlrO4xbvzWvrJCtXircFfPU"
 binance_secret="iAJFQwVXHRVXvA2ffjxb5dxd5nlHEFZjv2yP12FzqUSXxic7mz02rILS54YWOEOH"
 mycost=1
-myleverage=15
+myleverage=11
+komutlar=["io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","iof","ssr","marketanaliz","ka","ci s d 5m","acc","grio","dayhigh","p btc","ap","io","sdv"]
+
+
+def rastgele_sayi(min_deger, max_deger):
+    return random.randint(min_deger, max_deger)
+
+mysent=["sdv","marketanaliz"]
+kacinci=0
+def rastgele_komut():
+    kacinci=rastgele_sayi(0,1)
+    return kacinci
+
+
+
+def parse_textMA(text):
+    # "15m=>" sonrasını kaldır
+    text = text.split("15m=>")[0]
+    # Her satırı ayır
+    lines = text.split('\n')
+    
+    results = []
+    
+    for line in lines:
+        if 'USDT' in line:
+            # Regex ile USDT'li kelimeyi ve boşluklarla ayrılmış ilk dört sayıyı bul
+            matches = re.findall(r'(\b\w*USDT\b).+?(\d+,\d+)\s+(\d+,\d+)\s+(\d+)\s+(\d+,\d+)', line)
+            for match in matches:
+                # Sayılardaki virgülleri noktaya çevir ve float'a dönüştür
+                numbers = [float(num.replace(',', '.')) for num in match[1:]]
+                # Sonuçları listeye ekle
+                results.append([match[0]] + numbers)
+    
+    return results
+
 #binance future listesi
 binanceclient = Client(binance_api, binance_secret)
 exchange_info = binanceclient.futures_exchange_info()
@@ -45,26 +79,43 @@ def check_future_eligibility(symbol):
 # Telegram Client'ı oluşturun
 client = TelegramClient('session_name', api_id, api_hash)
 
-def rastgele_sayi(min_deger, max_deger):
-    return random.randint(min_deger, max_deger)
 
 pattern = r'\b\w+usdt\b(?:\s+\S+){1}\s+(\S+)'
 pattern2 = re.compile(r'(\w+USDT)\s+\S+\s+(\S+)\s+(?:\S+\s+){7}(\S+)')
+patternSDV = r"✅✅(\w+)"
+patternSDVtek = r"✅ (\w+)"
+patternSDVasagicift = r"🔻🔻(\w+)"
+patternSDVasagitek = r"🔻 (\w+)"
 # Regex deseni 
 #patternKA = r'\b(\w+)\s+TS:' 
 # Eşleşmeleri bul 
 #matches = re.findall(patternKA, text) # Eşleşmeleri yazdır print(matches)
 # Regex deseni
 patternKA = r'\b(\w+)\s+TS:'
-patterncanlicoin = r"Canlı olan coin sayısı:(\d+)"
-patternSDV = r"✅✅(\w+)"
-patternSDVtek = r"✅ (\w+)"
-patternSDVasagicift = r"🔻🔻(\w+)"
-patternSDVasagitek = r"🔻 (\w+)"
 
+def extract_coin_data(text):
+    # "Canlı olan coin sayısı:" kelimesinden sonraki sayıyı bulma
+    coin_count_match = re.search(r'Canlı olan coin sayısı:(\d+)', text)
+    coin_count = int(coin_count_match.group(1)) if coin_count_match else None
+    coin_count2=[coin_count,0]
 
-komutlar=["io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","iof","ssr","marketanaliz","ka","ci s d 5m","acc","grio","dayhigh","p btc","ap","io","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv"]
-komutlarSDV=["sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","io","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv","sdv"]
+    # TS, MTS, PT, Dk ve Kar bilgilerinin eşleşmesini bulma
+    pattern = r'(\w+)\sTS:(\S+)\sMTS:(\S+)\sPT:(\S+)\s+Dk:(\d+)(✅)?\s+Kar:%(\d+,\d+)'
+    matches = re.findall(pattern, text)
+
+    # Elde edilen eşleşmeleri işleyip listeye ekle
+    result = [[
+        match[0] + 'USDT',
+        None if match[1] == 'NULL' else float(match[1].replace(',', '.')),
+        float(match[2].replace(',', '.')),
+        float(match[3].replace(',', '.')),
+        int(match[4]),
+        bool(match[5]),
+        float(match[6].replace(',', '.'))
+    ] for match in matches]
+
+    return [coin_count2] + result
+
 # Eşleşmeleri bul
 def get_price(symbol):
     try:
@@ -93,7 +144,7 @@ def close_position(coin):
             )
             print(f"Pozisyon kapatıldı: {order}")
             time.sleep(5)  # 5 saniye bekle
-    
+
 
 #close_position("pnutusdt")
 '''
@@ -147,14 +198,13 @@ def open_position(symbol, leverage, amount):
             leverage=leverage
         )
         print(order)
-        
         time.sleep(5)  # 5 saniye bekle
     except Exception as e:
         print(f"Error: {e}")
 
+#open_position("PNUTUSDT", myleverage, mycost)
+#accliler=[]
 
-#sell position
-# Pozisyon açma
 def sell_position(symbol, leverage, amount):
     try:
         binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
@@ -179,12 +229,11 @@ def sell_position(symbol, leverage, amount):
     except Exception as e:
         print(f"Error: {e}")
 
-
-#open_position("PNUTUSDT", myleverage, mycost)
-#accliler=[]
-SDVliler=[]
+KAliler=[]
 SDVliler2=[]
-print(f"merhaba {SDVliler}")
+print(f"merhaba {KAliler}")
+
+mylonglarMA=[]
 
 async def main():
     await client.start(phone=phone_number)
@@ -203,10 +252,101 @@ async def main():
         #if any(number > kactanbuyuk for number in float_list):
         #    await client.send_message(alert_user, f"Listede {kactanbuyuk}'den büyük bir sayı bulundu! {event.raw_text}")
         #    print("bulundu")
+        if event.raw_text.startswith("????????Canlı olan coin sayısı"):
+            
+            #pattern2 = re.compile(r'(\w+USDT)\s+\S+\s+(\S+)\s+(?:\S+\s+){7}(\S+)')
+            #matchesKA = re.findall(patternKA, event.raw_text)
+
+
+            # Her bir eşleşmeye USDT ekleyip yeni bir liste oluştur
+            #usdt_listKA = [match + 'USDT' for match in matchesKA]
+
+            result = extract_coin_data(event.raw_text)
+            if result[0][0]>-1:
+                myFKAlist=[]
+                for coin in result:
+                    if coin[0] in mysymbols3:
+                        myFKAlist.append(coin[0])
+                
+                for coin in myFKAlist:
+                    if coin in KAliler:
+                        print(f"{coin} zaten vardı")
+                    else:
+                        KAliler.append(coin)
+                        open_position(coin, myleverage, mycost)
+                        print(f"{coin} long açıldı")
+                        await client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
+                
+                for coin in KAliler:
+                    if coin in myFKAlist:
+                        print(f"{coin} 'e zaten long açılmış.")
+                    else:
+                        close_position(coin)
+                        print(f"{coin} pozisyonu kapatıldı.")
+                        KAliler.remove(coin)
+                        await client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+                print(KAliler)
+            #matches2 = pattern2.findall(event.raw_text)
+            #result2 = [[match[0].replace(',', '.'), float(match[1].replace(',', '.')), float(match[2].replace(',', '.'))] for match in matches2]
+            #print(result2)
+            #print(result2[0][1])
+            '''
+            for satir in result2:
+                if satir[1] >kactanbuyuk:
+                    if satir[0] in mysymbols3: #check_future_eligibility(satir[0]):
+                        await client.send_message(alert_user, f"Listede {kactanbuyuk}'den büyük bir sayı bulundu! {event.raw_text} \n {satir[0]} bulundu. acc:{satir[1]} Mts:{satir[2]}")
+                        print(f"{satir[0]} bulundu. acc:{satir[1]} Mts:{satir[2]}")
+                        if satir[0] in accliler:
+                            print("zaten var")
+                        else:
+                            accliler.append(satir[0])
+                            print(accliler)
+                    else:
+                        print("sembol yok")
+                else:
+                    print("büyük yok")
+            '''
+
+            #print(event.raw_text)
+            print(myFKAlist)
+            
+        #await client.send_message(alert_user, f"???Listede {kactanbuyuk}'den büyük bir sayı bulundu! {event.raw_text}")
+
+        if event.raw_text.startswith("Yapay zeka,"):
+
+            #matchesMA = re.findall(patternMA2, event.raw_text)
+            #resultMA = [[match[0], float(match[1].replace(',', '.')), float(match[2].replace(',', '.')), float(match[3]), float(match[4].replace(',', '.'))] for match in matchesMA]
+            #print(resultMA)
+            resultMA=parse_textMA(event.raw_text)
+            longacMA=[]
+            for c in resultMA:
+                if c[0] in mysymbols3:
+                    if c[0] not in longacMA:
+                        longacMA.append(c[0])
+                        print(longacMA)
+            
+            for coin in longacMA:
+                if coin in mylonglarMA:
+                    print(f"{coin} zaten vardı")
+                else:
+                    mylonglarMA.append(coin)
+                    open_position(coin, myleverage, mycost)
+                    print(f"{coin} long açıldı")
+                    await client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
+
+            for coin in mylonglarMA:
+                if coin in longacMA:
+                    print(f"{coin} 'e zaten long açılmış.")
+                else:
+                    close_position(coin)
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    mylonglarMA.remove(coin)
+                    await client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+            
+            #print(f"Shortlar:{myshortlarCi}")
+            print(f"Longlar:{mylonglarMA}")
         
 
-        #pattern2 = re.compile(r'(\w+USDT)\s+\S+\s+(\S+)\s+(?:\S+\s+){7}(\S+)')    patternSDVasagicift
-        # Deseni metin içinde arama------------   Sert Hareket Edenler
         if event.raw_text.startswith("Sert Hareket Edenler"):
             matchesSDV = re.findall(patternSDV, event.raw_text)
 
@@ -241,7 +381,7 @@ async def main():
             #open_position("OPUSDT", myleverage, mycost)
             mylonglar=[]
             myshortlar=[]
-            if 1: #len(combined_list) > 0: 
+            if 1>3: #len(combined_list) > 0: 
                     print(combined_list)
                     #usdt_listSDV = [match + 'USDT' for match in coin_listSDV]
                     mySDVlist=[]
@@ -303,65 +443,13 @@ async def main():
             
             print(f"Shortlar:{myshortlar}")
             print(f"Longlar:{mylonglar}")
-            
-                
-
-
-        # Her bir eşleşmeye USDT ekleyip yeni bir liste oluştur
-        '''
-        usdt_listKA = [match + 'USDT' for match in matchesKA]
-        myFKAlist=[]
-        for coin in usdt_listKA:
-            if coin in mysymbols3:
-                myFKAlist.append(coin)
         
-        for coin in myFKAlist:
-            if coin in KAliler:
-                print(f"{coin} zaten vardı")
-            else:
-                KAliler.append(coin)
-                open_position(coin, myleverage, mycost)
-                print(f"{coin} long açıldı")
-        
-        for coin in KAliler:
-            if coin in myFKAlist:
-                print(f"{coin} 'e zaten long açılmış.")
-            else:
-                close_position(coin)
-                print(f"{coin} pozisyonu kapatıldı.")
-                KAliler.remove(coin)
-        print(KAliler)
-        '''
-        #matches2 = pattern2.findall(event.raw_text)
-        #result2 = [[match[0].replace(',', '.'), float(match[1].replace(',', '.')), float(match[2].replace(',', '.'))] for match in matches2]
-        #print(result2)
-        #print(result2[0][1])
-        '''
-        for satir in result2:
-            if satir[1] >kactanbuyuk:
-                if satir[0] in mysymbols3: #check_future_eligibility(satir[0]):
-                    await client.send_message(alert_user, f"Listede {kactanbuyuk}'den büyük bir sayı bulundu! {event.raw_text} \n {satir[0]} bulundu. acc:{satir[1]} Mts:{satir[2]}")
-                    print(f"{satir[0]} bulundu. acc:{satir[1]} Mts:{satir[2]}")
-                    if satir[0] in accliler:
-                        print("zaten var")
-                    else:
-                        accliler.append(satir[0])
-                        print(accliler)
-                else:
-                    print("sembol yok")
-            else:
-                print("büyük yok")
-        '''
-
-        #print(event.raw_text)
-        #print(myFKAlist)
-        
-        #await client.send_message(alert_user, f"???Listede {kactanbuyuk}'den büyük bir sayı bulundu! {event.raw_text}")
     while True:
-
         await client.send_message(target_user, komutlar[rastgele_sayi(0,len(komutlar)-1)])
         await asyncio.sleep(rastgele_sayi(50,100))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
-        await client.send_message(target_user, komutlarSDV[rastgele_sayi(0,len(komutlarSDV)-1)]) #'sdv')
+        await client.send_message(target_user, mysent[rastgele_komut()] )#'marketanaliz')
+        await asyncio.sleep(rastgele_sayi(50,100))
+        await client.send_message(target_user, mysent[1] if kacinci == 0 else mysent[0])#'sdv')
         await asyncio.sleep(rastgele_sayi(50,200))
 
 with client:
