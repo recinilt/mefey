@@ -306,38 +306,38 @@ def acabilirmiyim(coin):
     else:
         return True         
 
-def longlarikapat(coin):
-    for c in mylonglarCi:
+def longlarikapat():
+    for coin in mylonglarCi:
         close_position(coin,"mylonglarCi")
         print(f"{coin} pozisyonu kapatıldı.")
         #mylonglarCi.remove(coin)
-    for c in mylonglarSDV:
+    for coin in mylonglarSDV:
         close_position(coin, "mylonglarSDV")
         print(f"{coin} pozisyonu kapatıldı.")
         #mylonglarSDV.remove(coin)
-    for c in mylonglarMA:
+    for coin in mylonglarMA:
         close_position(coin,"mulonglarMA")
         print(f"{coin} pozisyonu kapatıldı.")
         #mylonglarMA.remove(coin)
-    for c in mylonglarKA:
+    for coin in mylonglarKA:
         close_position(coin,"mylonglarKA")
         print(f"{coin} pozisyonu kapatıldı.")
         #mylonglarKA.remove(coin)
-    for c in mylonglarIOF:
+    for coin in mylonglarIOF:
         close_position(coin,"mylonglarIOF")
         print(f"{coin} pozisyonu kapatıldı.")
         #mylonglarIOF.remove(coin)
 
-def shortlarikapat(coin):
-    for c in myshortlarCi:
+def shortlarikapat():
+    for coin in myshortlarCi:
         close_position(coin,"myshortlarCi")
         print(f"{coin} pozisyonu kapatıldı.")
         #myshortlarCi.remove(coin)
-    for c in myshortlarSDV:
+    for coin in myshortlarSDV:
         close_position(coin,"myshortlarSDV")
         print(f"{coin} pozisyonu kapatıldı.")
         #myshortlarSDV.remove(coin)
-    for c in myshortlarIOF:
+    for coin in myshortlarIOF:
         close_position(coin,"myshortlarIOF")
         print(f"{coin} pozisyonu kapatıldı.")
         #myshortlarIOF.remove(coin)
