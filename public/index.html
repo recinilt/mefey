@@ -571,6 +571,118 @@ async function getMarketValue() {
 
 
 
+<hr>
+
+
+
+<h6 class="baslik"><span class="material-icons">
+  android
+  </span>Binance Top Traders Long Short Oranları </h6>   
+<div class="col-lg-4">
+  
+  
+  <h1>Coin Long/Short Oranı</h1>
+  <form id="form">
+      <label for="coin">Coin Çifti:</label><br>
+      <input type="text" id="coin" placeholder="Örn: LDOUSDT"><br><br>
+      <button type="button" onclick="addCoin()">Ekle</button>
+  </form>
+
+  <h2>Coin Listesi:</h2>
+  <ul id="coin-list"></ul>
+
+  <h2>Binance Top Traderların Hesap ve Pozisyon Büyüklüklerine Göre Sonuç:</h2>
+  <div id="result">Henüz bir sonuç yok.</div>
+
+
+
+</div>
+<script>
+  const coinList = document.getElementById('coin-list');
+  const result = document.getElementById('result');
+
+  function addCoin() {
+      const coin = document.getElementById('coin').value.trim().toUpperCase();
+
+      if (!coin) {
+          alert('Lütfen bir coin çifti girin.');
+          return;
+      }
+
+      const listItem = document.createElement('li');
+      listItem.textContent = coin;
+      listItem.addEventListener('click', () => getCoinData(coin));
+      coinList.appendChild(listItem);
+
+      // Temizleme
+      document.getElementById('coin').value = '';
+  }
+
+  async function getCoinData(coin) {
+      result.innerHTML = `İşleniyor... (${coin})`;
+
+      try {
+          // Binance API endpoints
+          const accountUrl = `https://fapi.binance.com/futures/data/topLongShortAccountRatio?symbol=${coin}&period=15m`;
+          const positionsUrl = `https://fapi.binance.com/futures/data/topLongShortPositionRatio?symbol=${coin}&period=15m`;
+
+          // API'den veriyi al
+          const [accountResponse, positionsResponse] = await Promise.all([
+              fetch(accountUrl),
+              fetch(positionsUrl)
+          ]);
+
+          if (!accountResponse.ok || !positionsResponse.ok) {
+              throw new Error('Coin çifti bulunamadı veya API hatası.');
+          }
+
+          const accountData = await accountResponse.json();
+          const positionsData = await positionsResponse.json();
+
+          // Son veriyi kontrol et
+          const accountLastEntry = accountData.length > 0 ? accountData[accountData.length - 1] : null;
+          const positionsLastEntry = positionsData.length > 0 ? positionsData[positionsData.length - 1] : null;
+
+          let resultHTML = `<h3>${coin} Sonuçları:</h3>`;
+
+          // Account long/short ratio
+          if (accountLastEntry) {
+              const accountRatio = parseFloat(accountLastEntry.longShortRatio);
+              resultHTML += `<p><b>Account:</b> ${getTrend(accountRatio)} (${accountRatio.toFixed(2)})</p>`;
+          } else {
+              resultHTML += `<p><b>Account:</b> Veri bulunamadı.</p>`;
+          }
+
+          // Positions long/short ratio
+          if (positionsLastEntry) {
+              const positionsRatio = parseFloat(positionsLastEntry.longShortRatio);
+              resultHTML += `<p><b>Positions:</b> ${getTrend(positionsRatio)} (${positionsRatio.toFixed(2)})</p>`;
+          } else {
+              resultHTML += `<p><b>Positions:</b> Veri bulunamadı.</p>`;
+          }
+
+          result.innerHTML = resultHTML;
+      } catch (error) {
+          console.error(error);
+          result.innerHTML = `Hata: ${error.message}`;
+      }
+  }
+
+  function getTrend(ratio) {
+      if (ratio > 1.1) {
+          return 'LONG';
+      } else if (ratio < 0.9) {
+          return 'SHORT';
+      } else {
+          return 'ARAFTA';
+      }
+  }
+</script>
+
+<p></p>
+
+
+
 
 
 <hr>

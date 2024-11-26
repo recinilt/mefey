@@ -18,15 +18,15 @@ binance_secret="iAJFQwVXHRVXvA2ffjxb5dxd5nlHEFZjv2yP12FzqUSXxic7mz02rILS54YWOEOH
 
 binance_api_reccirik2="nKdNVSLZZo4hQnEI1rg7xU1cxZnPWHN4OePu8Yzc3wH3TptaLxBxwhBjUIjrFrAD"
 binance_secret_reccirik2="WJSYPws6VnoJkMIXKqgu1CVSha9Io6rT7g8YEiNKbkG3dzdBF7vwZ6fWkZwvlH5S"
-mycost=2
-myleverage=15
+mycost=1
+myleverage=11
 komutlar=["io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","iof","ssr","marketanaliz","ka","ci s d 5m","acc","grio","dayhigh","p btc","ap","io","sdv"]
 
 
 def rastgele_sayi(min_deger, max_deger):
     return random.randint(min_deger, max_deger)
 
-mysent=["sdv","marketanaliz","io"]
+mysent=["sdv","marketanaliz","io","ci i d 5m"]
 #mysentnumbers=[0,1,2]
 
 #kacincilar=[]
@@ -68,14 +68,14 @@ def check_arrowsIO(text):
     pattern_12h = r'12h=>.*🔻'
     pattern_1d = r'1d=>.*🔻'
 
-    if (re.search(pattern_15m, text) and re.search(pattern_1h, text) and re.search(pattern_4h, text) and re.search(pattern_12h, text)) or (re.search(pattern_1h, text) and re.search(pattern_4h, text) and re.search(pattern_12h, text) and re.search(pattern_1d, text)):
+    if convert_to_floatIO(text)<49 or (re.search(pattern_4h, text) and re.search(pattern_12h, text) and re.search(pattern_1d, text)):# (re.search(pattern_15m, text) and re.search(pattern_1h, text) and re.search(pattern_4h, text) and re.search(pattern_12h, text)) or (re.search(pattern_1h, text) and re.search(pattern_4h, text) and re.search(pattern_12h, text) and re.search(pattern_1d, text)):
         print("!!!!!!!!!!!!!!!!!!!!! Piyasa Rikli !!!!!!!!!!!!!!!!!!!")
         return False
     else:
         print(">>>>>>>>>>>>>>>>>>>>>> Piyasa iyi durumda <<<<<<<<<<<<<<<<<<<<<<<<")
         return True
 
-mytextio=[]
+mytextio=["merhaba"]
 def run_function():
     print("Fonksiyon çalıştı!")
 
@@ -297,7 +297,90 @@ SDVliler=[]
 SDVliler2=[]
 print(f"merhaba {KAliler}")
 
+
+mylonglarCi=[]
+myshortlarCi=[]
+def myci(text):
+    if not check_arrowsIO(mytextio[0]):
+        patternCiid5m = r'\b(\w+USDT)\s+(\d+,\d+)\s+(\d+,\d+)\s+(\d+)\s+(\d+,\d+)'
+        matchesCiid5m = re.findall(patternCiid5m, text)
+        resultCiid5m = [[match[0], float(match[1].replace(',', '.')), float(match[2].replace(',', '.')), float(match[3]), float(match[4].replace(',', '.'))] for match in matchesCiid5m]
+        longAc=[]
+        shortAc=[]
+        for c in resultCiid5m:
+            if c[0] in mysymbols3:
+                if (c[1]-c[2]>0.02) and c[1]>1 and c[2]<1:
+                    if c[4]<6:
+                        longAc.append(c[0])
+                if (c[2]-c[1]>0.02) and c[1]<1 and c[2]>1:
+                    if c[4]>0.7:
+                        shortAc.append(c[0])
+        """    
+        for coin in longAc:
+            if coin in mylonglarCi:
+                print(f"{coin} zaten vardı")
+            else:
+                mylonglarCi.append(coin)
+                open_position(coin, myleverage, mycost)
+                print(f"{coin} long açıldı")
+                await telegram_client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
+        """
+        for coin in shortAc:
+            if coin in myshortlarCi:
+                print(f"{coin} zaten vardı")
+            else:
+                myshortlarCi.append(coin)
+                sell_position(coin, myleverage, mycost)
+                print(f"{coin} short açıldı")
+                #await telegram_client.send_message(alert_user, f"{coin}'a SHORT posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
+        """
+        for coin in mylonglarCi:
+            if coin in longAc:
+                print(f"{coin} 'e zaten long açılmış.")
+            else:
+                close_position(coin)
+                print(f"{coin} pozisyonu kapatıldı.")
+                mylonglarCi.remove(coin)
+                await telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+        """
+        for coin in myshortlarCi:
+            if coin in shortAc:
+                print(f"{coin} 'e zaten short açılmış.")
+            else:
+                close_position(coin)
+                print(f"{coin} pozisyonu kapatıldı.")
+                myshortlarCi.remove(coin)
+                #await telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+    else:
+        if len(mylonglarCi)>0:
+            for coin in myshortlarCi:
+                close_position(coin)
+                print(f"{coin} pozisyonu kapatıldı.")
+                mylonglarCi.remove(coin)
+                telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+
+    
+    print(f"Shortlar:{myshortlarCi}")
+    print(f"Longlar:{mylonglarCi}")
+        
 mylonglarMA=[]
+
+def convert_to_floatIO(text):
+    # "1d=> %"den hemen sonra gelen sayıyı yakalamak için regex deseni
+    pattern = r'1d=> %([\d,]+)'
+    
+    # Eşleşmeyi bul
+    match = re.search(pattern, text)
+    if match:
+        # Eşleşen kısmı al
+        number_str = match.group(1)
+        
+        # Virgülü noktaya çevir ve float'a dönüştür
+        number_float = float(number_str.replace(',', '.'))
+        
+        return number_float
+    else:
+        return None
 
 async def main():
     await telegram_client.start(phone=phone_number)
@@ -314,7 +397,7 @@ async def main():
         #float_list = [float(x) for x in modified_list]
         #print(float_list)
         #if event.raw_text.startswith("Marketteki Tüm Coinlere") global mytextio=event.raw_text
-        if event.raw_text.startswith("Marketteki Tüm Coinlere"): #IO
+        if event.raw_text.startswith("Marketteki Tüm Coinlere Olan Nakit Girişi Raporu"): #IO
             mytextio.clear()
             mytextio.append(event.raw_text)
             #pattern_15m = r'15m=>.*🔻'
@@ -409,19 +492,19 @@ async def main():
             
         #await client.send_message(alert_user, f"???Listede {kactanbuyuk}'den büyük bir sayı bulundu! {event.raw_text}")
 
-        if event.raw_text.startswith("Yapay zeka,") and check_arrowsIO(mytextio[0]): #Marketanaliz
+        if event.raw_text.startswith("Yapay zeka,") and check_arrowsIO(mytextio[0]): #Marketanaliz MA
 
             #matchesMA = re.findall(patternMA2, event.raw_text)
             #resultMA = [[match[0], float(match[1].replace(',', '.')), float(match[2].replace(',', '.')), float(match[3]), float(match[4].replace(',', '.'))] for match in matchesMA]
             #print(resultMA)
-        
+
             resultMA=find_usdt_and_numbersMA15m(event.raw_text)
             longacMA=[]
             for c in resultMA:
                 if c[0] in mysymbols3:
                     if c[0] not in longacMA:
                         longacMA.append(c[0])
-                        print(longacMA)
+                        #print(longacMA)
             
             for coin in longacMA:
                 if coin in mylonglarMA:
@@ -443,7 +526,12 @@ async def main():
             
             #print(f"Shortlar:{myshortlarCi}")
             print(f"Longlar:{mylonglarMA}")
-    
+
+        ###########################################
+        if event.raw_text.startswith("Korelasyon Şiddeti Raporu (5m)"): #ci i d 5m
+            myci(event.raw_text)
+                        
+        ############################################
 
         if event.raw_text.startswith("Sert Hareket Edenler"): #SDV
             matchesSDV = re.findall(patternSDV, event.raw_text)
@@ -479,7 +567,7 @@ async def main():
             #open_position("OPUSDT", myleverage, mycost)
             mylonglar=[]
             myshortlar=[]
-            if "fdklfvdmldvf" in mylonglar and check_arrowsIO(mytextio[0]): #len(combined_list) > 0: 
+            if check_arrowsIO(mytextio[0]): #len(combined_list) > 0: 
                 print(combined_list)
                 #usdt_listSDV = [match + 'USDT' for match in coin_listSDV]
                 mySDVlist=[]
@@ -553,6 +641,8 @@ async def main():
         await telegram_client.send_message(target_user, mysent[1]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
         await asyncio.sleep(rastgele_sayi(50,100))
         await telegram_client.send_message(target_user, mysent[2]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
+        await asyncio.sleep(rastgele_sayi(50,100))
+        await telegram_client.send_message(target_user, mysent[3]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
         await asyncio.sleep(rastgele_sayi(50,200))
 
 with telegram_client:

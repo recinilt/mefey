@@ -9,8 +9,8 @@ def get_top_trader_long_short_ratio(symbol='LDOUSDT'):
         # Parametreler
         params = {
             'symbol': symbol,         # İlgili işlem çifti
-            'period': '1h',            # Zaman dilimi: 5 dakikalık
-            'limit': 1                # Sonuç sayısı: Son 30 veri
+            'period': '15m',            # Zaman dilimi: 5 dakikalık
+            'limit': 30               # Sonuç sayısı: Son 30 veri
         }
         
         # API isteği yapıyoruz
@@ -37,4 +37,4 @@ def get_top_trader_long_short_ratio(symbol='LDOUSDT'):
         print(f"Hata oluştu: {e}")
 
 # Veri çekme ve yazdırma
-get_top_trader_long_short_ratio('ZENUSDT')
+get_top_trader_long_short_ratio(symbol='LDOUSDT')

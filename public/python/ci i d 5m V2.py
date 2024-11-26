@@ -223,7 +223,7 @@ async def main():
         #pattern2 = re.compile(r'(\w+USDT)\s+\S+\s+(\S+)\s+(?:\S+\s+){7}(\S+)')    patternSDVasagicift
         # Deseni metin içinde arama------------   Sert Hareket Edenler
         if event.raw_text.startswith("Korelasyon Şiddeti Raporu (5m)"):
-
+            
             matchesCiid5m = re.findall(patternCiid5m, event.raw_text)
             resultCiid5m = [[match[0], float(match[1].replace(',', '.')), float(match[2].replace(',', '.')), float(match[3]), float(match[4].replace(',', '.'))] for match in matchesCiid5m]
             longAc=[]
