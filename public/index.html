@@ -580,11 +580,24 @@ async function getMarketValue() {
   </span>Binance Top Traders Long Short Oranları </h6>   
 <div class="col-lg-4">
   
-  
   <h1>Coin Long/Short Oranı</h1>
   <form id="form">
       <label for="coin">Coin Çifti:</label><br>
       <input type="text" id="coin" placeholder="Örn: LDOUSDT"><br><br>
+
+      <label for="period">Periyot Seçin:</label><br>
+      <select id="period">
+          <option value="5m">5 Dakika</option>
+          <option value="15m">15 Dakika</option>
+          <option value="1h">1 Saat</option>
+          <option value="4h">4 Saat</option>
+          <option value="12h">12 Saat</option>
+          <option value="1d">1 Gün</option>
+          <option value="1w">1 Hafta</option>
+          <option value="1M">1 Ay</option>
+          <option value="1y">1 Yıl</option>
+      </select><br><br>
+
       <button type="button" onclick="addCoin()">Ekle</button>
   </form>
 
@@ -593,8 +606,7 @@ async function getMarketValue() {
 
   <h6>Binance Top Traderların 15 Dk'lık Periyottaki Hesap ve Pozisyon Büyüklüklerine Göre Long/hort Sonucu:</h2>
   <div id="result">Henüz bir sonuç yok.</div>
-
-
+  
 
 </div>
 <script>
@@ -603,6 +615,7 @@ async function getMarketValue() {
 
   function addCoin() {
       const coin = document.getElementById('coin').value.trim().toUpperCase();
+      const period = document.getElementById('period').value;
 
       if (!coin) {
           alert('Lütfen bir coin çifti girin.');
@@ -610,24 +623,24 @@ async function getMarketValue() {
       }
 
       const listItem = document.createElement('li');
-      listItem.textContent = coin;
-      listItem.addEventListener('click', () => getCoinData(coin));
+      listItem.textContent = coin + " " + period;
+      listItem.addEventListener('click', () => getCoinData(coin, period));
       coinList.appendChild(listItem);
 
       // Temizleme
       document.getElementById('coin').value = '';
   }
 
-  async function getCoinData(coin) {
-      result.innerHTML = `İşleniyor... (${coin})`;
+  async function getCoinData(coin, period) {
+      result.innerHTML = `İşleniyor... (${coin}, Periyot: ${period})`;
 
       try {
           // Binance API endpoints
-          const accountUrl = `https://fapi.binance.com/futures/data/topLongShortAccountRatio?symbol=${coin}&period=15m`;
-          const positionsUrl = `https://fapi.binance.com/futures/data/topLongShortPositionRatio?symbol=${coin}&period=15m`;
+          const accountUrl = `https://fapi.binance.com/futures/data/topLongShortAccountRatio?symbol=${coin}&period=${period}`;
+          const positionsUrl = `https://fapi.binance.com/futures/data/topLongShortPositionRatio?symbol=${coin}&period=${period}`;
 
           // API'den veriyi al
-          const [accountResponse, positionsResponse] = await Promise.all([
+          const [accountResponse, positionsResponse] = await Promise.all([ 
               fetch(accountUrl),
               fetch(positionsUrl)
           ]);
@@ -643,7 +656,7 @@ async function getMarketValue() {
           const accountLastEntry = accountData.length > 0 ? accountData[accountData.length - 1] : null;
           const positionsLastEntry = positionsData.length > 0 ? positionsData[positionsData.length - 1] : null;
 
-          let resultHTML = `<h3>${coin} Sonuçları:</h3>`;
+          let resultHTML = `<h3>${coin} Sonuçları (${period}):</h3>`;
 
           // Account long/short ratio
           if (accountLastEntry) {
