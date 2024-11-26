@@ -579,7 +579,7 @@ async function getMarketValue() {
   android
   </span>Binance Top Traders Long Short Oranları </h6>   
 <div class="col-lg-4">
-  
+
   <h1>Coin Long/Short Oranı</h1>
   <form id="form">
       <label for="coin">Coin Çifti:</label><br>
@@ -598,15 +598,20 @@ async function getMarketValue() {
           <option value="1y">1 Yıl</option>
       </select><br><br>
 
+      <label for="sma-period">SMA Periyodu:</label><br>
+      <input type="number" id="sma-period" value="7" min="1"><br><br>
+
       <button type="button" onclick="addCoin()">Ekle</button>
   </form>
 
   <h2>Coin Listesi:</h2>
   <ul id="coin-list"></ul>
 
-  <h6>Binance Top Traderların 15 Dk'lık Periyottaki Hesap ve Pozisyon Büyüklüklerine Göre Long/hort Sonucu:</h2>
+  <h6>Binance Top Traderların Seçilen Periyottaki Hesap ve Pozisyon Büyüklüklerine Göre Long/hort Sonucu:</h2>
   <div id="result">Henüz bir sonuç yok.</div>
+
   
+
 
 </div>
 <script>
@@ -616,6 +621,7 @@ async function getMarketValue() {
   function addCoin() {
       const coin = document.getElementById('coin').value.trim().toUpperCase();
       const period = document.getElementById('period').value;
+      const smaPeriod = parseInt(document.getElementById('sma-period').value);
 
       if (!coin) {
           alert('Lütfen bir coin çifti girin.');
@@ -623,16 +629,16 @@ async function getMarketValue() {
       }
 
       const listItem = document.createElement('li');
-      listItem.textContent = coin + " " + period;
-      listItem.addEventListener('click', () => getCoinData(coin, period));
+      listItem.textContent = `${coin} (${period}, SMA: ${smaPeriod})`;
+      listItem.addEventListener('click', () => getCoinData(coin, period, smaPeriod));
       coinList.appendChild(listItem);
 
       // Temizleme
       document.getElementById('coin').value = '';
   }
 
-  async function getCoinData(coin, period) {
-      result.innerHTML = `İşleniyor... (${coin}, Periyot: ${period})`;
+  async function getCoinData(coin, period, smaPeriod) {
+      result.innerHTML = `İşleniyor... (${coin}, Periyot: ${period}, SMA: ${smaPeriod})`;
 
       try {
           // Binance API endpoints
@@ -640,7 +646,7 @@ async function getMarketValue() {
           const positionsUrl = `https://fapi.binance.com/futures/data/topLongShortPositionRatio?symbol=${coin}&period=${period}`;
 
           // API'den veriyi al
-          const [accountResponse, positionsResponse] = await Promise.all([ 
+          const [accountResponse, positionsResponse] = await Promise.all([
               fetch(accountUrl),
               fetch(positionsUrl)
           ]);
@@ -652,27 +658,13 @@ async function getMarketValue() {
           const accountData = await accountResponse.json();
           const positionsData = await positionsResponse.json();
 
-          // Son veriyi kontrol et
-          const accountLastEntry = accountData.length > 0 ? accountData[accountData.length - 1] : null;
-          const positionsLastEntry = positionsData.length > 0 ? positionsData[positionsData.length - 1] : null;
+          let resultHTML = `<h3>${coin} Sonuçları (${period}, SMA: ${smaPeriod}):</h3>`;
 
-          let resultHTML = `<h3>${coin} Sonuçları (${period}):</h3>`;
+          // Account long/short ratio analizi
+          resultHTML += analyzeData(accountData, 'Accounts', smaPeriod);
 
-          // Account long/short ratio
-          if (accountLastEntry) {
-              const accountRatio = parseFloat(accountLastEntry.longShortRatio);
-              resultHTML += `<p><b>Account:</b> ${getTrend(accountRatio)} (${accountRatio.toFixed(2)})</p>`;
-          } else {
-              resultHTML += `<p><b>Account:</b> Veri bulunamadı.</p>`;
-          }
-
-          // Positions long/short ratio
-          if (positionsLastEntry) {
-              const positionsRatio = parseFloat(positionsLastEntry.longShortRatio);
-              resultHTML += `<p><b>Positions:</b> ${getTrend(positionsRatio)} (${positionsRatio.toFixed(2)})</p>`;
-          } else {
-              resultHTML += `<p><b>Positions:</b> Veri bulunamadı.</p>`;
-          }
+          // Positions long/short ratio analizi
+          resultHTML += analyzeData(positionsData, 'Positions', smaPeriod);
 
           result.innerHTML = resultHTML;
       } catch (error) {
@@ -681,15 +673,38 @@ async function getMarketValue() {
       }
   }
 
-  function getTrend(ratio) {
-      if (ratio > 1.1) {
-          return 'LONG';
-      } else if (ratio < 0.9) {
-          return 'SHORT';
-      } else {
-          return 'ARAFTA';
-      }
-  }
+  function analyzeData(data, label, smaPeriod) {
+    if (data.length < smaPeriod) {
+        return `<p><b>${label}:</b> Son ${smaPeriod} periyot için yeterli veri bulunamadı.</p>`;
+    }
+
+    const lastRatios = data.slice(-smaPeriod).map(entry => parseFloat(entry.longShortRatio));
+    const simpleMovingAverage = lastRatios.reduce((sum, value) => sum + value, 0) / smaPeriod;
+
+    const lastRatio = parseFloat(data[data.length - 1].longShortRatio);
+    const trend = lastRatio > simpleMovingAverage ? 'Ortalamanın Üzerinde' : 'Ortalamanın Altında';
+
+    // LONG, SHORT, ARAFTA durumunun belirlenmesi
+    let status;
+    if (lastRatio > 1.1) {
+        status = 'LONG';
+    } else if (lastRatio < 0.9) {
+        status = 'SHORT';
+    } else {
+        status = 'ARAFTA';
+    }
+
+    return `
+        <p>
+            <b>${label}:</b><br>
+            Son Oran: ${lastRatio.toFixed(2)}<br>
+            Basit Hareketli Ortalama (Son ${smaPeriod} Periyot): ${simpleMovingAverage.toFixed(2)}<br>
+            Durum: ${trend}<br>
+            Sonuç: <b>${status}</b>
+        </p>
+    `;
+}
+
 </script>
 
 <p></p>
