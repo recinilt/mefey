@@ -155,7 +155,7 @@ def get_price(symbol):
 def myquantity(coin):
     return round(((mycost*myleverage)/float(get_price(coin))),3)
 
-def close_position(coin):
+def close_position(coin,liste):
     # Mevcut pozisyonu kapat
     positions = binanceclient.futures_position_information(symbol=coin)
     for position in positions:
@@ -170,6 +170,7 @@ def close_position(coin):
             )
             print(f"Pozisyon kapatıldı: {order}")
             hesapla(coin, side, myquantity)
+            eklesil(coin,liste,"sil")
             time.sleep(5)  # 5 saniye bekle
 
 def hesapla(coin, pozisyon, quantity):
@@ -210,7 +211,7 @@ def get_symbol_precision(symbol):
         print(f"Error: {e}")
         return None
 
-def buy_position(symbol, leverage, amount):
+def buy_position(symbol, leverage, amount, liste):
     try:
         binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
         #binanceclient.futures_change_margin_type(symbol=symbol, marginType=ISOLATED)
@@ -230,11 +231,12 @@ def buy_position(symbol, leverage, amount):
         )
         print(order)
         hesapla(symbol, "buy",1)
+        eklesil(symbol,liste,"ekle")
         time.sleep(5)  # 5 saniye bekle
     except Exception as e:
         print(f"Error: {e}")
 
-def sell_position(symbol, leverage, amount):
+def sell_position(symbol, leverage, amount, liste):
     try:
         binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
         #binanceclient.futures_change_margin_type(symbol=symbol, marginType=ISOLATED)
@@ -254,6 +256,7 @@ def sell_position(symbol, leverage, amount):
         )
         print(order)
         hesapla(symbol,"sell",1)
+        eklesil(symbol,liste,"ekle")
         time.sleep(5)  # 5 saniye bekle
     except Exception as e:
         print(f"Error: {e}")
@@ -305,46 +308,89 @@ def acabilirmiyim(coin):
 
 def longlarikapat():
     for c in mylonglarCi:
-        close_position(coin)
+        close_position(coin,"mylonglarCi")
         print(f"{coin} pozisyonu kapatıldı.")
-        mylonglarCi.remove(coin)
+        #mylonglarCi.remove(coin)
     for c in mylonglarSDV:
-        close_position(coin)
+        close_position(coin, "mylonglarSDV")
         print(f"{coin} pozisyonu kapatıldı.")
-        mylonglarSDV.remove(coin)
+        #mylonglarSDV.remove(coin)
     for c in mylonglarMA:
-        close_position(coin)
+        close_position(coin,"mulonglarMA")
         print(f"{coin} pozisyonu kapatıldı.")
-        mylonglarMA.remove(coin)
+        #mylonglarMA.remove(coin)
     for c in mylonglarKA:
-        close_position(coin)
+        close_position(coin,"mylonglarKA")
         print(f"{coin} pozisyonu kapatıldı.")
-        mylonglarKA.remove(coin)
+        #mylonglarKA.remove(coin)
     for c in mylonglarIOF:
-        close_position(coin)
+        close_position(coin,"mylonglarIOF")
         print(f"{coin} pozisyonu kapatıldı.")
-        mylonglarIOF.remove(coin)
+        #mylonglarIOF.remove(coin)
 
 def shortlarikapat():
     for c in myshortlarCi:
-        close_position(coin)
+        close_position(coin,"myshortlarCi")
         print(f"{coin} pozisyonu kapatıldı.")
-        myshortlarCi.remove(coin)
+        #myshortlarCi.remove(coin)
     for c in myshortlarSDV:
-        close_position(coin)
+        close_position(coin,"myshortlarSDV")
         print(f"{coin} pozisyonu kapatıldı.")
-        myshortlarSDV.remove(coin)
+        #myshortlarSDV.remove(coin)
     for c in myshortlarIOF:
-        close_position(coin)
+        close_position(coin,"myshortlarIOF")
         print(f"{coin} pozisyonu kapatıldı.")
-        myshortlarIOF.remove(coin)
+        #myshortlarIOF.remove(coin)
 
 def sartlaruygunmu():
     if io1d[len(io1d)-1]<altustsinir[0] or io1d[len(io1d)-1]>altustsinir[1]:
         return True
     else:
         return False
-    
+
+def is_above_last_7_average(num, lst):
+    # Son 7 elemanı al
+    last_7 = lst[-7:]
+    # Son 7 elemanın ortalamasını hesapla
+    average = sum(last_7) / len(last_7) if last_7 else 49.1
+    # Sayı ortalamadan büyükse True, değilse False döndür
+    return num > average
+
+def eklesil(coin, liste, eylem):
+    if eylem=="ekle":
+        if liste=="mylonglarKA":
+            mylonglarKA.append(coin)
+        elif liste=="mylonglarSDV":
+            mylonglarSDV.append(coin)
+        elif liste=="mylonglarMA":
+            mylonglarMA.append(coin)
+        elif liste=="mylonglarIOF":
+            mylonglarIOF.append(coin)
+        elif liste=="mylonglarCi":
+            mylonglarCi.append(coin)
+        elif liste=="myshortlarSDV":
+            myshortlarSDV.append(coin)
+        elif liste=="myshortlarCi":
+            myshortlarCi.append(coin)
+        elif liste=="myshortlarIOF":
+            myshortlarIOF.append(coin)
+    if eylem=="sil":
+        if liste=="mylonglarKA":
+            mylonglarKA.remove(coin)
+        elif liste=="mylonglarSDV":
+            mylonglarSDV.remove(coin)
+        elif liste=="mylonglarMA":
+            mylonglarMA.remove(coin)
+        elif liste=="mylonglarIOF":
+            mylonglarIOF.remove(coin)
+        elif liste=="mylonglarCi":
+            mylonglarCi.remove(coin)
+        elif liste=="myshortlarSDV":
+            myshortlarSDV.remove(coin)
+        elif liste=="myshortlarCi":
+            myshortlarCi.remove(coin)
+        elif liste=="myshortlarIOF":
+            myshortlarIOF.remove(coin)
 # Ana fonksiyondakiler:
 def AnaFonkIO(raw_text):
     mytextio.clear()
@@ -363,33 +409,33 @@ def AnaFonkIO(raw_text):
         print("Piyasa riskli!!!!!!!!!!!!!!!!!")
         if len(mylonglarKA)>0:
             for coin in mylonglarKA:
-                close_position(coin)
+                close_position(coin,"mylonglarKA")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarKA.remove(coin)
+                #mylonglarKA.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         if len(mylonglarMA)>0:
             for coin in mylonglarMA:
-                close_position(coin)
+                close_position(coin,"mylonglarMA")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarMA.remove(coin)
+                #mylonglarMA.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         if len(mylonglarSDV)>0:    
             for coin in mylonglarSDV:
-                close_position(coin)
+                close_position(coin,"mylonglarSDV")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarSDV.remove(coin)
+                #mylonglarSDV.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         if len(mylonglarIOF)>0:    
             for coin in mylonglarIOF:
-                close_position(coin)
+                close_position(coin,"mylonglarIOF")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarIOF.remove(coin)
+                #mylonglarIOF.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         if len(mylonglarCi)>0:    
             for coin in mylonglarCi:
-                close_position(coin)
+                close_position(coin,"mylonglarCi")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarCi.remove(coin)
+                #mylonglarCi.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
     else:
         print("piyasa iyi durumda.>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<")
@@ -418,8 +464,8 @@ def AnaFonkKA(raw_text):
             if coin in mylonglarKA:
                 print(f"{coin} zaten vardı")
             else:
-                mylonglarKA.append(coin)
-                buy_position(coin, myleverage, mycost)
+                #mylonglarKA.append(coin)
+                buy_position(coin, myleverage, mycost, "mylonglarKA")
                 print(f"{coin} long açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
         
@@ -427,9 +473,9 @@ def AnaFonkKA(raw_text):
             if coin in kadakilonglar:
                 print(f"{coin} 'e zaten long açılmış.")
             else:
-                close_position(coin)
+                close_position(coin,"mylonglarKA")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarKA.remove(coin)
+                #mylonglarKA.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         print(f"Longlar:{mylonglarKA}")
     else:
@@ -441,9 +487,9 @@ def AnaFonkMA(raw_text):
     
     if "Btc düşüş trendinde olduğu için," in raw_text:
         for coin in mylonglarMA:
-            close_position(coin)
+            close_position(coin,"mylonglarMA")
             print(f"{coin} pozisyonu kapatıldı.")
-            mylonglarMA.remove(coin)
+            #mylonglarMA.remove(coin)
             #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         print("Btc düşüş trendinde olduğu için, çalışmadı.")
 
@@ -460,8 +506,8 @@ def AnaFonkMA(raw_text):
             if coin in mylonglarMA:
                 print(f"{coin} zaten vardı")
             else:
-                mylonglarMA.append(coin)
-                buy_position(coin, myleverage, mycost)
+                #mylonglarMA.append(coin)
+                buy_position(coin, myleverage, mycost, "mylonglarMA")
                 print(f"{coin} long açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
 
@@ -469,9 +515,9 @@ def AnaFonkMA(raw_text):
             if coin in longacMA:
                 print(f"{coin} 'e zaten long açılmış.")
             else:
-                close_position(coin)
+                close_position(coin,"mylonglarMA")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarMA.remove(coin)
+                #mylonglarMA.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         print(f"Longlar:{mylonglarMA}")
     else:
@@ -501,8 +547,8 @@ def AnaFonkSDV(raw_text):
             if coin in mylonglarSDV:
                 print(f"{coin} zaten vardı")
             else:
-                mylonglarSDV.append(coin)
-                buy_position(coin, myleverage, mycost)
+                #mylonglarSDV.append(coin)
+                buy_position(coin, myleverage, mycost, "mylonglarSDV")
                 print(f"{coin} long açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
 
@@ -510,9 +556,9 @@ def AnaFonkSDV(raw_text):
             if coin in mySDVlist:
                 print(f"{coin} 'e zaten long açılmış.")
             else:
-                close_position(coin)
+                close_position(coin,"mylonglarSDV")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarSDV.remove(coin)
+                #mylonglarSDV.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         mylonglar=mylonglarSDV
     else:
@@ -528,8 +574,8 @@ def AnaFonkSDV(raw_text):
             if coin in myshortlarSDV:
                 print(f"{coin} zaten vardı")
             else:
-                myshortlarSDV.append(coin)
-                sell_position(coin, myleverage, mycost)
+                #myshortlarSDV.append(coin)
+                sell_position(coin, myleverage, mycost, "myshortlarSDV")
                 print(f"{coin} short açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a SHORT posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
 
@@ -537,9 +583,9 @@ def AnaFonkSDV(raw_text):
             if coin in mySDVlist:
                 print(f"{coin} 'e zaten short açılmış.")
             else:
-                close_position(coin)
+                close_position(coin,"myshortlarSDV")
                 print(f"{coin} pozisyonu kapatıldı.")
-                myshortlarSDV.remove(coin)
+                #myshortlarSDV.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         myshortlar=myshortlarSDV
     else:
@@ -568,23 +614,23 @@ def AnaFonkCi(text):
             if coin in mylonglarCi:
                 print(f"{coin} zaten vardı")
             else:
-                mylonglarCi.append(coin)
-                buy_position(coin, myleverage, mycost)
+                #mylonglarCi.append(coin)
+                buy_position(coin, myleverage, mycost, "mylonglarCi")
                 print(f"{coin} long açıldı")
                 #await telegram_client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
         for coin in mylonglarCi:
             if coin in longAc:
                 print(f"{coin} 'e zaten long açılmış.")
             else:
-                close_position(coin)
+                close_position(coin,"mylonglarCi")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarCi.remove(coin)
+                #mylonglarCi.remove(coin)
             #await telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")     
         if len(myshortlarCi)>0:
             for coin in myshortlarCi:
-                close_position(coin)
+                close_position(coin,"myshortlarCi")
                 print(f"{coin} pozisyonu kapatıldı.")
-                myshortlarCi.remove(coin)
+                #myshortlarCi.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")  
     else:
         print("io1d<altustsinir[1]") 
@@ -594,23 +640,23 @@ def AnaFonkCi(text):
             if coin in myshortlarCi:
                 print(f"{coin} zaten vardı")
             else:
-                myshortlarCi.append(coin)
-                sell_position(coin, myleverage, mycost)
+                #myshortlarCi.append(coin)
+                sell_position(coin, myleverage, mycost, "myshortlarCi")
                 print(f"{coin} short açıldı")
                 #await telegram_client.send_message(alert_user, f"{coin}'a SHORT posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
         for coin in myshortlarCi:
             if coin in shortAc:
                 print(f"{coin} 'e zaten short açılmış.")
             else:
-                close_position(coin)
+                close_position(coin,"myshortlarCi")
                 print(f"{coin} pozisyonu kapatıldı.")
-                myshortlarCi.remove(coin)
+                #myshortlarCi.remove(coin)
                 #await telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         if len(mylonglarCi)>0:
             for coin in mylonglarCi:
-                close_position(coin)
+                close_position(coin,"mylonglarCi")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarCi.remove(coin)
+                #mylonglarCi.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")   
     else:
         print("io1d>altustsinir[0]")
@@ -633,17 +679,17 @@ def AnaFonkIOF(raw_text):
                 print(f"{coin} zaten vardı")
             else:
                 if check_arrowsIO(mytextio[0]):
-                    mylonglarIOF.append(coin)
-                    buy_position(coin, myleverage, mycost)
+                    #mylonglarIOF.append(coin)
+                    buy_position(coin, myleverage, mycost, "mylonglarIOF")
                     print(f"{coin} long açıldı")
         
         for coin in mylonglarIOF:
             if coin in longAc:
                 print(f"{coin} 'e zaten long açılmış.")
             else:
-                close_position(coin)
+                close_position(coin,"mylonglarIOF")
                 print(f"{coin} pozisyonu kapatıldı.")
-                mylonglarIOF.remove(coin)
+                #mylonglarIOF.remove(coin)
     else:
         print("io1d<altustsinir[1]")
         
@@ -657,8 +703,8 @@ def AnaFonkIOF(raw_text):
             if coin in myshortlarIOF:
                 print(f"{coin} zaten vardı")
             else:
-                myshortlarIOF.append(coin)
-                sell_position(coin, myleverage, mycost)
+                #myshortlarIOF.append(coin)
+                sell_position(coin, myleverage, mycost, "myshortlarIOF")
                 print(f"{coin} short açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a SHORT posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
 
@@ -666,9 +712,9 @@ def AnaFonkIOF(raw_text):
             if coin in shortAc:
                 print(f"{coin} 'e zaten short açılmış.")
             else:
-                close_position(coin)
+                close_position(coin,"myshortlarIOF")
                 print(f"{coin} pozisyonu kapatıldı.")
-                myshortlarIOF.remove(coin)
+                #myshortlarIOF.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
     else:
         print("io1d>altustsinir[0]")
