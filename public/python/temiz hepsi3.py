@@ -306,7 +306,7 @@ def acabilirmiyim(coin):
     else:
         return True         
 
-def longlarikapat():
+def longlarikapat(coin):
     for c in mylonglarCi:
         close_position(coin,"mylonglarCi")
         print(f"{coin} pozisyonu kapatıldı.")
@@ -328,7 +328,7 @@ def longlarikapat():
         print(f"{coin} pozisyonu kapatıldı.")
         #mylonglarIOF.remove(coin)
 
-def shortlarikapat():
+def shortlarikapat(coin):
     for c in myshortlarCi:
         close_position(coin,"myshortlarCi")
         print(f"{coin} pozisyonu kapatıldı.")
