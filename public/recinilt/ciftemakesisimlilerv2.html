@@ -34,7 +34,7 @@
                 const interval = document.getElementById('interval').value;
                 const symbols = await getSymbols();
                 console.log('Symbols:', symbols);
-                const data = await getHistoricalData(symbols, interval);
+                const data = await getHistoricalData(symbols, interval, longEmaPeriod);
                 console.log('Historical Data:', data);
                 const emaCrosses = calculateEMACrosses(data, shortEmaPeriod, longEmaPeriod);
                 console.log('EMA Crosses:', emaCrosses);
@@ -61,11 +61,11 @@
             }
         }
 
-        async function getHistoricalData(symbols, interval) {
+        async function getHistoricalData(symbols, interval, longEmaPeriod) {
             const data = {};
             for (const symbol of symbols) {
                 try {
-                    const response = await axios.get(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=${interval}&limit=25`);
+                    const response = await axios.get(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=${interval}&limit=${longEmaPeriod}`);
                     data[symbol] = response.data.map(candle => ({
                         time: candle[0],
                         close: parseFloat(candle[4]),
