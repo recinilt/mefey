@@ -20,7 +20,7 @@
         <option value="12h">12 Saat</option>
         <option value="1d">1 Gün</option>
     </select><br>
-    <span>Hacim oranı %0.5'in üzerinde olanları değerlendirebilirsiniz. Piyasa, hafif yukarı yönlü ise long açabilirsiniz. Bunu da, sayfanın en altında yazan "Kısa EMA Uzun EMA\'nın Üzerinde" yazısından anlayabilirsiniz. Sorumluluk kendinize aittir.</span>
+    <span>Hacim oranı %0.5'in üzerinde olanları değerlendirebilirsiniz. Piyasa, hafif yukarı yönlü ise long açabilirsiniz. Bunu da, sayfanın en altında yazan "Piyasa hafif YUKARI yönlü" yazısından anlayabilirsiniz. Sorumluluk kendinize aittir.</span>
     <br>
     <button onclick="loadData()">Verileri Yükle</button>
     <div id="result"></div>
@@ -145,9 +145,9 @@
             const lastShortEma = emaResults.shortEma[emaResults.shortEma.length - 1];
             const lastLongEma = emaResults.longEma[emaResults.longEma.length - 1];
             if (lastShortEma > lastLongEma) {
-                resultDiv.innerHTML += '<h3>Kısa EMA Uzun EMA\'nın Üzerinde</h3>';
+                resultDiv.innerHTML += '<h3>Piyasa hafif YUKARI yönlü</h3>';
             } else {
-                resultDiv.innerHTML += '<h3>Kısa EMA Uzun EMA\'nın Üzerinde Değil</h3>';
+                resultDiv.innerHTML += '<h3>Piyasa hafif AŞAĞI yönlü</h3>';
             }
         }
     </script>

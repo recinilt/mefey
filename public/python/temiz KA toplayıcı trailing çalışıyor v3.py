@@ -9,6 +9,7 @@ import requests
 import json
 #import time
 from datetime import datetime
+import pandas as pd
 
 # API ayarları
 telegram_api_id = '21560699'
@@ -42,7 +43,7 @@ patternSDVasagitek = r"🔻 (\w+)"
 patternKA = r'\b(\w+)\s+TS:'
 #Global değişkenler
 dosya_adi = f"usdtlistem-{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.txt"
-mycost=1.5
+mycost=3.5
 myleverage=7
 kactanbuyuk=17
 #mytextio = ["15m=> %57,2 🔼 1h=> %51,9 🔼 4h=> %52,2 🔼 12h=> %48,5 🔻 1d=> %48,9 🔻 En çok nakit girişi olanlar.(Sonunda 🔼 olanlarda nakit girişi daha sağlıklıdır) Nakitin nereye aktığını gösterir. (Nakit Göçü Raporu) BTC Nakit: %18,8 15m: %68 🔼🔼🔼🔻🔻 XLM Nakit: %11,3 15m: %58 🔼🔼🔼🔼🔼 SOL Nakit: %5,7 15m: %68 🔼🔼🔼🔻🔻 ETH Nakit: %5,4 15m: %59 🔼🔻🔻🔻🔻 DOGE Nakit: %4,6 15m: %45 🔻🔼🔼🔻🔻 XRP Nakit: %4,4 15m: %54 🔼🔼🔼🔻🔻 ADA Nakit: %2,3 15m: %56 🔼🔼🔼🔻🔻 FTM Nakit: %1,8 15m: %78 🔼🔼🔼🔻🔻 USDC Nakit: %1,6 15m: %46 🔻🔻🔼🔼🔼 SAND Nakit: %1,6 15m: %55 🔼🔼🔼🔻🔼 DOT Nakit: %1,6 15m: %66 🔼🔼🔼🔼🔼 PNUT Nakit: %1,5 15m: %50 🔻🔻🔼🔼🔼 NEAR Nakit: %1,3 15m: %59 🔼🔼🔼🔻🔻 PEPE Nakit: %1,3 15m: %62 🔼🔼🔼🔻🔻 LRC Nakit: %1,2 15m: %53 🔼🔼🔼🔼🔼 AVAX Nakit: %1,0 15m: %55 🔼🔼🔼🔻🔻 WLD Nakit: %0,9 15m: %47 🔻🔻🔻🔻🔻 SEI Nakit: %0,9 15m: %59 🔼🔻🔻🔻🔻 FET Nakit: %0,9 15m: %48 🔻🔼🔻🔻🔻 LTC Nakit: %0,8 15m: %65 🔼🔼🔼🔻🔻 WIF Nakit: %0,8 15m: %64 🔼🔼🔼🔻🔻 LINK Nakit: %0,8 15m: %60 🔼🔼🔼🔻🔻 PYR Nakit: %0,8 15m: %55 🔼🔼🔼🔼🔼 BNB Nakit: %0,8 15m: %32 🔻🔻🔻🔻🔻 SHIB Nakit: %0,7 15m: %57 🔼🔼🔼🔻🔼 NOT Nakit: %0,6 15m: %54 🔼🔻🔼🔼🔼 TIA Nakit: %0,6 15m: %43 🔻🔻🔻🔼🔼 SLF Nakit: %0,6 15m: %56 🔼🔼🔼🔼🔼 LDO Nakit: %0,6 15m: %64 🔼🔼🔼🔻🔼 MANA Nakit: %0,5 15m: %62 🔼🔼🔻🔻🔼 Piyasa ciddi anlamda risk barındırıyor. Alım Yapma! Günlük nakit giriş oranı (1d satirindaki değer) %50 üzerine çıkarsa risk azalacaktır. Bu değer %49 altında oldukça piyasaya bulaşma! Kısa vadede tüm coinlere olan nakit girişini beğendim :). Bu modülün mantığını anlamak için bu kelimeye dokun: /EInOut"]
@@ -82,7 +83,7 @@ yasaklilist=["ETHUSDT","SOLUSDT","BTCUSDT","USDCUSDT"]
 symbolstrailingprices=[]
 trailingyuzde=1.5 #yüzde düşünce kapanır.
 yuzdekackazanincakapatsin=20
-
+calissinmi=True
 
 
 ##################################### Yardımcı Fonksiyonlar:
@@ -577,6 +578,7 @@ def closelongs():
         if float(pos['positionAmt']) > 0:
             myacikusdtlist.append(pos['symbol'])
             close_position(pos["symbol"], "mylonglarKA")
+            symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (pos["Symbol"],1),True)
             print(f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}")
             mtext=f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}, Çıkış fiyatı: {get_price(pos["symbol"])}"
             acmakapamalistesi.append(mtext)
@@ -943,9 +945,40 @@ def fiyat_dalgalanma_takip(symbols_trailing_prices, yuzde):
 mymesaj=["naber"]
 async def mesajgonder(mesaj,alici):
     await telegram_client.send_message(alici, mesaj)
+
+
+
+##############
+
+def check_btcusdt_drop():
+    # BTCUSDT için 15 dakikalık mum verilerini al
+    klines = binanceclient.get_klines(symbol='BTCUSDT', interval=Client.KLINE_INTERVAL_15MINUTE, limit=4)
+    
+    # Kapanış fiyatlarını al
+    close_prices = [float(kline[4]) for kline in klines]
+    
+    # Kapanış fiyatlarını pandas Series'e dönüştür
+    data = pd.Series(close_prices)
+    
+    # Yüzde değişimleri hesapla
+    percentage_changes = data.pct_change() * 100
+    
+    # Son 4 periyotta %1'den fazla düşüş olup olmadığını kontrol et
+    if (percentage_changes < -1).all():
+        return True
+    else:
+        return False
+
 # Ana fonksiyondakiler: ############################################################################
 def AnaFonkIO(raw_text):
     global symbolstrailingprices
+    global calissinmi
+    calissinmi=False
+    
+
+    #if check_btcusdt_drop():
+    #    closelongs
+    
     mytextio.clear()
     mytextio.append(raw_text)
     io1d.append(convert_to_floatIO(mytextio[0]))
@@ -1009,11 +1042,13 @@ def AnaFonkIO(raw_text):
         mymesaj.append(c[0])
         close_position(c[0],"mylonglarKA")
         symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (c[0],c[1]),True)
+        time.sleep(8)
 
     for c in io49unaltinda:
         mymesaj.append(c)
         close_position(c,"mylonglarKA")
         symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (c,1),True)
+        time.sleep(8)
 
     #{'Symbol': 'ORDIUSDT', 'Position': 0.3, 'Entry Price': 44.203, 'Mark Price': 44.35, 'Leverage': 4, 'P&L (%)': 0.33}
     print(f"Şuanki açık pozisyonların toplam kar zarar durumu: {round(sum(karzarardurumu),2)} USDT")
@@ -1022,6 +1057,16 @@ def AnaFonkIO(raw_text):
     #    print(c)
     #print(f"symbolstrailingprices: {symbolstrailingprices}")
     #############################
+    trailing_dusen_coinler = fiyat_dalgalanma_takip(symbolstrailingprices, trailingyuzde)
+    print(f" trailing düşen coinler: {trailing_dusen_coinler}")
+    if trailing_dusen_coinler:
+        #telegram_client.send_message(alert_user, f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.")
+        for coin in trailing_dusen_coinler:
+            close_position(coin,"mylonglarKA")
+            mymesaj.append(coin)
+            symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (coin,1.1),True)
+            time.sleep(8)
+    calissinmi=True
     """
     
     if symbolstrailingprices:
@@ -1043,14 +1088,7 @@ def AnaFonkIO(raw_text):
         
     
     """
-    trailing_dusen_coinler = fiyat_dalgalanma_takip(symbolstrailingprices, trailingyuzde)
-    print(f" trailing düşen coinler: {trailing_dusen_coinler}")
-    if trailing_dusen_coinler:
-        #telegram_client.send_message(alert_user, f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.")
-        for coin in trailing_dusen_coinler:
-            close_position(coin,"mylonglarKA")
-            mymesaj.append(coin)
-            symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (coin,1.1),True)
+
 
     #mesajgonder(f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.", alert_user)
     
@@ -1165,6 +1203,8 @@ def AnaFonkIO(raw_text):
         print(f"IO 1d, yukarı trendde mi?: {is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod)}")
 
 def AnaFonkKA(raw_text):
+    global calissinmi
+    calissinmi=False
     #[1,???], ['ETHUSDT', 1.2, 1.1, 1.048, 788, True, 7.3]
     #TRX TS:1,6 MTS:1,4 PT:1,048 Dk:288✅ Kar:%7,6 😍 Grafik (http://tradingview.com/chart/?symbol=BINANCE:TRXUSDT)
     #v2:
@@ -1206,6 +1246,7 @@ def AnaFonkKA(raw_text):
         """
     else:
         print("io1d<altustsinir[1]")
+    calissinmi=True
 
 def AnaFonkMA(raw_text):
     #matchesMA = re.findall(patternMA2, event.raw_text)
@@ -1464,6 +1505,7 @@ def AnaFonkIOF(raw_text):
 ################################# Ana Fonksiyon
 
 async def main():
+    global calissinmi
     await telegram_client.start(phone=phone_number)
     @telegram_client.on(events.NewMessage(from_users=target_user))
     async def handler(event):
@@ -1489,7 +1531,7 @@ async def main():
         
     while True:
         if True:
-            komutlar=["io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","iof","ssr","marketanaliz","ka","ci s d 5m","acc","grio","dayhigh","p btc","ap","io","sdv"]
+            komutlar=["iof","ssr","marketanaliz","ci s d 5m","acc","grio","dayhigh","p btc","ap","sdv"]
             mysent49=["sdv","marketanaliz","io","ci i d 5m","ka","iof"]
             mysent4849=["nls io xxx++","nls io xxxx+","nls io xx+++","nls io x++++","nls io x+++", "p btc","p btc","p btc","p btc","p btc","p btc","p btc","p btc"]
             mysent48=["sdv","ci i d 5m","iof"]
@@ -1510,28 +1552,30 @@ async def main():
                 for mesaj in mymesaj:
                     await mesajgonder(f"Otomatik kapatılan coinler: {mesaj}",alert_user)
                 mymesaj.clear()
-            await telegram_client.send_message(target_user, komutlar[rastgele_sayi(0,len(komutlar)-1)])
-            await asyncio.sleep(rastgele_sayi(100,150))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
-            await telegram_client.send_message(target_user, "ka") #mysent[rastgele_komut()] )#'marketanaliz')
-            await asyncio.sleep(rastgele_sayi(100,150))
-            await telegram_client.send_message(target_user, kaio[0]) #mysent[rastgele_komut()] )#'marketanaliz')
-            await asyncio.sleep(rastgele_sayi(100,150))
-            await telegram_client.send_message(target_user, kaio[1]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(100,150))
-            await telegram_client.send_message(target_user, "io") #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(100,150))
-            await telegram_client.send_message(target_user, iokaci[0]) #mysent[rastgele_komut()] )#'marketanaliz')
-            await asyncio.sleep(rastgele_sayi(100,150))
-            await telegram_client.send_message(target_user, iokaci[1]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(100,150))
-            await telegram_client.send_message(target_user, "ka") #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(100,150))
-            await telegram_client.send_message(target_user, iokaci[2]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(100,150))
-            await telegram_client.send_message(target_user, iokaci[3]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(100,150))
-            await telegram_client.send_message(target_user, mysent48[0]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(100,200))
+            while True:
+                if calissinmi:
+                    await telegram_client.send_message(target_user, komutlar[rastgele_sayi(0,len(komutlar)-1)])
+                    await asyncio.sleep(rastgele_sayi(15,45))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
+                    break
+                else:
+                    await asyncio.sleep(rastgele_sayi(10,20))
+            while True:
+                if calissinmi:
+                    await telegram_client.send_message(target_user, kaio[0]) #mysent[rastgele_komut()] )#'marketanaliz')
+                    await asyncio.sleep(rastgele_sayi(35,100))
+                    break
+                else:
+                    await asyncio.sleep(rastgele_sayi(10,20))
+            while True:
+                if calissinmi:
+                    await telegram_client.send_message(target_user, kaio[1]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
+                    await asyncio.sleep(rastgele_sayi(35,100))
+                    break
+                else:
+                    await asyncio.sleep(rastgele_sayi(10,20))
+            
+            
+            await asyncio.sleep(rastgele_sayi(15,30))
             if False: #acmakapamalistesi:
                 #await telegram_client.send_message(alert_user, acmakapamalistesi)
                 acmakapamalistesi.clear()
