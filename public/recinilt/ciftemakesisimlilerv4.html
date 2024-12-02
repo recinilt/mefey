@@ -7,21 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <label for="shortEma">Kısa EMA Periyodu:</label>
-    <input type="number" id="shortEma" value="12">
-    <label for="longEma">Uzun EMA Periyodu:</label>
-    <input type="number" id="longEma" value="50">
-    <label for="interval">Zaman Dilimi:</label>
-    <select id="interval">
-        <option value="5m" selected>5 Dakika</option>
-        <option value="15m">15 Dakika</option>
-        <option value="1h">1 Saat</option>
-        <option value="4h">4 Saat</option>
-        <option value="12h">12 Saat</option>
-        <option value="1d">1 Gün</option>
-    </select><br>
-    <span>Hacim oranı, 5 dakikalık periyotta, %0.02'in üzerinde olanları değerlendirebilirsiniz. Grafiğe bakın, yataydan burnunu yukarı çevirmişse ve piyasa, hafif yukarı yönlü ise long açabilirsiniz. Bunu da, sayfanın en altında yazan "Piyasa hafif YUKARI yönlü" yazısından anlayabilirsiniz. Sorumluluk kendinize aittir.</span>
-    <br><span>(Veri yüklenmesi yaklaşık 2 dakika alır. Butona bastıktan sonra, otomatik olarak her 5 dakikada bir kendisi araştırır. Yukarı kıran bulursa da sesli uyarı verir. Cep telefonunuzdan açıyorsanız, ayarlardan uygulama ayarlarına girip, "Kullanılmıyorsa uygulama etkinliğini duraklat."ı kapatın, "Pil tasarrufu" bölümünde de kısıtlama yok'u seçin. telefon ekranı kapalıyken de uyarı verir.)</span><br>
+    <!-- Mevcut HTML içeriği burada -->
     <button onclick="loadData()">Verileri Yükle</button>
     <div id="result"></div>
 
@@ -43,7 +29,7 @@
                 const emaResults = calculateEMATotalPrices(totalPrices);
                 console.log('EMA Results:', emaResults);
                 displayResults(emaCrosses, data, emaResults);
-                checkForAlarm(emaCrosses);
+                checkForAlarm(emaCrosses, emaResults); // Piyasa yönünü ilet
             } catch (error) {
                 console.error('Error loading data:', error);
                 document.getElementById('result').innerText = 'Veri yüklenirken bir hata oluştu.';
@@ -85,9 +71,11 @@
                 const closes = data[symbol].map(candle => candle.close);
                 const shortEma = calculateEMA(closes, shortEmaPeriod);
                 const longEma = calculateEMA(closes, longEmaPeriod);
-                if ((shortEma[shortEma.length - 1] > longEma[longEma.length - 1] && shortEma[shortEma.length - 2] <= longEma[longEma.length - 2]) ||
+                if (
+                    (shortEma[shortEma.length - 1] > longEma[longEma.length - 1] && shortEma[shortEma.length - 2] <= longEma[longEma.length - 2]) ||
                     (shortEma[shortEma.length - 2] > longEma[longEma.length - 2] && shortEma[shortEma.length - 3] <= longEma[longEma.length - 3]) ||
-                    (shortEma[shortEma.length - 3] > longEma[longEma.length - 3] && shortEma[shortEma.length - 4] <= longEma[longEma.length - 4])) {
+                    (shortEma[shortEma.length - 3] > longEma[longEma.length - 3] && shortEma[shortEma.length - 4] <= longEma[longEma.length - 4])
+                ) {
                     emaCrosses.push(symbol);
                 }
             }
@@ -120,8 +108,8 @@
         }
 
         function calculateEMATotalPrices(totalPrices) {
-            const shortEma = calculateEMA(totalPrices, 9); //toplam piyasa tutarı kısa ema
-            const longEma = calculateEMA(totalPrices, 26); //toplam piyasa tutarı uzun ema
+            const shortEma = calculateEMA(totalPrices, 9); // toplam piyasa tutarı kısa ema
+            const longEma = calculateEMA(totalPrices, 26); // toplam piyasa tutarı uzun ema
             return { shortEma, longEma };
         }
         
@@ -156,80 +144,25 @@
             const lastLongEma = emaResults.longEma[emaResults.longEma.length - 1];
             if (lastShortEma > lastLongEma) {
                 resultDiv.innerHTML += '<h3>Piyasa hafif YUKARI yönlü</h3>';
+                window.marketDirection = 'up'; // Piyasa yönünü global olarak sakla
             } else {
                 resultDiv.innerHTML += '<h3>Piyasa hafif AŞAĞI yönlü</h3>';
+                window.marketDirection = 'down'; // Piyasa yönünü global olarak sakla
             }
         }
 
-        /*
-        function displayResults(emaCrosses, data, emaResults) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '<h3>EMA Kesişim Noktaları:</h3>';
-            if (emaCrosses.length === 0) {
-                resultDiv.innerHTML += '<p>Yukarı kıran coin bulunamadı.</p>';
-                return;
-            }
-            const totalVolume = Object.values(data).reduce((sum, candles) => sum + candles[candles.length - 1].volume, 0);
-            const results = emaCrosses.map(symbol => {
-                const volume = data[symbol][data[symbol].length - 1].volume;
-                const volumeRatio = (volume / totalVolume * 100).toFixed(2);
-                return { symbol, volume, volumeRatio };
-            });
-
-            results.sort((a, b) => b.volumeRatio - a.volumeRatio);
-
-            results.forEach(result => {
-                resultDiv.innerHTML += `
-                    <p>${result.symbol} - Hacim: ${result.volume} - Oran: ${result.volumeRatio}% - 
-                    <a href="https://www.tradingview.com/chart/?symbol=BINANCE:${result.symbol}&interval=5" target="_blank">
-                        Grafik
-                    </a>
-                    </p>`;
-            });
-
-            const lastShortEma = emaResults.shortEma[emaResults.shortEma.length - 1];
-            const lastLongEma = emaResults.longEma[emaResults.longEma.length - 1];
-            if (lastShortEma > lastLongEma) {
-                resultDiv.innerHTML += '<h3>Piyasa hafif YUKARI yönlü</h3>';
-            } else {
-                resultDiv.innerHTML += '<h3>Piyasa hafif AŞAĞI yönlü</h3>';
-            }
-        }
-        */
-        /*
-        function displayResults(emaCrosses, data, emaResults) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '<h3>EMA Kesişim Noktaları:</h3>';
-            if (emaCrosses.length === 0) {
-                resultDiv.innerHTML += '<p>Yukarı kıran coin bulunamadı.</p>';
-                return;
-            }
-            const totalVolume = Object.values(data).reduce((sum, candles) => sum + candles[candles.length - 1].volume, 0);
-            const results = emaCrosses.map(symbol => {
-                const volume = data[symbol][data[symbol].length - 1].volume;
-                const volumeRatio = (volume / totalVolume * 100).toFixed(2);
-                return { symbol, volume, volumeRatio };
-            });
-
-            results.sort((a, b) => b.volumeRatio - a.volumeRatio);
-
-            results.forEach(result => {
-                resultDiv.innerHTML += `<p>${result.symbol} - Hacim: ${result.volume} - Oran: ${result.volumeRatio}% - <a href="http://tradingview.com/chart/?symbol=BINANCE:${result.symbol}" target="_blank">Grafik</a></p>`;
-            });
-
-            const lastShortEma = emaResults.shortEma[emaResults.shortEma.length - 1];
-            const lastLongEma = emaResults.longEma[emaResults.longEma.length - 1];
-            if (lastShortEma > lastLongEma) {
-                resultDiv.innerHTML += '<h3>Piyasa hafif YUKARI yönlü</h3>';
-            } else {
-                resultDiv.innerHTML += '<h3>Piyasa hafif AŞAĞI yönlü</h3>';
-            }
-        }
-            */
-
-        function checkForAlarm(emaCrosses) {
+        function checkForAlarm(emaCrosses, emaResults) {
             if (emaCrosses.length > 0) {
-                const audio = new Audio('beep-warning-6387.wav');
+                let audioFile = 'beep-warning-6387.wav'; // Varsayılan ses dosyası
+                // Piyasa yönünü kontrol et
+                const lastShortEma = emaResults.shortEma[emaResults.shortEma.length - 1];
+                const lastLongEma = emaResults.longEma[emaResults.longEma.length - 1];
+                if (lastShortEma > lastLongEma) {
+                    audioFile = 'yukari.wav'; // Piyasa yukarı yönlü
+                } else {
+                    audioFile = 'asagi.wav'; // Piyasa aşağı yönlü
+                }
+                const audio = new Audio(audioFile);
                 audio.play();
             }
         }
