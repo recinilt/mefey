@@ -19,10 +19,8 @@
         <option value="4h">4 Saat</option>
         <option value="12h">12 Saat</option>
         <option value="1d">1 Gün</option>
-    </select><br>
-    <span>Hacim oranı, %0.5'in üzerinde olanlar değerlendirilebilir. %3 takip eden stoplu long açılabilir. %5 kar yapınca da kar realizasyonuna gidilebilir. Sorumluluk size aittir.</span><br>
-    <span>Kısa periyodu 20, uzunu 25 yapınca da güzel şeyler çıkabiliyor.</span><br>
-    <button onclick="loadData()">Verileri Yükle</button><br>
+    </select>
+    <button onclick="loadData()">Verileri Yükle</button>
     <div id="result"></div>
 
     <script>
@@ -38,7 +36,11 @@
                 console.log('Historical Data:', data);
                 const emaCrosses = calculateEMACrosses(data, shortEmaPeriod, longEmaPeriod);
                 console.log('EMA Crosses:', emaCrosses);
-                displayResults(emaCrosses, data);
+                const totalPrices = calculateTotalPrices(data);
+                console.log('Total Prices:', totalPrices);
+                const emaResults = calculateEMATotalPrices(totalPrices);
+                console.log('EMA Results:', emaResults);
+                displayResults(emaCrosses, data, emaResults);
             } catch (error) {
                 console.error('Error loading data:', error);
                 document.getElementById('result').innerText = 'Veri yüklenirken bir hata oluştu.';
@@ -96,7 +98,29 @@
             return emaArray;
         }
 
-        function displayResults(emaCrosses, data) {
+        function calculateTotalPrices(data) {
+            const totalPrices = [];
+            const timestamps = Object.values(data)[0].map(candle => candle.time);
+            for (const time of timestamps) {
+                let totalPrice = 0;
+                for (const symbol in data) {
+                    const candle = data[symbol].find(c => c.time === time);
+                    if (candle) {
+                        totalPrice += candle.close;
+                    }
+                }
+                totalPrices.push(totalPrice);
+            }
+            return totalPrices;
+        }
+
+        function calculateEMATotalPrices(totalPrices) {
+            const shortEma = calculateEMA(totalPrices, 2);
+            const longEma = calculateEMA(totalPrices, 5);
+            return { shortEma, longEma };
+        }
+
+        function displayResults(emaCrosses, data, emaResults) {
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = '<h3>EMA Kesişim Noktaları:</h3>';
             if (emaCrosses.length === 0) {
@@ -115,6 +139,14 @@
             results.forEach(result => {
                 resultDiv.innerHTML += `<p>${result.symbol} - Hacim: ${result.volume} - Oran: ${result.volumeRatio}%</p>`;
             });
+
+            const lastShortEma = emaResults.shortEma[emaResults.shortEma.length - 1];
+            const lastLongEma = emaResults.longEma[emaResults.longEma.length - 1];
+            if (lastShortEma > lastLongEma) {
+                resultDiv.innerHTML += '<h3>Kısa EMA Uzun EMA\'nın Üzerinde</h3>';
+            } else {
+                resultDiv.innerHTML += '<h3>Kısa EMA Uzun EMA\'nın Üzerinde Değil</h3>';
+            }
         }
     </script>
 </body>
