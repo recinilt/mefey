@@ -974,8 +974,8 @@ def AnaFonkIO(raw_text):
     global symbolstrailingprices
     global calissinmi
     calissinmi=False
+        
     
-
     #if check_btcusdt_drop():
     #    closelongs
     

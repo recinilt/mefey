@@ -118,7 +118,7 @@
 
         function calculateEMATotalPrices(totalPrices) {
             const shortEma = calculateEMA(totalPrices, 9); //toplam piyasa tutarı kısa ema
-            const longEma = calculateEMA(totalPrices, 12); //toplam piyasa tutarı uzun ema
+            const longEma = calculateEMA(totalPrices, 26); //toplam piyasa tutarı uzun ema
             return { shortEma, longEma };
         }
 
