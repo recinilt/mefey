@@ -999,7 +999,7 @@ def AnaFonkIO(raw_text):
         print("Açık Pozisyonlar:")
         for pos in positions:
             print(pos)
-            if pos["P&L (%)"]>(yuzdekackazanincakapatsin) or pos["P&L (%)"]<(-13):
+            if pos["P&L (%)"]>(yuzdekackazanincakapatsin) or pos["P&L (%)"]<(-1*trailingyuzde):
                 kapatılacaklar.append([pos["Symbol"],pos["Mark Price"]])
             kar=pos["Position"]*pos["Entry Price"]*pos['P&L (%)']*0.01
             #print(kar)
@@ -1053,7 +1053,7 @@ def AnaFonkIO(raw_text):
     
     """
     trailing_dusen_coinler = fiyat_dalgalanma_takip(symbolstrailingprices, trailingyuzde)
-    print(trailing_dusen_coinler)
+    print(f" trailing düşen coinler: {trailing_dusen_coinler}")
     if trailing_dusen_coinler:
         #telegram_client.send_message(alert_user, f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.")
         for coin in trailing_dusen_coinler:
