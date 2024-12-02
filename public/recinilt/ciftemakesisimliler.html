@@ -7,6 +7,19 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
+    <label for="shortEma">Kısa EMA Periyodu:</label>
+    <input type="number" id="shortEma" value="14">
+    <label for="longEma">Uzun EMA Periyodu:</label>
+    <input type="number" id="longEma" value="25">
+    <label for="interval">Zaman Dilimi:</label>
+    <select id="interval">
+        <option value="5m">5 Dakika</option>
+        <option value="15m">15 Dakika</option>
+        <option value="1h">1 Saat</option>
+        <option value="4h">4 Saat</option>
+        <option value="12h">12 Saat</option>
+        <option value="1d">1 Gün</option>
+    </select>
     <button onclick="loadData()">Verileri Yükle</button>
     <div id="result"></div>
 
@@ -14,11 +27,14 @@
         async function loadData() {
             document.getElementById('result').innerText = 'Yükleniyor...';
             try {
+                const shortEmaPeriod = parseInt(document.getElementById('shortEma').value);
+                const longEmaPeriod = parseInt(document.getElementById('longEma').value);
+                const interval = document.getElementById('interval').value;
                 const symbols = await getSymbols();
                 console.log('Symbols:', symbols);
-                const data = await getHistoricalData(symbols);
+                const data = await getHistoricalData(symbols, interval);
                 console.log('Historical Data:', data);
-                const emaCrosses = calculateEMACrosses(data);
+                const emaCrosses = calculateEMACrosses(data, shortEmaPeriod, longEmaPeriod);
                 console.log('EMA Crosses:', emaCrosses);
                 displayResults(emaCrosses, data);
             } catch (error) {
@@ -39,11 +55,11 @@
             }
         }
 
-        async function getHistoricalData(symbols) {
+        async function getHistoricalData(symbols, interval) {
             const data = {};
             for (const symbol of symbols) {
                 try {
-                    const response = await axios.get(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=5m&limit=25`);
+                    const response = await axios.get(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=${interval}&limit=25`);
                     data[symbol] = response.data.map(candle => ({
                         time: candle[0],
                         close: parseFloat(candle[4]),
@@ -56,12 +72,12 @@
             return data;
         }
 
-        function calculateEMACrosses(data) {
+        function calculateEMACrosses(data, shortEmaPeriod, longEmaPeriod) {
             const emaCrosses = [];
             for (const symbol in data) {
                 const closes = data[symbol].map(candle => candle.close);
-                const shortEma = calculateEMA(closes, 14);
-                const longEma = calculateEMA(closes, 25);
+                const shortEma = calculateEMA(closes, shortEmaPeriod);
+                const longEma = calculateEMA(closes, longEmaPeriod);
                 if (shortEma[shortEma.length - 1] > longEma[longEma.length - 1] && shortEma[shortEma.length - 2] <= longEma[longEma.length - 2]) {
                     emaCrosses.push(symbol);
                 }
