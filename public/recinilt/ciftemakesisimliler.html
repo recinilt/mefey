@@ -81,9 +81,11 @@
         function displayResults(emaCrosses, data) {
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = '<h3>EMA Kesişim Noktaları:</h3>';
+            const totalVolume = Object.values(data).reduce((sum, candles) => sum + candles[candles.length - 1].volume, 0);
             emaCrosses.forEach(symbol => {
                 const volume = data[symbol][data[symbol].length - 1].volume;
-                resultDiv.innerHTML += `<p>${symbol} - Hacim: ${volume}</p>`;
+                const volumeRatio = (volume / totalVolume * 100).toFixed(2);
+                resultDiv.innerHTML += `<p>${symbol} - Hacim: ${volume} - Oran: ${volumeRatio}%</p>`;
             });
         }
     </script>
