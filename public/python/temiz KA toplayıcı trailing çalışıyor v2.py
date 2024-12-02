@@ -1058,7 +1058,7 @@ def AnaFonkIO(raw_text):
         #telegram_client.send_message(alert_user, f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.")
         for coin in trailing_dusen_coinler:
             close_position(coin,"mylonglarKA")
-            mymesaj.append[coin]
+            mymesaj.append(coin)
             symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (coin,1.1),True)
 
     #mesajgonder(f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.", alert_user)
