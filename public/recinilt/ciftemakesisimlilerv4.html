@@ -124,7 +124,44 @@
             const longEma = calculateEMA(totalPrices, 26); //toplam piyasa tutarı uzun ema
             return { shortEma, longEma };
         }
+        
+        function displayResults(emaCrosses, data, emaResults) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<h3>EMA Kesişim Noktaları:</h3>';
+            if (emaCrosses.length === 0) {
+                resultDiv.innerHTML += '<p>Yukarı kıran coin bulunamadı.</p>';
+                return;
+            }
+            const totalVolume = Object.values(data).reduce((sum, candles) => sum + candles[candles.length - 1].volume, 0);
+            const results = emaCrosses.map(symbol => {
+                const volume = data[symbol][data[symbol].length - 1].volume;
+                const volumeRatio = (volume / totalVolume * 100).toFixed(2);
+                return { symbol, volume, volumeRatio };
+            });
 
+            results.sort((a, b) => b.volumeRatio - a.volumeRatio);
+
+            results.forEach(result => {
+                // Eğer symbol içinde "1000" varsa çıkar
+                const cleanSymbol = result.symbol.replace("1000", "");
+                resultDiv.innerHTML += `
+                    <p>${result.symbol} - Hacim: ${result.volume} - Oran: ${result.volumeRatio}% - 
+                    <a href="https://www.tradingview.com/chart/?symbol=BINANCE:${cleanSymbol}&interval=5" target="_blank">
+                        Grafik
+                    </a>
+                    </p>`;
+            });
+
+            const lastShortEma = emaResults.shortEma[emaResults.shortEma.length - 1];
+            const lastLongEma = emaResults.longEma[emaResults.longEma.length - 1];
+            if (lastShortEma > lastLongEma) {
+                resultDiv.innerHTML += '<h3>Piyasa hafif YUKARI yönlü</h3>';
+            } else {
+                resultDiv.innerHTML += '<h3>Piyasa hafif AŞAĞI yönlü</h3>';
+            }
+        }
+
+        /*
         function displayResults(emaCrosses, data, emaResults) {
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = '<h3>EMA Kesişim Noktaları:</h3>';
@@ -158,7 +195,7 @@
                 resultDiv.innerHTML += '<h3>Piyasa hafif AŞAĞI yönlü</h3>';
             }
         }
-
+        */
         /*
         function displayResults(emaCrosses, data, emaResults) {
             const resultDiv = document.getElementById('result');
