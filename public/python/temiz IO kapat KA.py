@@ -396,61 +396,77 @@ def eklesil(coin, liste, eylem):
             myshortlarCi.remove(coin)
         elif liste=="myshortlarIOF":
             myshortlarIOF.remove(coin)
+
+def IOkucuksekapat(sayi):
+    if sayi<49.5:
+        positions = binanceclient.futures_position_information()
+        usdt_positions = [
+        pos for pos in positions if pos['symbol'].endswith('USDT') and float(pos['positionAmt']) != 0
+        ]
+        myacikusdtlist=[]
+        for pos in usdt_positions:
+            myacikusdtlist.append(pos['symbol'])
+            close_position(pos["symbol"], "mylonglarKA")
+            print(f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}")
+        #return myacikusdtlist
+
 # Ana fonksiyondakiler:
 def AnaFonkIO(raw_text):
     mytextio.clear()
     mytextio.append(raw_text)
     io1d.append(convert_to_floatIO(mytextio[0]))
-    if io1d[len(io1d)-1]>altustsinir[1] and not io1d[len(io1d)-2]>altustsinir[1]:
-        shortlarikapat()
-    elif io1d[len(io1d)-1]<altustsinir[1] and not io1d[len(io1d)-2]<altustsinir[1]:
-        longlarikapat()
-    elif io1d[len(io1d)-1]<altustsinir[0] and not io1d[len(io1d)-2]<altustsinir[0]:
-        longlarikapat()
-    elif io1d[len(io1d)-1]>altustsinir[0] and not io1d[len(io1d)-2]<altustsinir[0]:
-        shortlarikapat()
-    
-    if not check_arrowsIO(mytextio[0]): #re.search(pattern_15m, event.raw_text) and re.search(pattern_1h, event.raw_text) and re.search(pattern_4h, event.raw_text):
-        print("Piyasa riskli!!!!!!!!!!!!!!!!!")
-        if len(mylonglarKA)>0:
-            for coin in mylonglarKA:
-                close_position(coin,"mylonglarKA")
-                print(f"{coin} pozisyonu kapatıldı.")
-                #mylonglarKA.remove(coin)
-                #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-        if len(mylonglarMA)>0:
-            for coin in mylonglarMA:
-                close_position(coin,"mylonglarMA")
-                print(f"{coin} pozisyonu kapatıldı.")
-                #mylonglarMA.remove(coin)
-                #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-        if len(mylonglarSDV)>0:    
-            for coin in mylonglarSDV:
-                close_position(coin,"mylonglarSDV")
-                print(f"{coin} pozisyonu kapatıldı.")
-                #mylonglarSDV.remove(coin)
-                #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-        if len(mylonglarIOF)>0:    
-            for coin in mylonglarIOF:
-                close_position(coin,"mylonglarIOF")
-                print(f"{coin} pozisyonu kapatıldı.")
-                #mylonglarIOF.remove(coin)
-                #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-        if len(mylonglarCi)>0:    
-            for coin in mylonglarCi:
-                close_position(coin,"mylonglarCi")
-                print(f"{coin} pozisyonu kapatıldı.")
-                #mylonglarCi.remove(coin)
-                #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-    else:
-        print("piyasa iyi durumda.>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<")
-    print(f"Longlar:\nCi:{mylonglarCi}\nIOF:{mylonglarIOF}\nSDV:{mylonglarSDV}\nKA:{mylonglarKA}\nMA:{mylonglarMA}")
-    print(f"Shortlar:\nCi:{myshortlarCi}\nIOF:{myshortlarIOF}\nSDV:{myshortlarSDV}")  
-    print(f"IOs:{io1d}")   
-    print(f"Kar zinciri: {hesapkitap}")      
-    toplamkarzarar=sum(hesapkitap) 
-    print(f"Toplam kar zarar: {toplamkarzarar}")
-    print(f"IO 1d, yukarı trendde mi?: {is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod)}")
+    IOkucuksekapat(io1d[-1])
+    if False:
+        if io1d[len(io1d)-1]>altustsinir[1] and not io1d[len(io1d)-2]>altustsinir[1]:
+            shortlarikapat()
+        elif io1d[len(io1d)-1]<altustsinir[1] and not io1d[len(io1d)-2]<altustsinir[1]:
+            longlarikapat()
+        elif io1d[len(io1d)-1]<altustsinir[0] and not io1d[len(io1d)-2]<altustsinir[0]:
+            longlarikapat()
+        elif io1d[len(io1d)-1]>altustsinir[0] and not io1d[len(io1d)-2]<altustsinir[0]:
+            shortlarikapat()
+        
+        if not check_arrowsIO(mytextio[0]): #re.search(pattern_15m, event.raw_text) and re.search(pattern_1h, event.raw_text) and re.search(pattern_4h, event.raw_text):
+            print("Piyasa riskli!!!!!!!!!!!!!!!!!")
+            if len(mylonglarKA)>0:
+                for coin in mylonglarKA:
+                    close_position(coin,"mylonglarKA")
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    #mylonglarKA.remove(coin)
+                    #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+            if len(mylonglarMA)>0:
+                for coin in mylonglarMA:
+                    close_position(coin,"mylonglarMA")
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    #mylonglarMA.remove(coin)
+                    #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+            if len(mylonglarSDV)>0:    
+                for coin in mylonglarSDV:
+                    close_position(coin,"mylonglarSDV")
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    #mylonglarSDV.remove(coin)
+                    #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+            if len(mylonglarIOF)>0:    
+                for coin in mylonglarIOF:
+                    close_position(coin,"mylonglarIOF")
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    #mylonglarIOF.remove(coin)
+                    #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+            if len(mylonglarCi)>0:    
+                for coin in mylonglarCi:
+                    close_position(coin,"mylonglarCi")
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    #mylonglarCi.remove(coin)
+                    #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+        else:
+            print("piyasa iyi durumda.>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<")
+        print(f"Longlar:\nCi:{mylonglarCi}\nIOF:{mylonglarIOF}\nSDV:{mylonglarSDV}\nKA:{mylonglarKA}\nMA:{mylonglarMA}")
+        print(f"Shortlar:\nCi:{myshortlarCi}\nIOF:{myshortlarIOF}\nSDV:{myshortlarSDV}")  
+        print(f"IOs:{io1d}")   
+        print(f"Kar zinciri: {hesapkitap}")      
+        toplamkarzarar=sum(hesapkitap) 
+        print(f"Toplam kar zarar: {toplamkarzarar}")
+        print(f"IO 1d, yukarı trendde mi?: {is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod)}")
 
 def AnaFonkKA(raw_text):
     #[1,???], ['ETHUSDT', 1.2, 1.1, 1.048, 788, True, 7.3]
@@ -475,6 +491,7 @@ def AnaFonkKA(raw_text):
                 print(f"{coin} long açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
         
+        """
         for coin in mylonglarKA:
             if coin in kadakilonglar:
                 print(f"{coin} 'e zaten long açılmış.")
@@ -484,6 +501,7 @@ def AnaFonkKA(raw_text):
                 #mylonglarKA.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         print(f"Longlar:{mylonglarKA}")
+        """
     else:
         print("io1d<altustsinir[1]")
 
@@ -741,16 +759,16 @@ async def main():
         if event.raw_text.startswith("Canlı olan coin sayısı") and check_arrowsIO(mytextio[0]): #KA
             AnaFonkKA(event.raw_text)
 
-        if event.raw_text.startswith("Yapay zeka,") and check_arrowsIO(mytextio[0]): #Marketanaliz MA
+        if event.raw_text.startswith("?????Yapay zeka,") and check_arrowsIO(mytextio[0]): #Marketanaliz MA
             AnaFonkMA(event.raw_text)
         
         if event.raw_text.startswith("??????Korelasyon Şiddeti Raporu (5m)"): #ci i d 5m
             AnaFonkCi(event.raw_text)
 
-        if event.raw_text.startswith("Sert Hareket Edenler"): #SDV
+        if event.raw_text.startswith("??????Sert Hareket Edenler"): #SDV
             AnaFonkSDV(event.raw_text)     
 
-        if event.raw_text.startswith("Marketteki Tüm Coinlere Olan en çok nakit girişi olanlar."): #IOF
+        if event.raw_text.startswith("???????Marketteki Tüm Coinlere Olan en çok nakit girişi olanlar."): #IOF
             AnaFonkIOF(event.raw_text)   
 
     while True:

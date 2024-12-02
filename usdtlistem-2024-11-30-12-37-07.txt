@@ -1,0 +1,6 @@
+Döngüdeki satýr: 1
+Döngüdeki satýr: 2
+Döngüdeki satýr: 3
+Döngüdeki satýr: 4
+Döngüdeki satýr: 5
+Döngüdeki satýr: 6

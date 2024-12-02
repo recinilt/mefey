@@ -68,7 +68,7 @@ altustsinir=[48.1,49.5]
 mybuys=[]
 mysells=[]
 hesapkitap=[]
-smaperiod=5
+smaperiod=4
 myacc=[]
 
 
@@ -157,6 +157,25 @@ def get_price(symbol):
 def myquantity(coin):
     return round(((mycost*myleverage)/float(get_price(coin))),3)
 
+karzararnumber=[]
+karzararlistesi=[]
+def karzararesapla(coin, quantity, entry, close, liste, pozisyon):
+    kar=pozisyon * quantity * (float(close) - float(entry))
+    karzararlistesi.append([liste,coin,kar])
+    print(f"kar zarar litesi:{karzararlistesi}")
+    #mykar=[]
+    #for elem in reversed(karzararlistesi):
+    #    if elem[1] == coin:
+    #        mykar.append(float(k[2]))
+    #        #print(elem[1])  # Son "kar" elemanının ikinci değeri
+    #        break
+    #for k in karzararlistesi:
+        
+    karzararnumber.append(kar)
+    print(kar)
+    print(sum(karzararnumber))
+
+
 def close_position(coin,liste):
     # Mevcut pozisyonu kapat
     positions = binanceclient.futures_position_information(symbol=coin)
@@ -164,6 +183,7 @@ def close_position(coin,liste):
         if float(position['positionAmt']) != 0:
             side = SIDE_SELL if float(position['positionAmt']) > 0 else SIDE_BUY
             myquantity=abs(float(position['positionAmt']))
+            karzararesapla(coin,myquantity,position['entryPrice'],get_price(coin),liste,1 if side=="SIDE_BUY" else -1)
             order = binanceclient.futures_create_order(
                 symbol=coin,
                 side=side,
@@ -214,56 +234,56 @@ def get_symbol_precision(symbol):
         return None
 
 def buy_position(symbol, leverage, amount, liste):
-    if is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod):
-        try:
-            binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
-            #binanceclient.futures_change_margin_type(symbol=symbol, marginType=ISOLATED)
-            precision = get_symbol_precision(symbol)
-            if precision is None:
-                print("Precision could not be determined.")
-                return
+    #if is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod):
+    try:
+        binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
+        #binanceclient.futures_change_margin_type(symbol=symbol, marginType=ISOLATED)
+        precision = get_symbol_precision(symbol)
+        if precision is None:
+            print("Precision could not be determined.")
+            return
 
-            quantity = round(amount * leverage / float(binanceclient.get_symbol_ticker(symbol=symbol.upper())['price']), precision)
-            
-            order = binanceclient.futures_create_order(
-                symbol=symbol.upper(),
-                side='BUY',
-                type='MARKET',
-                quantity=quantity,
-                leverage=leverage
-            )
-            print(order)
-            hesapla(symbol, "buy",1)
-            eklesil(symbol,liste,"ekle")
-            time.sleep(5)  # 5 saniye bekle
-        except Exception as e:
-            print(f"Error: {e}")
+        quantity = round(amount * leverage / float(binanceclient.get_symbol_ticker(symbol=symbol.upper())['price']), precision)
+        
+        order = binanceclient.futures_create_order(
+            symbol=symbol.upper(),
+            side='BUY',
+            type='MARKET',
+            quantity=quantity,
+            leverage=leverage
+        )
+        print(order)
+        hesapla(symbol, "buy",1)
+        eklesil(symbol,liste,"ekle")
+        time.sleep(5)  # 5 saniye bekle
+    except Exception as e:
+        print(f"Error: {e}")
 
 def sell_position(symbol, leverage, amount, liste):
-    if not is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod):
-        try:
-            binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
-            #binanceclient.futures_change_margin_type(symbol=symbol, marginType=ISOLATED)
-            precision = get_symbol_precision(symbol)
-            if precision is None:
-                print("Precision could not be determined.")
-                return
+    #•if not is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod):
+    try:
+        binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
+        #binanceclient.futures_change_margin_type(symbol=symbol, marginType=ISOLATED)
+        precision = get_symbol_precision(symbol)
+        if precision is None:
+            print("Precision could not be determined.")
+            return
 
-            quantity = round(amount * leverage / float(binanceclient.get_symbol_ticker(symbol=symbol.upper())['price']), precision)
-            
-            order = binanceclient.futures_create_order(
-                symbol=symbol.upper(),
-                side='SELL',
-                type='MARKET',
-                quantity=quantity,
-                leverage=leverage
-            )
-            print(order)
-            hesapla(symbol,"sell",1)
-            eklesil(symbol,liste,"ekle")
-            time.sleep(5)  # 5 saniye bekle
-        except Exception as e:
-            print(f"Error: {e}")
+        quantity = round(amount * leverage / float(binanceclient.get_symbol_ticker(symbol=symbol.upper())['price']), precision)
+        
+        order = binanceclient.futures_create_order(
+            symbol=symbol.upper(),
+            side='SELL',
+            type='MARKET',
+            quantity=quantity,
+            leverage=leverage
+        )
+        print(order)
+        hesapla(symbol,"sell",1)
+        eklesil(symbol,liste,"ekle")
+        time.sleep(5)  # 5 saniye bekle
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 def convert_to_floatIO(text):
@@ -358,7 +378,7 @@ def is_above_last_period_average(num, lst, period):
     # Son 7 elemanın ortalamasını hesapla
     average = sum(last_7) / len(last_7) if last_7 else 49.1
     # Sayı ortalamadan büyükse True, değilse False döndür
-    return num > average
+    return num >= average
 
 
 def eklesil(coin, liste, eylem):
@@ -396,54 +416,56 @@ def eklesil(coin, liste, eylem):
             myshortlarCi.remove(coin)
         elif liste=="myshortlarIOF":
             myshortlarIOF.remove(coin)
+
+def IOkucuksekapat(sayi):
+    if sayi<49.5:
+        positions = binanceclient.futures_position_information()
+        usdt_positions = [
+        pos for pos in positions if pos['symbol'].endswith('USDT') and float(pos['positionAmt']) != 0
+        ]
+        myacikusdtlist=[]
+        for pos in usdt_positions:
+            myacikusdtlist.append(pos['symbol'])
+            close_position(pos["symbol"], "mylonglarKA")
+            print(f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}")
+        #return myacikusdtlist
+
+def IOdusuyorsakapat():
+    if not is_above_last_period_average(io1d[-1],io1d,smaperiod):
+        positions = binanceclient.futures_position_information()
+        usdt_positions = [
+        pos for pos in positions if pos['symbol'].endswith('USDT') and float(pos['positionAmt']) != 0
+        ]
+        myacikusdtlist=[]
+        for pos in usdt_positions:
+            myacikusdtlist.append(pos['symbol'])
+            close_position(pos["symbol"], "mylonglarKA")
+            print(f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}")
+        #return myacikusdtlist
+
+def IOcikiyorsakapat():
+    if is_above_last_period_average(io1d[-1],io1d,smaperiod):
+        positions = binanceclient.futures_position_information()
+        usdt_positions = [
+        pos for pos in positions if pos['symbol'].endswith('USDT') and float(pos['positionAmt']) != 0
+        ]
+        myacikusdtlist=[]
+        for pos in usdt_positions:
+            myacikusdtlist.append(pos['symbol'])
+            close_position(pos["symbol"], "mylonglarKA")
+            print(f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}")
+        #return myacikusdtlist
 # Ana fonksiyondakiler:
 def AnaFonkIO(raw_text):
     mytextio.clear()
     mytextio.append(raw_text)
     io1d.append(convert_to_floatIO(mytextio[0]))
-    if io1d[len(io1d)-1]>altustsinir[1] and not io1d[len(io1d)-2]>altustsinir[1]:
+    if is_above_last_period_average(io1d[-1],io1d,smaperiod):
         shortlarikapat()
-    elif io1d[len(io1d)-1]<altustsinir[1] and not io1d[len(io1d)-2]<altustsinir[1]:
-        longlarikapat()
-    elif io1d[len(io1d)-1]<altustsinir[0] and not io1d[len(io1d)-2]<altustsinir[0]:
-        longlarikapat()
-    elif io1d[len(io1d)-1]>altustsinir[0] and not io1d[len(io1d)-2]<altustsinir[0]:
-        shortlarikapat()
-    
-    if not check_arrowsIO(mytextio[0]): #re.search(pattern_15m, event.raw_text) and re.search(pattern_1h, event.raw_text) and re.search(pattern_4h, event.raw_text):
-        print("Piyasa riskli!!!!!!!!!!!!!!!!!")
-        if len(mylonglarKA)>0:
-            for coin in mylonglarKA:
-                close_position(coin,"mylonglarKA")
-                print(f"{coin} pozisyonu kapatıldı.")
-                #mylonglarKA.remove(coin)
-                #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-        if len(mylonglarMA)>0:
-            for coin in mylonglarMA:
-                close_position(coin,"mylonglarMA")
-                print(f"{coin} pozisyonu kapatıldı.")
-                #mylonglarMA.remove(coin)
-                #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-        if len(mylonglarSDV)>0:    
-            for coin in mylonglarSDV:
-                close_position(coin,"mylonglarSDV")
-                print(f"{coin} pozisyonu kapatıldı.")
-                #mylonglarSDV.remove(coin)
-                #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-        if len(mylonglarIOF)>0:    
-            for coin in mylonglarIOF:
-                close_position(coin,"mylonglarIOF")
-                print(f"{coin} pozisyonu kapatıldı.")
-                #mylonglarIOF.remove(coin)
-                #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
-        if len(mylonglarCi)>0:    
-            for coin in mylonglarCi:
-                close_position(coin,"mylonglarCi")
-                print(f"{coin} pozisyonu kapatıldı.")
-                #mylonglarCi.remove(coin)
-                #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
     else:
-        print("piyasa iyi durumda.>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<")
+        longlarikapat()
+    #IOkucuksekapat(io1d[-1])
+    #IOdusuyorsakapat()
     print(f"Longlar:\nCi:{mylonglarCi}\nIOF:{mylonglarIOF}\nSDV:{mylonglarSDV}\nKA:{mylonglarKA}\nMA:{mylonglarMA}")
     print(f"Shortlar:\nCi:{myshortlarCi}\nIOF:{myshortlarIOF}\nSDV:{myshortlarSDV}")  
     print(f"IOs:{io1d}")   
@@ -451,17 +473,68 @@ def AnaFonkIO(raw_text):
     toplamkarzarar=sum(hesapkitap) 
     print(f"Toplam kar zarar: {toplamkarzarar}")
     print(f"IO 1d, yukarı trendde mi?: {is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod)}")
+    if False:
+        if io1d[len(io1d)-1]>altustsinir[1] and not io1d[len(io1d)-2]>altustsinir[1]:
+            shortlarikapat()
+        elif io1d[len(io1d)-1]<altustsinir[1] and not io1d[len(io1d)-2]<altustsinir[1]:
+            longlarikapat()
+        elif io1d[len(io1d)-1]<altustsinir[0] and not io1d[len(io1d)-2]<altustsinir[0]:
+            longlarikapat()
+        elif io1d[len(io1d)-1]>altustsinir[0] and not io1d[len(io1d)-2]<altustsinir[0]:
+            shortlarikapat()
+        
+        if not check_arrowsIO(mytextio[0]): #re.search(pattern_15m, event.raw_text) and re.search(pattern_1h, event.raw_text) and re.search(pattern_4h, event.raw_text):
+            print("Piyasa riskli!!!!!!!!!!!!!!!!!")
+            if len(mylonglarKA)>0:
+                for coin in mylonglarKA:
+                    close_position(coin,"mylonglarKA")
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    #mylonglarKA.remove(coin)
+                    #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+            if len(mylonglarMA)>0:
+                for coin in mylonglarMA:
+                    close_position(coin,"mylonglarMA")
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    #mylonglarMA.remove(coin)
+                    #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+            if len(mylonglarSDV)>0:    
+                for coin in mylonglarSDV:
+                    close_position(coin,"mylonglarSDV")
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    #mylonglarSDV.remove(coin)
+                    #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+            if len(mylonglarIOF)>0:    
+                for coin in mylonglarIOF:
+                    close_position(coin,"mylonglarIOF")
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    #mylonglarIOF.remove(coin)
+                    #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+            if len(mylonglarCi)>0:    
+                for coin in mylonglarCi:
+                    close_position(coin,"mylonglarCi")
+                    print(f"{coin} pozisyonu kapatıldı.")
+                    #mylonglarCi.remove(coin)
+                    #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
+        else:
+            print("piyasa iyi durumda.>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<")
+        print(f"Longlar:\nCi:{mylonglarCi}\nIOF:{mylonglarIOF}\nSDV:{mylonglarSDV}\nKA:{mylonglarKA}\nMA:{mylonglarMA}")
+        print(f"Shortlar:\nCi:{myshortlarCi}\nIOF:{myshortlarIOF}\nSDV:{myshortlarSDV}")  
+        print(f"IOs:{io1d}")   
+        print(f"Kar zinciri: {hesapkitap}")      
+        toplamkarzarar=sum(hesapkitap) 
+        print(f"Toplam kar zarar: {toplamkarzarar}")
+        print(f"IO 1d, yukarı trendde mi?: {is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod)}")
 
 def AnaFonkKA(raw_text):
     #[1,???], ['ETHUSDT', 1.2, 1.1, 1.048, 788, True, 7.3]
     #TRX TS:1,6 MTS:1,4 PT:1,048 Dk:288✅ Kar:%7,6 😍 Grafik (http://tradingview.com/chart/?symbol=BINANCE:TRXUSDT)
 
     result = extract_coin_dataKA(raw_text)
-    if result[0][0]>-1 and io1d[len(io1d)-1]>altustsinir[1]:
+    if result[0][0]>-1 and io1d[len(io1d)-1]>altustsinir[1] and is_above_last_period_average(io1d[-1],io1d,smaperiod):
         myFKAlist=[]
         kadakilonglar=[]
         for coin in result:
-            if binle(coin[0]) in mysymbols3 and coin[2]<2 and coin[3]>1.03 and coin[5]==True and coin[6]<10 and acabilirmiyim(binle(coin)):
+            if binle(coin[0]) in mysymbols3 and coin[2]<2 and coin[3]>1.01 and coin[5]==True and coin[6]<10 and acabilirmiyim(binle(coin)):
                 myFKAlist.append(binle(coin[0]))
             if binle(coin[0]) in mysymbols3:
                 kadakilonglar.append(binle(coin[0]))
@@ -475,6 +548,7 @@ def AnaFonkKA(raw_text):
                 print(f"{coin} long açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
         
+        """
         for coin in mylonglarKA:
             if coin in kadakilonglar:
                 print(f"{coin} 'e zaten long açılmış.")
@@ -484,6 +558,7 @@ def AnaFonkKA(raw_text):
                 #mylonglarKA.remove(coin)
                 #telegram_client.send_message(alert_user, f"{coin}'in future pozisyonu KAPATILDI.")
         print(f"Longlar:{mylonglarKA}")
+        """
     else:
         print("io1d<altustsinir[1]")
 
@@ -672,9 +747,10 @@ def AnaFonkCi(text):
 def AnaFonkIOF(raw_text):
     #OXTUSDT 7,0X Payı:%3,7 Pahalılık:8,0 🔼🔻🔻🔼🔼 Grafik (http://tradingview.com/chart/?symbol=BINANCE:OXTUSDT)
     #['TIAUSDT', 0.4, 0.9, 1.9, [True, True, True, False, True]]
-    
+    if is_above_last_period_average(io1d[-1],io1d,smaperiod):
+        shortlarikapat()
     parsed_data = parse_usdt_dataIOF(raw_text)
-    if check_arrowsIO(mytextio[0])  and io1d[len(io1d)-1]>altustsinir[1]:
+    if False: #not is_above_last_period_average(io1d[-1],io1d,smaperiod): #check_arrowsIO(mytextio[0])  and io1d[-1]>altustsinir[1]:
         longAc=[]
         for entry in parsed_data:
             if binle(entry[0]) in mysymbols3 and acabilirmiyim(binle(entry[0])) and entry[1]>1 and entry[2]>0.5 and entry[3]<5 and entry[4][0] and entry[4][1] and entry[4][2] and entry[4][3]:
@@ -699,10 +775,12 @@ def AnaFonkIOF(raw_text):
     else:
         print("io1d<altustsinir[1]")
         
-    if not check_arrowsIO(mytextio[0])  and io1d[len(io1d)-1]<altustsinir[0]: #len(combined_list2) > 0: 
+    if not is_above_last_period_average(io1d[-1],io1d,smaperiod): #not check_arrowsIO(mytextio[0])  and io1d[len(io1d)-1]<altustsinir[0]: #len(combined_list2) > 0: 
+        #OXTUSDT 7,0X Payı:%3,7 Pahalılık:8,0 🔼🔻🔻🔼🔼 Grafik (http://tradingview.com/chart/?symbol=BINANCE:OXTUSDT)
+        #['TIAUSDT', 0.4, 0.9, 1.9, [True, True, True, False, True]]
         shortAc=[]
         for entry in parsed_data:
-            if binle(entry[0]) in mysymbols3 and acabilirmiyim(binle(entry[0])) and entry[1]<1.7 and entry[2]>0.5 and entry[3]>0.5 and not entry[4][0] and not entry[4][1] and not entry[4][2] and not entry[4][3] and not entry[4][4]:
+            if binle(entry[0]) in mysymbols3 and acabilirmiyim(binle(entry[0])) and not not entry[4][0] and not entry[4][1] and not entry[4][2] and not entry[4][3] and not entry[4][4]:
                 shortAc.append(binle(entry[0]))
 
         for coin in shortAc:
@@ -741,33 +819,33 @@ async def main():
         if event.raw_text.startswith("Canlı olan coin sayısı") and check_arrowsIO(mytextio[0]): #KA
             AnaFonkKA(event.raw_text)
 
-        if event.raw_text.startswith("Yapay zeka,") and check_arrowsIO(mytextio[0]): #Marketanaliz MA
+        if event.raw_text.startswith("?????Yapay zeka,") and check_arrowsIO(mytextio[0]): #Marketanaliz MA
             AnaFonkMA(event.raw_text)
         
         if event.raw_text.startswith("??????Korelasyon Şiddeti Raporu (5m)"): #ci i d 5m
             AnaFonkCi(event.raw_text)
 
-        if event.raw_text.startswith("Sert Hareket Edenler"): #SDV
+        if event.raw_text.startswith("??????Sert Hareket Edenler"): #SDV
             AnaFonkSDV(event.raw_text)     
 
         if event.raw_text.startswith("Marketteki Tüm Coinlere Olan en çok nakit girişi olanlar."): #IOF
             AnaFonkIOF(event.raw_text)   
 
     while True:
-        if io1d[len(io1d)-1]<altustsinir[0]:
+        if True:
             random.shuffle(mysent48)
             await telegram_client.send_message(target_user, komutlar[rastgele_sayi(0,len(komutlar)-1)])
             await asyncio.sleep(rastgele_sayi(35,100))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
-            await telegram_client.send_message(target_user, mysent48[0]) #mysent[rastgele_komut()] )#'marketanaliz')
+            await telegram_client.send_message(target_user, "io") #mysent[rastgele_komut()] )#'marketanaliz')
             await asyncio.sleep(rastgele_sayi(35,100))
-            await telegram_client.send_message(target_user, mysent48[1]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
+            await telegram_client.send_message(target_user, "ka") #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
             await asyncio.sleep(rastgele_sayi(35,100))
-            await telegram_client.send_message(target_user, mysent48[2]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
+            await telegram_client.send_message(target_user, "iof") #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
             await asyncio.sleep(rastgele_sayi(35,100))
             await telegram_client.send_message(target_user, mysent48[3]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(100,200))
+            await asyncio.sleep(rastgele_sayi(35,200))
         
-        if io1d[len(io1d)-1]>altustsinir[0] and io1d[len(io1d)-1]<altustsinir[1]:
+        elif io1d[len(io1d)-1]>altustsinir[0] and io1d[len(io1d)-1]<altustsinir[1]:
             random.shuffle(mysent4849)
             await telegram_client.send_message(target_user, "io") #komutlar[rastgele_sayi(0,len(komutlar)-1)])
             await asyncio.sleep(rastgele_sayi(20,50))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
@@ -778,18 +856,18 @@ async def main():
                 await telegram_client.send_message(target_user, mysent4849[0]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
                 await asyncio.sleep(rastgele_sayi(3000,5500))
         
-        if io1d[len(io1d)-1]>altustsinir[1]:
+        elif io1d[len(io1d)-1]>altustsinir[1]:
             random.shuffle(mysent49)
             await telegram_client.send_message(target_user, komutlar[rastgele_sayi(0,len(komutlar)-1)])
-            await asyncio.sleep(rastgele_sayi(35,100))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
+            await asyncio.sleep(rastgele_sayi(100,200))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
             await telegram_client.send_message(target_user, mysent49[0]) #mysent[rastgele_komut()] )#'marketanaliz')
             await asyncio.sleep(rastgele_sayi(35,100))
             await telegram_client.send_message(target_user, mysent49[1]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(35,100))
+            await asyncio.sleep(rastgele_sayi(100,200))
             await telegram_client.send_message(target_user, mysent49[2]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(35,100))
+            await asyncio.sleep(rastgele_sayi(100,200))
             await telegram_client.send_message(target_user, mysent49[3]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
-            await asyncio.sleep(rastgele_sayi(35,100))
+            await asyncio.sleep(rastgele_sayi(100,200))
             await telegram_client.send_message(target_user, mysent49[4]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
             await asyncio.sleep(rastgele_sayi(35,100))
             await telegram_client.send_message(target_user, mysent49[5]) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')

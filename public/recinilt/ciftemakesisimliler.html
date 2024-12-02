@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binance Futures EMA Analizi</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <button onclick="loadData()">Verileri Yükle</button>
+    <div id="result"></div>
+
+    <script>
+        async function loadData() {
+            document.getElementById('result').innerText = 'Yükleniyor...';
+            const symbols = await getSymbols();
+            const data = await getHistoricalData(symbols);
+            const emaCrosses = calculateEMACrosses(data);
+            displayResults(emaCrosses);
+        }
+
+        async function getSymbols() {
+            const response = await axios.get('https://api.binance.com/api/v3/exchangeInfo');
+            return response.data.symbols
+                .filter(symbol => symbol.quoteAsset === 'USDT' && symbol.contractType === 'PERPETUAL')
+                .map(symbol => symbol.symbol);
+        }
+
+        async function getHistoricalData(symbols) {
+            const data = {};
+            for (const symbol of symbols) {
+                const response = await axios.get(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=5m&limit=25`);
+                data[symbol] = response.data.map(candle => ({
+                    time: candle[0],
+                    close: parseFloat(candle[4]),
+                    volume: parseFloat(candle[5])
+                }));
+            }
+            return data;
+        }
+
+        function calculateEMACrosses(data) {
+            const emaCrosses = [];
+            for (const symbol in data) {
+                const closes = data[symbol].map(candle => candle.close);
+                const shortEma = calculateEMA(closes, 14);
+                const longEma = calculateEMA(closes, 25);
+                if (shortEma[shortEma.length - 1] > longEma[longEma.length - 1] && shortEma[shortEma.length - 2] <= longEma[longEma.length - 2]) {
+                    emaCrosses.push(symbol);
+                }
+            }
+            return emaCrosses;
+        }
+
+        function calculateEMA(data, period) {
+            const k = 2 / (period + 1);
+            const emaArray = [data[0]];
+            for (let i = 1; i < data.length; i++) {
+                emaArray.push(data[i] * k + emaArray[i - 1] * (1 - k));
+            }
+            return emaArray;
+        }
+
+        function displayResults(emaCrosses) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<h3>EMA Kesişim Noktaları:</h3>';
+            emaCrosses.forEach(symbol => {
+                resultDiv.innerHTML += `<p>${symbol}</p>`;
+            });
+        }
+    </script>
+</body>
+</html>
