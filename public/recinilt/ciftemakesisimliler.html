@@ -28,21 +28,30 @@
         }
 
         async function getSymbols() {
-            const response = await axios.get('https://api.binance.com/api/v3/exchangeInfo');
-            return response.data.symbols
-                .filter(symbol => symbol.quoteAsset === 'USDT' && symbol.contractType === 'PERPETUAL')
-                .map(symbol => symbol.symbol);
+            try {
+                const response = await axios.get('https://fapi.binance.com/fapi/v1/exchangeInfo');
+                return response.data.symbols
+                    .filter(symbol => symbol.quoteAsset === 'USDT' && symbol.contractType === 'PERPETUAL')
+                    .map(symbol => symbol.symbol);
+            } catch (error) {
+                console.error('Error fetching symbols:', error);
+                return [];
+            }
         }
 
         async function getHistoricalData(symbols) {
             const data = {};
             for (const symbol of symbols) {
-                const response = await axios.get(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=5m&limit=25`);
-                data[symbol] = response.data.map(candle => ({
-                    time: candle[0],
-                    close: parseFloat(candle[4]),
-                    volume: parseFloat(candle[5])
-                }));
+                try {
+                    const response = await axios.get(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=5m&limit=25`);
+                    data[symbol] = response.data.map(candle => ({
+                        time: candle[0],
+                        close: parseFloat(candle[4]),
+                        volume: parseFloat(candle[5])
+                    }));
+                } catch (error) {
+                    console.error(`Error fetching data for ${symbol}:`, error);
+                }
             }
             return data;
         }
