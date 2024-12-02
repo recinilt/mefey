@@ -82,7 +82,7 @@ iopower=[]
 yasaklilist=["ETHUSDT","SOLUSDT","BTCUSDT","USDCUSDT"]
 symbolstrailingprices=[]
 trailingyuzde=1.5 #yüzde düşünce kapanır.
-yuzdekackazanincakapatsin=20
+yuzdekackazanincakapatsin=2000
 calissinmi=True
 
 
