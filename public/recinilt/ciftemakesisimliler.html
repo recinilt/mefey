@@ -98,10 +98,16 @@
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = '<h3>EMA Kesişim Noktaları:</h3>';
             const totalVolume = Object.values(data).reduce((sum, candles) => sum + candles[candles.length - 1].volume, 0);
-            emaCrosses.forEach(symbol => {
+            const results = emaCrosses.map(symbol => {
                 const volume = data[symbol][data[symbol].length - 1].volume;
                 const volumeRatio = (volume / totalVolume * 100).toFixed(2);
-                resultDiv.innerHTML += `<p>${symbol} - Hacim: ${volume} - Oran: ${volumeRatio}%</p>`;
+                return { symbol, volume, volumeRatio };
+            });
+
+            results.sort((a, b) => b.volumeRatio - a.volumeRatio);
+
+            results.forEach(result => {
+                resultDiv.innerHTML += `<p>${result.symbol} - Hacim: ${result.volume} - Oran: ${result.volumeRatio}%</p>`;
             });
         }
     </script>
