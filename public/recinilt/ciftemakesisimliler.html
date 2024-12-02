@@ -13,10 +13,18 @@
     <script>
         async function loadData() {
             document.getElementById('result').innerText = 'Yükleniyor...';
-            const symbols = await getSymbols();
-            const data = await getHistoricalData(symbols);
-            const emaCrosses = calculateEMACrosses(data);
-            displayResults(emaCrosses);
+            try {
+                const symbols = await getSymbols();
+                console.log('Symbols:', symbols);
+                const data = await getHistoricalData(symbols);
+                console.log('Historical Data:', data);
+                const emaCrosses = calculateEMACrosses(data);
+                console.log('EMA Crosses:', emaCrosses);
+                displayResults(emaCrosses, data);
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('result').innerText = 'Veri yüklenirken bir hata oluştu.';
+            }
         }
 
         async function getSymbols() {
@@ -61,11 +69,12 @@
             return emaArray;
         }
 
-        function displayResults(emaCrosses) {
+        function displayResults(emaCrosses, data) {
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = '<h3>EMA Kesişim Noktaları:</h3>';
             emaCrosses.forEach(symbol => {
-                resultDiv.innerHTML += `<p>${symbol}</p>`;
+                const volume = data[symbol][data[symbol].length - 1].volume;
+                resultDiv.innerHTML += `<p>${symbol} - Hacim: ${volume}</p>`;
             });
         }
     </script>
