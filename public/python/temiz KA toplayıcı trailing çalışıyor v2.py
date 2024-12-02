@@ -1053,6 +1053,7 @@ def AnaFonkIO(raw_text):
     
     """
     trailing_dusen_coinler = fiyat_dalgalanma_takip(symbolstrailingprices, trailingyuzde)
+    print(trailing_dusen_coinler)
     if trailing_dusen_coinler:
         #telegram_client.send_message(alert_user, f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.")
         for coin in trailing_dusen_coinler:
