@@ -22,50 +22,65 @@
 
         async function fetchFuturesData() {
             const resultDiv = document.getElementById('result');
+            const loadingSpan = document.getElementById("myload");
+            loadingSpan.innerText = "Loading...";
 
             try {
-                var inputValue = document.getElementById('myInput').value;
+                const inputValue = parseFloat(document.getElementById('myInput').value);
+                if (isNaN(inputValue) || inputValue <= 0) {
+                    resultDiv.innerHTML = '<h2>Lütfen geçerli bir yüzde değeri girin.</h2>';
+                    loadingSpan.innerText = "";
+                    return;
+                }
+
                 // Binance USDT Futures çiftlerini al
                 const exchangeInfoResponse = await fetch('https://fapi.binance.com/fapi/v1/exchangeInfo');
                 const exchangeInfo = await exchangeInfoResponse.json();
-                const usdtPairs = exchangeInfo.symbols.filter(pair => pair.quoteAsset === 'USDT').map(pair => pair.symbol);
+                const usdtPairs = exchangeInfo.symbols
+                    .filter(pair => pair.quoteAsset === 'USDT' && pair.status === 'TRADING')
+                    .map(pair => pair.symbol);
 
                 let foundPairs = [];
 
                 for (let pair of usdtPairs) {
-                    // Her bir paritenin son iki periyodundaki 1 dakikalık kline verilerini al
-                    const klinesResponse = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${pair}&interval=1m&limit=2`);
-                    const klines = await klinesResponse.json();
+                    try {
+                        // Her bir paritenin son iki periyodundaki 1 dakikalık kline verilerini al
+                        const klinesResponse = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${pair}&interval=1m&limit=2`);
+                        if (!klinesResponse.ok) continue; // 400 gibi hataları atla
+                        const klines = await klinesResponse.json();
 
-                    if (klines.length === 2) {
-                        const openPrice = parseFloat(klines[0][1]); // İlk periyodun açılış fiyatı
-                        const closePrice = parseFloat(klines[1][4]); // İkinci periyodun kapanış fiyatı
+                        if (klines.length === 2) {
+                            const openPrice = parseFloat(klines[0][1]); // İlk periyodun açılış fiyatı
+                            const closePrice = parseFloat(klines[1][4]); // İkinci periyodun kapanış fiyatı
 
-                        const percentageChange = ((closePrice - openPrice) / openPrice) * 100;
+                            const percentageChange = ((closePrice - openPrice) / openPrice) * 100;
 
-                        if (percentageChange >= inputValue) {
-                            foundPairs.push(`${pair} (%${percentageChange.toFixed(2)})`);
+                            if (percentageChange >= inputValue) {
+                                foundPairs.push(`${pair} (%${percentageChange.toFixed(2)})`);
+                            }
                         }
+                    } catch (innerError) {
+                        console.error(`Hata: ${pair} için veri alınamadı.`, innerError);
                     }
                 }
 
                 if (foundPairs.length > 0) {
-                    resultDiv.innerHTML = `<h2>Son 2 dakikada %2.5 ve üzeri yükselen pariteler:</h2><br><span>(2 dakikada bir otomatik yenilenir. 2 dakika içinde yüzde 2.5 çıkan varsa listelenir ve sesli ikaz yapılır.)</span><br><ul>${foundPairs.map(pair => `<li>${pair}</li>`).join('')}</ul>`;
+                    resultDiv.innerHTML = `<h2>Son 2 dakikada %${inputValue} ve üzeri yükselen pariteler:</h2><br><span>(2 dakikada bir otomatik yenilenir. 2 dakika içinde yüzde ${inputValue} çıkan varsa listelenir ve sesli ikaz yapılır.)</span><br><ul>${foundPairs.map(pair => `<li>${pair}</li>`).join('')}</ul>`;
                     playAlarm(); // Alarm sesi çal
                 } else {
-                    resultDiv.innerHTML = '<h2>Son 2 dakikada %2.5 ve üzeri yükselen bir parite bulunamadı.</h2><br><span>(2 dakikada bir otomatik yenilenir. 2 dakika içinde yüzde 2.5 çıkan varsa listelenir ve sesli ikaz yapılır.)</span><br>';
+                    resultDiv.innerHTML = `<h2>Son 2 dakikada %${inputValue} ve üzeri yükselen bir parite bulunamadı.</h2><br><span>(2 dakikada bir otomatik yenilenir. 2 dakika içinde yüzde ${inputValue} çıkan varsa listelenir ve sesli ikaz yapılır.)</span><br>`;
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 resultDiv.innerHTML = '<h2>Veri alınırken bir hata oluştu.</h2>';
+            } finally {
+                loadingSpan.innerText = "";
             }
         }
 
         // Başlat butonuna tıklanınca veri çekme işlemini başlat
         document.getElementById('startButton').addEventListener('click', function() {
-            document.getElementById("myload").innerText="Loading...";
             fetchFuturesData();
-            document.getElementById("myload").innerText="";
             setInterval(fetchFuturesData, 120000); // 2 dakika = 120000 ms
         });
     </script>
