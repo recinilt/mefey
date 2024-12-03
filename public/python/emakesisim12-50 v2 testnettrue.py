@@ -4,7 +4,7 @@ from binance.client import Client
 from binance.enums import *
 import pandas as pd
 
-
+#testnet yapmak için, client oluştururken testnet=True yazmalı ve orderlarda test=True yazmalı.
 
 binance_api_reccirik2="nKdNVSLZZo4hQnEI1rg7xU1cxZnPWHN4OePu8Yzc3wH3TptaLxBxwhBjUIjrFrAD"
 binance_secret_reccirik2="WJSYPws6VnoJkMIXKqgu1CVSha9Io6rT7g8YEiNKbkG3dzdBF7vwZ6fWkZwvlH5S"
@@ -14,11 +14,11 @@ mycost=1
 myleverage=11
 symbolstrailingprices=[]
 mylonglar=[]
-trailingyuzde=1
+trailingyuzde=1.25
 devammi=False
 volumes=[]
 myemavolumes=[]
-
+mybtcprices=[]
 
 ################### myema
 # Verilen liste
@@ -332,12 +332,31 @@ def get_symbols():
         if symbol["quoteAsset"] == "USDT" and symbol["contractType"] == "PERPETUAL"
     ]
 
+
+def get_btcusdt_prices():
+    url = "https://api.binance.com/api/v3/klines"
+    params = {
+        "symbol": "BTCUSDT",
+        "interval": "15m",
+        "limit": 2
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+    prices = [float(candle[4]) for candle in data]  # Kapanış fiyatlarını alır
+    return prices
+
+# Fonksiyonu çağır ve fiyatları yazdır
+#prices = get_btcusdt_prices()
+#print(prices)
+
+#get_BTCUSDT_historical_data("BTCUSDT","1h",2)
 def get_historical_data(symbol, interval, limit):
     """Her bir coin için tarihsel fiyat verilerini alır."""
     url = f"https://fapi.binance.com/fapi/v1/klines?symbol={symbol}&interval={interval}&limit={limit}"
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
+        #print(data)
         return [{"close": float(candle[4]), "volume": float(candle[5])} for candle in data]
     return []
 
@@ -363,6 +382,7 @@ def analyze_ema(symbols, interval, short_ema_period, long_ema_period):
         closes = [item["close"] for item in historical_data]
         short_ema = calculate_ema(closes, short_ema_period)
         long_ema = calculate_ema(closes, long_ema_period)
+        #mybtcprices.append([symbol,historical_data[-2]["price"],historical_data[-1]["price"]])
 
         # Kesişim kontrolü
         if len(short_ema) >= 2 and len(long_ema) >= 2:
@@ -407,13 +427,21 @@ def listele():
     print(f"yukarı kıran ve volümü yükselen: {kesisim}")
     myemavolumes.clear()
     volumes.clear()
-    return(kesisim)
+    #return(kesisim)
+    mybtcprices.append(get_btcusdt_prices())
+    if mybtcprices[0][1]>mybtcprices[0][0]:
+        mybtcprices.clear()
+        return ema_crosses_volume_right
+    else:
+        mybtcprices.clear()
+        return []
 
 #if __name__ == "__main__":
 #    main()
 devammi=True
 while True:
     if devammi:
+        print("emakesisim12-50 v2.py")
         longacilacaksymbols=listele()
         print(f"Long açılacak coinler: {longacilacaksymbols}")
         for coin in longacilacaksymbols:
@@ -471,6 +499,7 @@ while True:
         time.sleep(5)
     else:
         time.sleep(10)
+    
 
     
 
