@@ -84,7 +84,8 @@ def close_position(coin):
             mtext=f"Kapatılan Çift: {position['symbol']}, Miktar: {position['positionAmt']}, Giriş Fiyatı: {position['entryPrice']}, Çıkış fiyatı: {get_price(position["symbol"])}"
             #acmakapamalistesi.append(mtext)
             print(mtext)
-            mylonglar.remove(position["symbol"])
+            if position["symbol"] in mylonglar:
+                mylonglar.remove(position["symbol"])
             #hesapla(coin, side, myquantity)
             #eklesil(coin,liste,"sil")
             time.sleep(5)  # 5 saniye bekle
