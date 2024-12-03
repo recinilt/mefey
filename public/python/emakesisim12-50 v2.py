@@ -2,6 +2,7 @@ import requests
 import time
 from binance.client import Client
 from binance.enums import *
+import pandas as pd
 
 
 
@@ -15,7 +16,45 @@ symbolstrailingprices=[]
 mylonglar=[]
 trailingyuzde=1.5
 devammi=False
+volumes=[]
+myemavolumes=[]
 
+
+################### myema
+# Verilen liste
+data = [
+    ["BTCUSDT", 2.1, 2.2, 2.3, 2.2, 2.2, 2.2, 2.4, 2.5, 2.4],
+    ["LTCUSDT", 2.1, 2.2, 2.3, 2.2, 2.2, 2.2, 2.4, 2.5, 2.4],
+    ["XRPUSDT", 2.1, 2.2, 2.3, 2.2, 2.2, 2.2, 2.4, 2.5, 2.4],
+    ["UNIUSDT", 2.9, 2.2, 2.3, 2.4, 2.2, 2.2, 2.1, 2.2, 2.0],
+]
+
+# EMA hesaplama fonksiyonu
+def calculate_my_ema(values, period):
+    return pd.Series(values).ewm(span=period, adjust=False).mean().tolist()
+
+# EMA'yı yukarı kıranları bulma
+def find_my_volume_ema_high(data):
+    volumesiyukseliyor = []
+    for row in data:
+        coin = row[0]
+        volumes = row[1:]
+        ema2 = calculate_ema(volumes, 2)
+        ema3 = calculate_ema(volumes, 9)
+        
+        # EMA'nın yukarı kırıldığı anları kontrol et
+        for i in range(1, len(volumes)):
+            if ema2[i] > ema3[i]: #and ema2[i-1] <= ema3[i-1]:
+                volumesiyukseliyor.append(coin)
+                break  # Bir kez yukarı kırılması yeterli
+    #print(f"volumesi yükseliyor: {volumesiyukseliyor}")
+    return volumesiyukseliyor
+
+# Yukarı kıranları bul
+#myresult = find_my_ema_cross(myemavolumes)
+#print("EMA'yı yukarı kıranlar:", result)
+
+####################
 def get_price(symbol):
     try:
         ticker = binanceclientreccirik2.get_symbol_ticker(symbol=symbol.upper())
@@ -309,13 +348,14 @@ def calculate_ema(data, period):
         ema.append(price * k + ema[-1] * (1 - k))
     return ema
 
-volumes=[]
+
 def analyze_ema(symbols, interval, short_ema_period, long_ema_period):
     """EMA kesişimlerini analiz eder."""
     ema_crosses = []
     for symbol in symbols:
         historical_data = get_historical_data(symbol, interval, long_ema_period + 3)
         #print(historical_data)
+        myemavolumes.append([symbol,historical_data[-32]["volume"],historical_data[-31]["volume"],historical_data[-30]["volume"],historical_data[-29]["volume"],historical_data[-28]["volume"],historical_data[-27]["volume"],historical_data[-26]["volume"],historical_data[-25]["volume"],historical_data[-24]["volume"],historical_data[-23]["volume"],historical_data[-22]["volume"],historical_data[-21]["volume"],historical_data[-20]["volume"],historical_data[-19]["volume"],historical_data[-18]["volume"],historical_data[-17]["volume"],historical_data[-16]["volume"],historical_data[-15]["volume"],historical_data[-14]["volume"],historical_data[-13]["volume"],historical_data[-12]["volume"],historical_data[-11]["volume"],historical_data[-10]["volume"],historical_data[-9]["volume"],historical_data[-8]["volume"],historical_data[-7]["volume"],historical_data[-6]["volume"],historical_data[-5]["volume"],historical_data[-4]["volume"],historical_data[-3]["volume"],historical_data[-2]["volume"],historical_data[-1]["volume"]])
         volumes.append([symbol,historical_data[-1]["volume"]])
         if not historical_data:
             continue
@@ -328,6 +368,10 @@ def analyze_ema(symbols, interval, short_ema_period, long_ema_period):
             if (short_ema[-1] > long_ema[-1] and short_ema[-2] <= long_ema[-2]):
                 ema_crosses.append(symbol)
             elif (short_ema[-2] > long_ema[-2] and short_ema[-3] <= long_ema[-3]):
+                ema_crosses.append(symbol)
+            elif (short_ema[-3] > long_ema[-3] and short_ema[-4] <= long_ema[-4]):
+                ema_crosses.append(symbol)
+            elif (short_ema[-4] > long_ema[-4] and short_ema[-5] <= long_ema[-5]):
                 ema_crosses.append(symbol)
     return ema_crosses
 
@@ -353,12 +397,16 @@ def listele():
                 if (c[1]/toplamvolume)>0.0005:
                     ema_crosses_volume_right.append(symbol)
                     continue
-        print(f"kesişenler: {symbol}")
+        print(f"Yukarı kıran Sembol: {symbol}")
     if not ema_crosses:
         print("Kesişim yok.")
     print(f"Volumu yüksekler: {ema_crosses_volume_right}")
+    volumeemasiyuksekolanlar=find_my_volume_ema_high(myemavolumes)
+    kesisim= list(set(ema_crosses_volume_right) & set(volumeemasiyuksekolanlar))
+    print(f"yukarı kıran ve volümü yükselen: {kesisim}")
+    myemavolumes.clear()
     volumes.clear()
-    return(ema_crosses_volume_right)
+    return(kesisim)
 
 #if __name__ == "__main__":
 #    main()
@@ -375,49 +423,51 @@ while True:
                 buy_position(coin, myleverage, mycost)
                 #print(f"{coin} long açıldı")
 
-        positions = get_futures_positions()
-        kapatılacaklar=[]
-        karzarardurumu=[]
-        tsymbol=[]
-        tprice=[]
-        io49unaltinda=[]
-        if positions:
-            print("Açık Pozisyonlar:")
-            for pos in positions:
-                print(pos)
-                if pos["P&L (%)"]>(200) or pos["P&L (%)"]<(-1*trailingyuzde):
-                    kapatılacaklar.append([pos["Symbol"],pos["Mark Price"]])
-                kar=pos["Position"]*pos["Entry Price"]*pos['P&L (%)']*0.01
-                #print(kar)
-                karzarardurumu.append(kar)
-                tsymbol.append(pos["Symbol"])
-                #if io1d[-1]<49:
-                #    io49unaltinda.append(pos["Symbol"])
-                myp=get_price(pos["Symbol"])
-                tprice.append(myp)
-                symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (pos["Symbol"],myp))
-            print(f"şuan açık pozisyonların toplam kar zarar durumu: {sum(karzarardurumu)} USDT")
-        else:
-            print("Açık pozisyon bulunamadı.")
+        for i in range(6):
+            positions = get_futures_positions()
+            kapatılacaklar=[]
+            karzarardurumu=[]
+            tsymbol=[]
+            tprice=[]
+            io49unaltinda=[]
+            if positions:
+                print("Açık Pozisyonlar:")
+                for pos in positions:
+                    print(pos)
+                    if pos["P&L (%)"]>(200) or pos["P&L (%)"]<(-1*trailingyuzde):
+                        kapatılacaklar.append([pos["Symbol"],pos["Mark Price"]])
+                    kar=pos["Position"]*pos["Entry Price"]*pos['P&L (%)']*0.01
+                    #print(kar)
+                    karzarardurumu.append(kar)
+                    tsymbol.append(pos["Symbol"])
+                    #if io1d[-1]<49:
+                    #    io49unaltinda.append(pos["Symbol"])
+                    myp=get_price(pos["Symbol"])
+                    tprice.append(myp)
+                    symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (pos["Symbol"],myp))
+                print(f"şuan açık pozisyonların toplam kar zarar durumu: {sum(karzarardurumu)} USDT")
+            else:
+                print("Açık pozisyon bulunamadı.")
 
 
-        for c in kapatılacaklar:
-            #mymesaj.append(c[0])
-            close_position(c[0])
-            symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (c[0],c[1]),True)
-            time.sleep(8)
-        
-        trailing_dusen_coinler = fiyat_dalgalanma_takip(symbolstrailingprices, trailingyuzde)
-        print(f" trailing düşen coinler: {trailing_dusen_coinler}")
-        if trailing_dusen_coinler:
-            #telegram_client.send_message(alert_user, f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.")
-            for coin in trailing_dusen_coinler:
-                close_position(coin)
-                #mymesaj.append(coin)
-                symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (coin,0.0000000001),True)
+            for c in kapatılacaklar:
+                #mymesaj.append(c[0])
+                close_position(c[0])
+                symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (c[0],c[1]),True)
                 time.sleep(8)
+            
+            trailing_dusen_coinler = fiyat_dalgalanma_takip(symbolstrailingprices, trailingyuzde)
+            print(f" trailing düşen coinler: {trailing_dusen_coinler}")
+            if trailing_dusen_coinler:
+                #telegram_client.send_message(alert_user, f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.")
+                for coin in trailing_dusen_coinler:
+                    close_position(coin)
+                    #mymesaj.append(coin)
+                    symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (coin,0.0000000001),True)
+                    time.sleep(8)
+            time.sleep(15)
         
-        time.sleep(150)
+        time.sleep(5)
     else:
         time.sleep(10)
 
