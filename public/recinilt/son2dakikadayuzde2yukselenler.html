@@ -63,8 +63,9 @@
 
         // Başlat butonuna tıklanınca veri çekme işlemini başlat
         document.getElementById('startButton').addEventListener('click', function() {
-            document.getElementById("myload").innerHTML="Loading..."
+            document.getElementById("myload").innerHTML="Loading...";
             fetchFuturesData();
+            document.getElementById("myload").innerHTML="";
             setInterval(fetchFuturesData, 120000); // 2 dakika = 120000 ms
         });
     </script>
