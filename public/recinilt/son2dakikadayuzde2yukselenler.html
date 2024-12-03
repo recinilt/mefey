@@ -47,10 +47,10 @@
                 }
 
                 if (foundPairs.length > 0) {
-                    resultDiv.innerHTML = `<h2>Son 2 dakikada %2.5 ve üzeri yükselen pariteler:</h2><ul>${foundPairs.map(pair => `<li>${pair}</li>`).join('')}</ul>`;
+                    resultDiv.innerHTML = `<h2>Son 2 dakikada %2.5 ve üzeri yükselen pariteler:</h2><br><span>(2 dakikada bir otomatik yenilenir. 2 dakika içinde yüzde 2.5 çıkan varsa listelenir ve sesli ikaz yapılır.)</span><br><ul>${foundPairs.map(pair => `<li>${pair}</li>`).join('')}</ul>`;
                     playAlarm(); // Alarm sesi çal
                 } else {
-                    resultDiv.innerHTML = '<h2>Son 2 dakikada %2.5 ve üzeri yükselen bir parite bulunamadı.</h2>';
+                    resultDiv.innerHTML = '<h2>Son 2 dakikada %2.5 ve üzeri yükselen bir parite bulunamadı.</h2><br><span>(2 dakikada bir otomatik yenilenir. 2 dakika içinde yüzde 2.5 çıkan varsa listelenir ve sesli ikaz yapılır.)</span><br>';
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
