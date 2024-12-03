@@ -1,8 +1,4 @@
-import asyncio
 import requests
-
-
-#########################################
 import requests
 import time
 from binance.client import Client
@@ -324,52 +320,8 @@ def fiyat_dalgalanma_takip(symbols_trailing_prices, yuzde):
     return dusen_coinler
 
 
-async def dusenkontrol():
-    positions = get_futures_positions()
-    kapatılacaklar=[]
-    karzarardurumu=[]
-    tsymbol=[]
-    tprice=[]
-    io49unaltinda=[]
-    if positions:
-        print("Açık Pozisyonlar:")
-        for pos in positions:
-            print(pos)
-            if pos["P&L (%)"]>(200) or pos["P&L (%)"]<(-1*trailingyuzde):
-                kapatılacaklar.append([pos["Symbol"],pos["Mark Price"]])
-            kar=pos["Position"]*pos["Entry Price"]*pos['P&L (%)']*0.01
-            #print(kar)
-            karzarardurumu.append(kar)
-            tsymbol.append(pos["Symbol"])
-            #if io1d[-1]<49:
-            #    io49unaltinda.append(pos["Symbol"])
-            myp=get_price(pos["Symbol"])
-            tprice.append(myp)
-            symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (pos["Symbol"],myp))
-        print(f"şuan açık pozisyonların toplam kar zarar durumu: {sum(karzarardurumu)} USDT")
-    else:
-        print("Açık pozisyon bulunamadı.")
-
-
-    for c in kapatılacaklar:
-        #mymesaj.append(c[0])
-        close_position(c[0])
-        symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (c[0],c[1]),True)
-        time.sleep(8)
-    
-    trailing_dusen_coinler = fiyat_dalgalanma_takip(symbolstrailingprices, trailingyuzde)
-    print(f" trailing düşen coinler: {trailing_dusen_coinler}")
-    if trailing_dusen_coinler:
-        #telegram_client.send_message(alert_user, f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.")
-        for coin in trailing_dusen_coinler:
-            close_position(coin)
-            #mymesaj.append(coin)
-            symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (coin,0.0000000001),True)
-            time.sleep(8)
-    await asyncio.sleep(15)
-########################################
-
-async def fetch_futures_data(threshold=2.5):
+##################################
+def fetch_futures_data(threshold=2.5):
     try:
         # Binance USDT Futures çiftlerini al
         exchange_info_url = 'https://fapi.binance.com/fapi/v1/exchangeInfo'
@@ -377,7 +329,6 @@ async def fetch_futures_data(threshold=2.5):
         usdt_pairs = [pair['symbol'] for pair in exchange_info['symbols'] if pair['quoteAsset'] == 'USDT' and pair['status'] == 'TRADING']
 
         found_pairs = []
-        my_found_pairs=[]
 
         for pair in usdt_pairs:
             try:
@@ -392,37 +343,24 @@ async def fetch_futures_data(threshold=2.5):
 
                     if percentage_change >= threshold:
                         found_pairs.append(f"{pair} (%{percentage_change:.2f})")
-                        my_found_pairs.append(pair)
             except Exception as e:
                 print(f"Veri alınırken hata oluştu: {pair}, {str(e)}")
                 continue
 
-        #return found_pairs
-        return my_found_pairs
+        return found_pairs
 
     except Exception as e:
         print(f"Genel bir hata oluştu: {str(e)}")
         return []
-
-async def process_found_pairs(pairs):
-    # Bu fonksiyon, bulunan pariteleri işler.
-    print("Eşik değerini geçen pariteler bulundu!")
-    for pair in pairs:
-        print(pair)
-        buy_position(pair, myleverage, mycost)
-    
-
-async def monitor_futures(threshold=2.5, interval=120):
-    while True:
-        print("Veriler sorgulanıyor...")
-        found_pairs = await fetch_futures_data(threshold)
-        if found_pairs:
-            await process_found_pairs(found_pairs)
-        else:
-            print("Eşik değerini geçen bir parite bulunamadı.")
-        await asyncio.sleep(interval)  # 2 dakikada bir tekrar sorgula
-
+##################################################
+# Kullanım
 if __name__ == "__main__":
     threshold = 2.5  # Yüzde eşiği
-    interval = 120  # Sorgulama aralığı (saniye)
-    asyncio.run(monitor_futures(threshold, interval))
+    results = fetch_futures_data(threshold)
+    if results:
+        print(f"Son 2 periyotta %{threshold} veya üzeri yükselen pariteler:")
+        for result in results:
+            print(result)
+    else:
+        print(f"Son 2 periyotta %{threshold} veya üzeri yükselen bir parite bulunamadı.")
+    print("emakesisim12-50 v3")

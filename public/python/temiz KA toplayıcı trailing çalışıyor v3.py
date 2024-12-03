@@ -81,7 +81,7 @@ usdtlistem=[]
 iopower=[]
 yasaklilist=["ETHUSDT","SOLUSDT","BTCUSDT","USDCUSDT"]
 symbolstrailingprices=[]
-trailingyuzde=1.5 #yüzde düşünce kapanır.
+trailingyuzde=7 #yüzde düşünce kapanır.
 yuzdekackazanincakapatsin=2000
 calissinmi=True
 
@@ -1201,6 +1201,7 @@ def AnaFonkIO(raw_text):
         toplamkarzarar=sum(hesapkitap) 
         print(f"Toplam kar zarar: {toplamkarzarar}")
         print(f"IO 1d, yukarı trendde mi?: {is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod)}")
+    print("temiz KA toplayıcı trailing çalışıyor v3.py")
 
 def AnaFonkKA(raw_text):
     global calissinmi
