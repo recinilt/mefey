@@ -8,6 +8,7 @@
 <body>
     <h1>Binance Futures USDT Pairs</h1>
     <input type="number" id="myInput" value="2.5">
+    <button id="startButton">Veriyi Başlat</button>
     <div id="result">Loading... (2 dakikada bir otomatik yenilenir. 2 dakika içinde yüzde 2.5 çıkan varsa listelenir ve sesli ikaz yapılır.)</div>
 
     <audio id="alarm" src="alarm.wav" preload="auto"></audio> <!-- Alarm sesi için HTML5 audio -->
@@ -60,11 +61,11 @@
             }
         }
 
-        // İlk veri çekildikten sonra her 2 dakikada bir tekrar veri çek
-        setInterval(fetchFuturesData, 120000); // 2 dakika = 120000 ms
-
-        // Sayfa yüklendiğinde ilk veriyi al
-        fetchFuturesData();
+        // Başlat butonuna tıklanınca veri çekme işlemini başlat
+        document.getElementById('startButton').addEventListener('click', function() {
+            fetchFuturesData();
+            setInterval(fetchFuturesData, 120000); // 2 dakika = 120000 ms
+        });
     </script>
 </body>
 </html>
