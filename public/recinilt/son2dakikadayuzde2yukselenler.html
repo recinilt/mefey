@@ -9,7 +9,15 @@
     <h1>Binance Futures USDT Pairs</h1>
     <div id="result">Loading...</div>
 
+    <audio id="alarm" src="alarm.wav" preload="auto"></audio> <!-- Alarm sesi için HTML5 audio -->
+    
     <script>
+        // Alarm sesini çal
+        function playAlarm() {
+            const alarm = document.getElementById('alarm');
+            alarm.play();
+        }
+
         async function fetchFuturesData() {
             const resultDiv = document.getElementById('result');
 
@@ -40,6 +48,7 @@
 
                 if (foundPairs.length > 0) {
                     resultDiv.innerHTML = `<h2>Son 2 dakikada %2.5 ve üzeri yükselen pariteler:</h2><ul>${foundPairs.map(pair => `<li>${pair}</li>`).join('')}</ul>`;
+                    playAlarm(); // Alarm sesi çal
                 } else {
                     resultDiv.innerHTML = '<h2>Son 2 dakikada %2.5 ve üzeri yükselen bir parite bulunamadı.</h2>';
                 }
@@ -49,7 +58,10 @@
             }
         }
 
-        // Sayfa yüklendiğinde fonksiyonu çalıştır
+        // İlk veri çekildikten sonra her 2 dakikada bir tekrar veri çek
+        setInterval(fetchFuturesData, 120000); // 2 dakika = 120000 ms
+
+        // Sayfa yüklendiğinde ilk veriyi al
         fetchFuturesData();
     </script>
 </body>

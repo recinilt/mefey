@@ -3,66 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Binance Futures Checker</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <title>Document</title>
 </head>
 <body>
-    <h1>Binance Futures USDT Pairs</h1>
-    <div id="result">Loading... (2 dakikada bir otomatik yenilenir.)</div>
 
-    <audio id="alarm" src="alarm.wav" preload="auto"></audio> <!-- Alarm sesi için HTML5 audio -->
+<div ng-app="">
+        <p>Name : <input type="text" ng-model="name"></p>
+        <h1>Hello {{name}}</h1>
+
+ 
+        
+        <p><a href="https://app.babylons.io/reccirik?tab=vitrine">app.babylons.io</a></p>
+        <p><a href="abcd.html">AB=CD borsa formasyonu</a></p>
+        <p><a href="ANGULARJS.html">angujs</a></p>
+        <p><a href="birlesikkademelicarpan.html">birleşik çarpan</a></p>
+        <p><a href="bolum-4-canavar-avi-oyunu/index.html">Canavar oyunu</a></p>
+        <p><a href="canlitv/canlitv.html">Canlı TV m3u8</a></p>
+        <p><a href="ceyrek.html">çeyrek altın</a></p>
+        <p><a href="ci7guzel.html">Ci 15m Top Traders Long Short Ratio</a></p>
+        <p><a href="ci10.html">Ci 15m Top Traders Long Short Ratio 2</a></p>
+        <p><a href="ciftemakesisimlilerv4.html">Çifte Ema Kesişimliler</a></p>
+        <p><a href="CoinFollowerPortfolio/index.html"><img src="CoinFollowerPortfolio/Coin_Follower_Portfolio.jpg" alt="Coin Follower Portfolio" width="300px"> </a></p>
+        <p><a href="file/coindegeri7.html">Coin Değeri</a></p>
+        <p><a href="file/CSVFileExplorer.html">CSV File Explorer</a></p>
+        <p><a href="file/fileResim.html">file resim</a></p>
+        <p><a href="file/filetext.html">file text</a></p>
+        <p><a href="firebaseJavascript2021.html">Firebase Data</a></p>
+        <p><a href="mymaps.html">google maps</a></p>
+        <p><a href="guldur.html">güldür güldür skeç</a></p>
+        <p><a href="haber.html">haberler</a></p>
+        <p><a href="alsat.html">Hisse Al-Sat</a></p>
+        <p><a href="hotspot2.html">Hotspot</a></p>
+        <p><a href="module.html">js ifee module örneği</a></p>
+        <p><a href="javascript30/js30.html">js 30</a></p>
+        <p><a href="jsloginfirebase/index.html">Js Login Firebase</a></p>
+                
+        <p><a href="metamask5.html">Metamask</a></p>
+        <p><a href="newpage.html">new page</a></p>  
+        <p><a href="myparse.html">Oversize Kontrolü</a></p>
+        <p><a href="parallax-template/index.html">parallaxtemplate</a></p>
+        <p><a href="particle-life-main/particle-life-main/particle_life.html">Particle Life</a></p>
+        <p><a href="particle-life-main/particle-life-main/particle_life_3d.html">Particle Life 3d</a></p>
+        <p><a href="regexpmail.html">regexp mail</a></p>
+        <p><a href="resimler.html">Resimler</a></p>
+        <p><a href="saat.html">saat</a></p>
+        <p><a href="sembolik_mantik/sembolik_mantik_www.erpelstolz.at_gateway_TruthTable.html">Sembolik Mantık</a></p>
+        <p><a href="srt.html">srt</a></p>
+        <p><a href="srtunicode2utf8.html">srt UTF-8</a></p>
+        <p><a href="srtokuyucugtp2.html">srt gpt</a></p>
+        <p><a href="son2dakikadayuzde2yukselenler.html">son 2 dakikada yüzde 2 yükselenler</a></p>
+        <p><a href="deneme/subtitle/t3.html">t3</a></p>
+        <p><a href="ttsspeechsynthesis.html">t3 speechsynthesis</a></p>
+        <p><a href="googletts.html">tts</a></p>
+        <p><a href="tts1.html">tts1</a></p>
+        <p><a href="tts1tr.html">tts1tr</a></p>
+        <p><a href="vuejs.html">VueJs</a></p>
+        <p><a href="https://play.google.com/store/apps/details?id=tk.recinilt.YouTubeSubtitleDownloader"><img src="file/YouTube Subtitle Downloader.jpg" alt="" width="250"></a></p>
     
-    <script>
-        // Alarm sesini çal
-        function playAlarm() {
-            const alarm = document.getElementById('alarm');
-            alarm.play();
-        }
+    
+    
+    <!-- <p><a href="bilesikcarpan/index.html">Bilesikcarpan.tk</a></p>  -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        
 
-        async function fetchFuturesData() {
-            const resultDiv = document.getElementById('result');
-
-            try {
-                // Binance USDT Futures çiftlerini al
-                const exchangeInfoResponse = await fetch('https://fapi.binance.com/fapi/v1/exchangeInfo');
-                const exchangeInfo = await exchangeInfoResponse.json();
-                const usdtPairs = exchangeInfo.symbols.filter(pair => pair.quoteAsset === 'USDT').map(pair => pair.symbol);
-
-                let foundPairs = [];
-
-                for (let pair of usdtPairs) {
-                    // Her bir paritenin son iki periyodundaki 1 dakikalık kline verilerini al
-                    const klinesResponse = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${pair}&interval=1m&limit=2`);
-                    const klines = await klinesResponse.json();
-
-                    if (klines.length === 2) {
-                        const openPrice = parseFloat(klines[0][1]); // İlk periyodun açılış fiyatı
-                        const closePrice = parseFloat(klines[1][4]); // İkinci periyodun kapanış fiyatı
-
-                        const percentageChange = ((closePrice - openPrice) / openPrice) * 100;
-
-                        if (percentageChange >= 2.5) {
-                            foundPairs.push(`${pair} (%${percentageChange.toFixed(2)})`);
-                        }
-                    }
-                }
-
-                if (foundPairs.length > 0) {
-                    resultDiv.innerHTML = `<h2>Son 2 dakikada %2.5 ve üzeri yükselen pariteler:</h2><ul>${foundPairs.map(pair => `<li>${pair}</li>`).join('')}</ul>`;
-                    playAlarm(); // Alarm sesi çal
-                } else {
-                    resultDiv.innerHTML = '<h2>Son 2 dakikada %2.5 ve üzeri yükselen bir parite bulunamadı.</h2>';
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                resultDiv.innerHTML = '<h2>Veri alınırken bir hata oluştu.</h2>';
-            }
-        }
-
-        // İlk veri çekildikten sonra her 2 dakikada bir tekrar veri çek
-        setInterval(fetchFuturesData, 120000); // 2 dakika = 120000 ms
-
-        // Sayfa yüklendiğinde ilk veriyi al
-        fetchFuturesData();
-    </script>
-</body>
+</div>
+</body> 
 </html>
