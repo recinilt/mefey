@@ -30,67 +30,71 @@
     <div id="results"></div>
 
 <script>
-    async function fetchData() {
-        const period = parseInt(document.getElementById('period').value);
-        const interval = document.getElementById('interval').value;
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = "Veriler çekiliyor...";
+async function fetchData() {
+    const period = parseInt(document.getElementById('period').value); // Kullanıcının seçtiği periyot
+    const interval = document.getElementById('interval').value; // Kullanıcının seçtiği zaman dilimi
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = "Veriler çekiliyor...";
 
-        try {
-            const symbolsResponse = await axios.get('https://fapi.binance.com/fapi/v1/exchangeInfo');
-            const symbols = symbolsResponse.data.symbols
-                .filter(symbol => symbol.quoteAsset === 'USDT' && symbol.status === 'TRADING')
-                .map(s => s.symbol);
+    try {
+        // Binance Futures API'den işlem çiftlerini al
+        const symbolsResponse = await axios.get('https://fapi.binance.com/fapi/v1/exchangeInfo');
+        const symbols = symbolsResponse.data.symbols
+            .filter(symbol => symbol.quoteAsset === 'USDT' && symbol.status === 'TRADING') // Sadece USDT çiftleri ve aktif semboller
+            .map(s => s.symbol);
 
-            const matchingPairs = [];
+        const matchingPairs = [];
 
-            for (const symbol of symbols) {
-                try {
-                    const klineResponse = await axios.get(`https://fapi.binance.com/fapi/v1/klines`, {
-                        params: {
-                            symbol: symbol,
-                            interval: interval,
-                            limit: period + 1 // Tüm periyotları kontrol etmek için
-                        }
-                    });
-
-                    const klines = klineResponse.data;
-
-                    // Tüm periyotların kontrolü
-                    let isIncreasing = true; // Varsayılan olarak "yükseliyor" kabul edilir
-                    for (let i = 1; i < klines.length; i++) {
-                        const prevClose = parseFloat(klines[i - 1][4]); // Önceki periyot kapanışı
-                        const currentClose = parseFloat(klines[i][4]);  // Mevcut periyot kapanışı
-
-                        if (currentClose <= prevClose) {
-                            isIncreasing = false; // Eğer bir periyod bile düşüşteyse
-                            break;
-                        }
+        // Her bir işlem çifti için veri al ve kontrol et
+        for (const symbol of symbols) {
+            try {
+                // Binance Kline API'den verileri çek
+                const klineResponse = await axios.get(`https://fapi.binance.com/fapi/v1/klines`, {
+                    params: {
+                        symbol: symbol,
+                        interval: interval,
+                        limit: period + 1 // Girilen periyot + 1 (bir önceki periyodu kontrol etmek için)
                     }
-
-                    if (isIncreasing) {
-                        matchingPairs.push(symbol);
-                    }
-                } catch (error) {
-                    console.warn(`Skipping ${symbol}:`, error.response?.data?.msg || error.message);
-                }
-            }
-
-            // Sonuçları göster
-            resultsDiv.innerHTML = '';
-            if (matchingPairs.length > 0) {
-                matchingPairs.forEach(pair => {
-                    const tradingViewUrl = `https://www.tradingview.com/chart/?symbol=BINANCE:${pair}`;
-                    resultsDiv.innerHTML += `<p>${pair} <a href="${tradingViewUrl}" target="_blank">Grafiği Görüntüle</a></p>`;
                 });
-            } else {
-                resultsDiv.innerHTML = '<p>Hiçbir eşleşme bulunamadı.</p>';
+
+                const klines = klineResponse.data;
+
+                // Tüm periyotlar boyunca artış kontrolü
+                let isIncreasing = true;
+                for (let i = 1; i < klines.length; i++) {
+                    const prevClose = parseFloat(klines[i - 1][4]); // Bir önceki periyodun kapanış fiyatı
+                    const currentClose = parseFloat(klines[i][4]);  // Mevcut periyodun kapanış fiyatı
+
+                    if (currentClose <= prevClose) {
+                        isIncreasing = false; // Eğer bir periyot bile düşüşteyse
+                        break;
+                    }
+                }
+
+                // Eğer tüm periyotlarda artış varsa, listeye ekle
+                if (isIncreasing) {
+                    matchingPairs.push(symbol);
+                }
+            } catch (error) {
+                console.warn(`Skipping ${symbol}:`, error.response?.data?.msg || error.message);
             }
-        } catch (error) {
-            console.error('General error:', error.response?.data || error.message);
-            resultsDiv.innerHTML = '<p>Bir hata oluştu. Lütfen tekrar deneyin.</p>';
         }
+
+        // Sonuçları ekrana yazdır
+        resultsDiv.innerHTML = '';
+        if (matchingPairs.length > 0) {
+            matchingPairs.forEach(pair => {
+                const tradingViewUrl = `https://www.tradingview.com/chart/?symbol=BINANCE:${pair}`;
+                resultsDiv.innerHTML += `<p>${pair} <a href="${tradingViewUrl}" target="_blank">Grafiği Görüntüle</a></p>`;
+            });
+        } else {
+            resultsDiv.innerHTML = '<p>Hiçbir eşleşme bulunamadı.</p>';
+        }
+    } catch (error) {
+        console.error('General error:', error.response?.data || error.message);
+        resultsDiv.innerHTML = '<p>Bir hata oluştu. Lütfen tekrar deneyin.</p>';
     }
+}
 
 </script>
 </body>
