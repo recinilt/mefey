@@ -31,7 +31,7 @@
 
 <script>
     async function fetchData() {
-        const period = document.getElementById('period').value;
+        const period = parseInt(document.getElementById('period').value);
         const interval = document.getElementById('interval').value;
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = "Veriler çekiliyor...";
@@ -50,25 +50,33 @@
                         params: {
                             symbol: symbol,
                             interval: interval,
-                            limit: parseInt(period) + 1
+                            limit: period + 1 // Tüm periyotları kontrol etmek için
                         }
                     });
 
                     const klines = klineResponse.data;
 
-                    if (klines.length >= 2) {
-                        const prevClose = parseFloat(klines[klines.length - 2][4]);
-                        const lastClose = parseFloat(klines[klines.length - 1][4]);
+                    // Tüm periyotların kontrolü
+                    let isIncreasing = true; // Varsayılan olarak "yükseliyor" kabul edilir
+                    for (let i = 1; i < klines.length; i++) {
+                        const prevClose = parseFloat(klines[i - 1][4]); // Önceki periyot kapanışı
+                        const currentClose = parseFloat(klines[i][4]);  // Mevcut periyot kapanışı
 
-                        if (lastClose > prevClose) {
-                            matchingPairs.push(symbol);
+                        if (currentClose <= prevClose) {
+                            isIncreasing = false; // Eğer bir periyod bile düşüşteyse
+                            break;
                         }
+                    }
+
+                    if (isIncreasing) {
+                        matchingPairs.push(symbol);
                     }
                 } catch (error) {
                     console.warn(`Skipping ${symbol}:`, error.response?.data?.msg || error.message);
                 }
             }
 
+            // Sonuçları göster
             resultsDiv.innerHTML = '';
             if (matchingPairs.length > 0) {
                 matchingPairs.forEach(pair => {
