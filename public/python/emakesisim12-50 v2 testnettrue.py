@@ -370,7 +370,7 @@ def get_historical_data(symbol, interval, limit):
 def calculate_increasing(liste): #ben ekledim
     coinpricecheck=[]
     for coin in liste:
-        if coin[1][-1]>coin[1][-2] and coin[1][-2]>coin[1][-3] and coin[1][-3]>coin[1][-4] and coin[1][-4]>coin[1][-5] and coin[1][-5]>coin[1][-6] and coin[1][-6]>coin[1][-7]:
+        if coin[1][-1]>coin[1][-2] and coin[1][-2]>coin[1][-3]:# and coin[1][-3]>coin[1][-4] and coin[1][-4]>coin[1][-5] and coin[1][-5]>coin[1][-6] and coin[1][-6]>coin[1][-7]:
             coinpricecheck.append(coin[0])
     return coinpricecheck
 
