@@ -17,10 +17,10 @@ telegram_api_hash = '5737f22f317a7646f9be624a507984c6'
 phone_number = '+905056279048'
 target_user = 'tradermikabot'  # Hedef kullanıcının kullanıcı adı
 alert_user = 'reccirik_bot'  # Bildirim gönderilecek kullanıcı adı
-binance_api_ben="PhtkBtWNspyWWUwjQX9rDekZPxVAN6blRvnBUzQsrhlrO4xbvzWvrJCtXircFfPU"
-binance_secret_ben="iAJFQwVXHRVXvA2ffjxb5dxd5nlHEFZjv2yP12FzqUSXxic7mz02rILS54YWOEOH"
-binance_api="nKdNVSLZZo4hQnEI1rg7xU1cxZnPWHN4OePu8Yzc3wH3TptaLxBxwhBjUIjrFrAD"
-binance_secret="WJSYPws6VnoJkMIXKqgu1CVSha9Io6rT7g8YEiNKbkG3dzdBF7vwZ6fWkZwvlH5S"
+binance_api="PhtkBtWNspyWWUwjQX9rDekZPxVAN6blRvnBUzQsrhlrO4xbvzWvrJCtXircFfPU"
+binance_secret="iAJFQwVXHRVXvA2ffjxb5dxd5nlHEFZjv2yP12FzqUSXxic7mz02rILS54YWOEOH"
+binance_api_reccirik2="nKdNVSLZZo4hQnEI1rg7xU1cxZnPWHN4OePu8Yzc3wH3TptaLxBxwhBjUIjrFrAD"
+binance_secret_reccirik2="WJSYPws6VnoJkMIXKqgu1CVSha9Io6rT7g8YEiNKbkG3dzdBF7vwZ6fWkZwvlH5S"
 binance_api_abim="W0cyfW6O27i7GsBKFYbm4zVjiOE0oY2lbOZYQwbYWksuDZG1zwt10x5w42GQ6JDa"
 binance_secret_abim="FdrwJZG7zXTi3qwj9zQaxCb0YFWoYAZexGCTAP2QkUcMhV4dQuq5OGSQYgiQYioE"
 
@@ -1521,91 +1521,7 @@ def AnaFonkIOF(raw_text):
         print("io1d>altustsinir[0]")
     print(f"Longlar:{mylonglarIOF}")
     print(f"Shortlar:{myshortlarIOF}")
-
-def parse_crypto_data_with_trend_details_grio(text):
-    # Grup genel bilgilerini yakala
-    group_info_pattern = r"Bu Grup İçin Kısa Vadeli  Alım Gücü:\s*(\d+,\d+)X.*?Marketteki Hacim Payı:%(\d+,\d+).*?12h=> %(\d+,\d+).*?1d=> %(\d+,\d+)"
-    group_info_match = re.search(group_info_pattern, text, re.DOTALL)
-
-    group_data = {
-        "short_term_buy_power": float(group_info_match.group(1).replace(",", ".")) if group_info_match else None,
-        "market_volume_share": float(group_info_match.group(2).replace(",", ".")) if group_info_match else None,
-        "12h": float(group_info_match.group(3).replace(",", ".")) if group_info_match else None,
-        "1d": float(group_info_match.group(4).replace(",", ".")) if group_info_match else None
-    }
-
-    # Coin bazında bilgileri yakala
-    coin_data_pattern = r"(\w+)\s+Nakit:\s*%(\d+,\d+).*?15m:\s*%(\d+,\d+)\s*([\🔻🔼]+)"
-    coin_matches = re.findall(coin_data_pattern, text)
-
-    coin_data = []
-    for coin, nakit, m15, trend in coin_matches:
-        trend_details = [True if char == "🔼" else False for char in trend]
-        coin_data.append({
-            "coin": coin + "USDT",
-            "nakit": float(nakit.replace(",", ".")),
-            "15m": float(m15.replace(",", ".")),
-            "trend_up": trend_details
-        })
-
-    return {"group_data": group_data, "coin_data": coin_data}
-
-
-
-def AnaFonkGrio(raw_text):
-    global calissinmi
-    calissinmi= False
-    parsed_data=parse_crypto_data_with_trend_details_grio(raw_text)
-    print(parsed_data)
-    """
-    {
-        "group_data": {
-            "short_term_buy_power": 1.5,
-            "market_volume_share": 24.9,
-            "12h": 48.8,
-            "1d": 49.6
-        },
-        "coin_data": [
-            {
-                "coin": "XRPUSDT",
-                "nakit": 48.8,
-                "15m": 48.0,
-                "trend_up": [False, True, False, False, False]
-            },
-            {
-                "coin": "SOLUSDT",
-                "nakit": 14.1,
-                "15m": 54.0,
-                "trend_up": [True, True, False, False, True]
-            }
-        ]
-    }
-
-    """
-    longacilacaklar=[]
-    if parsed_data["group_data"]["12h"]>50 and parsed_data["group_data"]["1d"]>50 and parsed_data["group_data"]["short_term_buy_power"]>1:
-        print("merhaba")
-        for coin in parsed_data["coin_data"]:
-            if coin["nakit"]>1 and coin["trend_up"][3] and coin["trend_up"][4] and coin["15m"]>60:
-                longacilacaklar.append(binle(coin["coin"]))
     
-    for coin in longacilacaklar:
-        if coin in mylonglarKA:
-            print(f"{coin} zaten vardı")
-        elif coin in yasaklilist:
-            print(f"Açılamayan coin: {coin}")
-        else:
-            #mylonglarKA.append(coin)
-            buy_position(coin, myleverage, get_my_cost(), "mylonglarKA")
-            print(f"{coin} long açıldı")
-
-
-
-
-
-
-    calissinmi=True
-
 ################################# Ana Fonksiyon
 
 async def main():
@@ -1618,7 +1534,7 @@ async def main():
         if event.raw_text.startswith("Marketteki Tüm Coinlere Olan Nakit Girişi Raporu"): #IO
             AnaFonkIO(event.raw_text)
 
-        if event.raw_text.startswith("?????????????Canlı olan coin sayısı") and check_arrowsIO(mytextio[0]): #KA
+        if event.raw_text.startswith("Canlı olan coin sayısı") and check_arrowsIO(mytextio[0]): #KA
             AnaFonkKA(event.raw_text)
 
         if event.raw_text.startswith("?????Yapay zeka,") and check_arrowsIO(mytextio[0]): #Marketanaliz MA
@@ -1631,10 +1547,7 @@ async def main():
             AnaFonkSDV(event.raw_text)     
 
         if event.raw_text.startswith("?????????Marketteki Tüm Coinlere Olan en çok nakit girişi olanlar."): #IOF
-            AnaFonkIOF(event.raw_text)  
-
-        if event.raw_text.startswith("Belirtilen Coin Grubu İçin Nakit Girişi Raporu"): #IGrio
-            AnaFonkGrio(event.raw_text)   
+            AnaFonkIOF(event.raw_text)   
         
     while True:
         if True:
