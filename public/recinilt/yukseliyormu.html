@@ -29,112 +29,61 @@
     <h2>Sonuçlar</h2>
     <div id="results"></div>
 
-    <script>
-        async function fetchData() {
-            const period = document.getElementById('period').value;
-            const interval = document.getElementById('interval').value;
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = "Veriler çekiliyor...";
+<script>
+    async function fetchData() {
+        const period = document.getElementById('period').value;
+        const interval = document.getElementById('interval').value;
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = "Veriler çekiliyor...";
 
-            try {
-                const symbolsResponse = await axios.get('https://fapi.binance.com/fapi/v1/exchangeInfo');
-                const symbols = symbolsResponse.data.symbols.filter(symbol => symbol.quoteAsset === 'USDT').map(s => s.symbol);
+        try {
+            const symbolsResponse = await axios.get('https://fapi.binance.com/fapi/v1/exchangeInfo');
+            const symbols = symbolsResponse.data.symbols
+                .filter(symbol => symbol.quoteAsset === 'USDT' && symbol.status === 'TRADING')
+                .map(s => s.symbol);
 
-                const matchingPairs = [];
+            const matchingPairs = [];
 
-                for (const symbol of symbols) {
-                    try {
-                        const klineResponse = await axios.get(`https://fapi.binance.com/fapi/v1/klines`, {
-                            params: {
-                                symbol: symbol,
-                                interval: interval,
-                                limit: parseInt(period) + 1
-                            }
-                        });
-
-                        const klines = klineResponse.data;
-
-                        if (klines.length >= 2) {
-                            const prevClose = parseFloat(klines[klines.length - 2][4]);
-                            const lastClose = parseFloat(klines[klines.length - 1][4]);
-
-                            if (lastClose > prevClose) {
-                                matchingPairs.push(symbol);
-                            }
-                        }
-                    } catch (error) {
-                        console.error(`Error fetching data for ${symbol}:`, error.response?.data || error.message);
-                    }
-                }
-
-                resultsDiv.innerHTML = '';
-                if (matchingPairs.length > 0) {
-                    matchingPairs.forEach(pair => {
-                        const tradingViewUrl = `https://www.tradingview.com/chart/?symbol=BINANCE:${pair}`;
-                        resultsDiv.innerHTML += `<p>${pair} <a href="${tradingViewUrl}" target="_blank">Grafiği Görüntüle</a></p>`;
-                    });
-                } else {
-                    resultsDiv.innerHTML = '<p>Hiçbir eşleşme bulunamadı.</p>';
-                }
-            } catch (error) {
-                console.error('General error:', error.response?.data || error.message);
-                resultsDiv.innerHTML = '<p>Bir hata oluştu. Lütfen tekrar deneyin.</p>';
-            }
-        }
-
-/*
-        async function fetchData() {
-            const period = document.getElementById('period').value;
-            const interval = document.getElementById('interval').value;
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = "Veriler çekiliyor...";
-
-            try {
-                // Binance Futures işlem çiftlerini al
-                const symbolsResponse = await axios.get('https://fapi.binance.com/fapi/v1/exchangeInfo');
-                const symbols = symbolsResponse.data.symbols.filter(symbol => symbol.quoteAsset === 'USDT').map(s => s.symbol);
-
-                const matchingPairs = [];
-
-                for (const symbol of symbols) {
-                    // Kline (candlestick) verilerini al
+            for (const symbol of symbols) {
+                try {
                     const klineResponse = await axios.get(`https://fapi.binance.com/fapi/v1/klines`, {
                         params: {
                             symbol: symbol,
                             interval: interval,
-                            limit: parseInt(period) + 1 // Bir önceki periyodu kontrol etmek için fazladan bir veri çek
+                            limit: parseInt(period) + 1
                         }
                     });
 
                     const klines = klineResponse.data;
 
-                    // Son iki periyodun kapanış fiyatlarını kontrol et
                     if (klines.length >= 2) {
-                        const prevClose = parseFloat(klines[klines.length - 2][4]); // Önceki periyot kapanış fiyatı
-                        const lastClose = parseFloat(klines[klines.length - 1][4]); // Son periyot kapanış fiyatı
+                        const prevClose = parseFloat(klines[klines.length - 2][4]);
+                        const lastClose = parseFloat(klines[klines.length - 1][4]);
 
                         if (lastClose > prevClose) {
                             matchingPairs.push(symbol);
                         }
                     }
+                } catch (error) {
+                    console.warn(`Skipping ${symbol}:`, error.response?.data?.msg || error.message);
                 }
-
-                // Sonuçları göster
-                resultsDiv.innerHTML = '';
-                if (matchingPairs.length > 0) {
-                    matchingPairs.forEach(pair => {
-                        const tradingViewUrl = `https://www.tradingview.com/chart/?symbol=BINANCE:${pair}`;
-                        resultsDiv.innerHTML += `<p>${pair} <a href="${tradingViewUrl}" target="_blank">Grafiği Görüntüle</a></p>`;
-                    });
-                } else {
-                    resultsDiv.innerHTML = '<p>Hiçbir eşleşme bulunamadı.</p>';
-                }
-            } catch (error) {
-                console.error(error);
-                resultsDiv.innerHTML = '<p>Bir hata oluştu. Lütfen tekrar deneyin.</p>';
             }
+
+            resultsDiv.innerHTML = '';
+            if (matchingPairs.length > 0) {
+                matchingPairs.forEach(pair => {
+                    const tradingViewUrl = `https://www.tradingview.com/chart/?symbol=BINANCE:${pair}`;
+                    resultsDiv.innerHTML += `<p>${pair} <a href="${tradingViewUrl}" target="_blank">Grafiği Görüntüle</a></p>`;
+                });
+            } else {
+                resultsDiv.innerHTML = '<p>Hiçbir eşleşme bulunamadı.</p>';
+            }
+        } catch (error) {
+            console.error('General error:', error.response?.data || error.message);
+            resultsDiv.innerHTML = '<p>Bir hata oluştu. Lütfen tekrar deneyin.</p>';
         }
-*/
-    </script>
+    }
+
+</script>
 </body>
 </html>
