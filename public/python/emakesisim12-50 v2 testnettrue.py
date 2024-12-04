@@ -60,7 +60,7 @@ def get_price(symbol):
         ticker = binanceclientreccirik2.get_symbol_ticker(symbol=symbol.upper())
         return ticker['price']
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"get_price() Error: {e}")
         return 1
 
 def myquantity(coin):
@@ -100,7 +100,7 @@ def get_symbol_precision(symbol):
             if item['symbol'] == symbol.upper():
                 return int(item['quantityPrecision'])
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"get_symbol_precision() Error: {e}")
         return None
 
 def buy_position(symbol, leverage, amount):
@@ -129,7 +129,7 @@ def buy_position(symbol, leverage, amount):
         #eklesil(symbol,liste,"ekle")
         time.sleep(5)  # 5 saniye bekle
     except Exception as e:
-        print(f"Error: {e}")
+        print(f" buy_position() Error: {e}")
 
 def sell_position(symbol, leverage, amount):
     #•if not is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod):
@@ -155,7 +155,7 @@ def sell_position(symbol, leverage, amount):
         #eklesil(symbol,liste,"ekle")
         time.sleep(5)  # 5 saniye bekle
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"sell_position Error: {e}")
 
 def acabilirmiyim(coin):
     if coin in mylonglar:#mylonglarSDV or coin in mylonglarCi or coin in mylonglarKA or coin in mylonglarMA or coin in mylonglarIOF or coin in myshortlarCi or coin in myshortlarIOF or coin in myshortlarSDV:
@@ -195,7 +195,7 @@ def get_futures_positions():
         return result
 
     except Exception as e:
-        print(f"Bir hata oluştu: {e}")
+        print(f"Bir hata oluştu: get_futures_position() {e}")
         return []
 
 # Pozisyonları listele
@@ -333,24 +333,31 @@ def get_symbols():
     ]
 
 
-def get_btcusdt_prices():
-    url = "https://api.binance.com/api/v3/klines"
-    params = {
-        "symbol": "BTCUSDT",
-        "interval": "15m",
-        "limit": 2
-    }
-    response = requests.get(url, params=params)
-    data = response.json()
-    prices = [float(candle[4]) for candle in data]  # Kapanış fiyatlarını alır
-    return prices
+def get_usdt_prices(symbol,interval,limit):
+    try:
+        url = "https://api.binance.com/api/v3/klines"
+        params = {
+            "symbol": symbol,
+            "interval": interval,
+            "limit": limit
+        }
+        response = requests.get(url, params=params)
+        data = response.json()
+        #print(symbol, data)
+        prices = [float(candle[4]) for candle in data]  # Kapanış fiyatlarını alır
+        #print(prices)
+        return prices
+    except Exception as e:
+        print(f"get_usdt_prices() Error: {e}")
+        return [8,8,8,8,8,8,8,8]
 
 # Fonksiyonu çağır ve fiyatları yazdır
 #prices = get_btcusdt_prices()
 #print(prices)
-
+mysymbolsprices=[]
 #get_BTCUSDT_historical_data("BTCUSDT","1h",2)
 def get_historical_data(symbol, interval, limit):
+    mysymbolsprices.append([symbol,get_usdt_prices(symbol,"5m",8)])
     """Her bir coin için tarihsel fiyat verilerini alır."""
     url = f"https://fapi.binance.com/fapi/v1/klines?symbol={symbol}&interval={interval}&limit={limit}"
     response = requests.get(url)
@@ -359,6 +366,15 @@ def get_historical_data(symbol, interval, limit):
         #print(data)
         return [{"close": float(candle[4]), "volume": float(candle[5])} for candle in data]
     return []
+
+def calculate_increasing(liste): #ben ekledim
+    coinpricecheck=[]
+    for coin in liste:
+        if coin[1][-1]>coin[1][-2] and coin[1][-2]>coin[1][-3] and coin[1][-3]>coin[1][-4] and coin[1][-4]>coin[1][-5] and coin[1][-5]>coin[1][-6] and coin[1][-6]>coin[1][-7]:
+            coinpricecheck.append(coin[0])
+    return coinpricecheck
+
+
 
 def calculate_ema(data, period):
     """Bir veri serisinin EMA'sını hesaplar."""
@@ -373,8 +389,9 @@ def analyze_ema(symbols, interval, short_ema_period, long_ema_period):
     """EMA kesişimlerini analiz eder."""
     ema_crosses = []
     for symbol in symbols:
-        historical_data = get_historical_data(symbol, interval, long_ema_period + 3)
+        historical_data = get_historical_data(symbol, interval, long_ema_period + 5)
         #print(historical_data)
+        
         myemavolumes.append([symbol,historical_data[-32]["volume"],historical_data[-31]["volume"],historical_data[-30]["volume"],historical_data[-29]["volume"],historical_data[-28]["volume"],historical_data[-27]["volume"],historical_data[-26]["volume"],historical_data[-25]["volume"],historical_data[-24]["volume"],historical_data[-23]["volume"],historical_data[-22]["volume"],historical_data[-21]["volume"],historical_data[-20]["volume"],historical_data[-19]["volume"],historical_data[-18]["volume"],historical_data[-17]["volume"],historical_data[-16]["volume"],historical_data[-15]["volume"],historical_data[-14]["volume"],historical_data[-13]["volume"],historical_data[-12]["volume"],historical_data[-11]["volume"],historical_data[-10]["volume"],historical_data[-9]["volume"],historical_data[-8]["volume"],historical_data[-7]["volume"],historical_data[-6]["volume"],historical_data[-5]["volume"],historical_data[-4]["volume"],historical_data[-3]["volume"],historical_data[-2]["volume"],historical_data[-1]["volume"]])
         volumes.append([symbol,historical_data[-1]["volume"]])
         if not historical_data:
@@ -400,7 +417,7 @@ def analyze_ema(symbols, interval, short_ema_period, long_ema_period):
 def listele():
     interval = "5m"  # Zaman dilimi
     short_ema_period = 12  # Kısa EMA periyodu
-    long_ema_period = 50  # Uzun EMA periyodu
+    long_ema_period = 100  # Uzun EMA periyodu
 
     print("USDT çiftleri yükleniyor...")
     symbols = get_symbols()
@@ -427,14 +444,19 @@ def listele():
     print(f"yukarı kıran ve volümü yükselen: {kesisim}")
     myemavolumes.clear()
     volumes.clear()
+
+    increasingcheck=calculate_increasing(mysymbolsprices)
+    mysymbolsprices.clear()
+    kesisimpriceincreasing=list(set(increasingcheck) & set(ema_crosses_volume_right))
+    return kesisimpriceincreasing
     #return(kesisim)
-    mybtcprices.append(get_btcusdt_prices())
-    if mybtcprices[0][1]>mybtcprices[0][0]:
-        mybtcprices.clear()
-        return ema_crosses_volume_right
-    else:
-        mybtcprices.clear()
-        return []
+    #mybtcprices.append(get_btcusdt_prices())
+    #if mybtcprices[0][1]>mybtcprices[0][0]:
+    #    mybtcprices.clear()
+    #    return ema_crosses_volume_right
+    #else:
+    #    mybtcprices.clear()
+    #    return []
 
 #if __name__ == "__main__":
 #    main()

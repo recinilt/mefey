@@ -200,7 +200,7 @@ def get_price(symbol):
         return 1
 
 def myquantity(coin):
-    return round(((mycost*myleverage)/float(get_price(coin))),3)
+    return round(((get_my_cost()*myleverage)/float(get_price(coin))),3)
 
 karzararnumber=[]
 karzararlistesi=[]
@@ -487,6 +487,22 @@ def eklesil(coin, liste, eylem):
             myshortlarCi.remove(coin)
         elif liste=="myshortlarIOF" and coin in myshortlarIOF:
             myshortlarIOF.remove(coin)
+
+def get_future_total_usdt_balance():
+    # Hesap bilgilerinizi alın
+    futures_balance = binanceclient.futures_account_balance() 
+    for balance in futures_balance: 
+        if balance['asset'] == 'USDT':
+            # İstediğiniz varlığı buraya girin 
+            print(f"Available Balance: {balance['balance']}")
+            return float(balance['balance'])
+        else:
+            return 100
+        
+get_future_total_usdt_balance()
+
+def get_my_cost():
+    return (get_future_total_usdt_balance() * 0.05)
 
 def IOkucuksekapat(sayi):
     if sayi<49.5:
@@ -1230,7 +1246,7 @@ def AnaFonkKA(raw_text):
                 print(f"Açılamayan coin: {coin}")
             else:
                 #mylonglarKA.append(coin)
-                buy_position(coin, myleverage, mycost, "mylonglarKA")
+                buy_position(coin, myleverage, get_my_cost(), "mylonglarKA")
                 print(f"{coin} long açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
         
@@ -1275,7 +1291,7 @@ def AnaFonkMA(raw_text):
                 print(f"{coin} zaten vardı")
             else:
                 #mylonglarMA.append(coin)
-                buy_position(coin, myleverage, mycost, "mylonglarMA")
+                buy_position(coin, myleverage, get_my_cost(), "mylonglarMA")
                 print(f"{coin} long açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
 
@@ -1413,7 +1429,7 @@ def AnaFonkCi(text):
                 print(f"{coin} zaten vardı")
             else:
                 #myshortlarCi.append(coin)
-                sell_position(coin, myleverage, mycost, "myshortlarCi")
+                sell_position(coin, myleverage, get_my_cost(), "myshortlarCi")
                 print(f"{coin} short açıldı")
                 #await telegram_client.send_message(alert_user, f"{coin}'a SHORT posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
         """
@@ -1456,7 +1472,7 @@ def AnaFonkIOF(raw_text):
             else:
                 if True:#check_arrowsIO(mytextio[0]):
                     #mylonglarIOF.append(coin)
-                    buy_position(coin, myleverage, mycost, "mylonglarIOF")
+                    buy_position(coin, myleverage, get_my_cost(), "mylonglarIOF")
                     print(f"{coin} long açıldı")
         """
         for coin in mylonglarIOF:
@@ -1485,7 +1501,7 @@ def AnaFonkIOF(raw_text):
                 print(f"Açılamayan coin: {coin}")
             else:
                 #myshortlarIOF.append(coin)
-                sell_position(coin, myleverage, mycost, "myshortlarIOF")
+                sell_position(coin, myleverage, get_my_cost(), "myshortlarIOF")
                 print(f"{coin} short açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a SHORT posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
         """
