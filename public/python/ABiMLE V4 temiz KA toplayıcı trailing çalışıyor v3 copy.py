@@ -1078,6 +1078,8 @@ def AnaFonkIO(raw_text):
                 print("coin işlendi")
             if pos["P&L (%)"]>(yuzdekackazanincakapatsin) or pos["P&L (%)"]<(-1*trailingyuzde):
                 kapatılacaklar.append([pos["Symbol"],pos["Mark Price"]])
+            elif not apalayimmi:
+                kapatılacaklar.append([pos["Symbol"],pos["Mark Price"]])
             kar=pos["Position"]*pos["Entry Price"]*pos['P&L (%)']*0.01
             #print(kar)
             karzarardurumu.append(kar)
@@ -1720,6 +1722,7 @@ async def main():
                 apalayimmi=False
             else:
                 apalayimmi=True
+            print("ap işlendi")
             #AnaFonkGrio(event.raw_text)  
         
     while True:
@@ -1734,7 +1737,7 @@ async def main():
             kaio=["ka","io"]
             iofio=["iof","io"]
             kaio=["ka","io"]
-            griolu=["grio","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","ka","ka","ka","ka","ka","ka","ka","ka","ka","ka","io :l1","io :meme","io :çin","io :game","io :web3","io :eth","io :lpol","io :defi","io :dex","io :trx","io :depin","io :ai","io :sol","io :l2","io :dcomp","io :file","io :ton","io :rwa","io :rst","io :fan"]
+            griolu=["ap","ap","grio","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","ka","ka","ka","ka","ka","ka","ka","ka","ka","ka","io :l1","io :meme","io :çin","io :game","io :web3","io :eth","io :lpol","io :defi","io :dex","io :trx","io :depin","io :ai","io :sol","io :l2","io :dcomp","io :file","io :ton","io :rwa","io :rst","io :fan"]
             random.shuffle(griolu)
             random.shuffle(kaio)
             random.shuffle(mysent48)
