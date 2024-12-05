@@ -17,10 +17,10 @@ telegram_api_hash = '5737f22f317a7646f9be624a507984c6'
 phone_number = '+905056279048'
 target_user = 'tradermikabot'  # Hedef kullanıcının kullanıcı adı
 alert_user = 'reccirik_bot'  # Bildirim gönderilecek kullanıcı adı
-binance_api_ben="PhtkBtWNspyWWUwjQX9rDekZPxVAN6blRvnBUzQsrhlrO4xbvzWvrJCtXircFfPU"
-binance_secret_ben="iAJFQwVXHRVXvA2ffjxb5dxd5nlHEFZjv2yP12FzqUSXxic7mz02rILS54YWOEOH"
-binance_api="nKdNVSLZZo4hQnEI1rg7xU1cxZnPWHN4OePu8Yzc3wH3TptaLxBxwhBjUIjrFrAD"
-binance_secret="WJSYPws6VnoJkMIXKqgu1CVSha9Io6rT7g8YEiNKbkG3dzdBF7vwZ6fWkZwvlH5S"
+binance_api="PhtkBtWNspyWWUwjQX9rDekZPxVAN6blRvnBUzQsrhlrO4xbvzWvrJCtXircFfPU"
+binance_secret="iAJFQwVXHRVXvA2ffjxb5dxd5nlHEFZjv2yP12FzqUSXxic7mz02rILS54YWOEOH"
+binance_api_reccirik2="nKdNVSLZZo4hQnEI1rg7xU1cxZnPWHN4OePu8Yzc3wH3TptaLxBxwhBjUIjrFrAD"
+binance_secret_reccirik2="WJSYPws6VnoJkMIXKqgu1CVSha9Io6rT7g8YEiNKbkG3dzdBF7vwZ6fWkZwvlH5S"
 binance_api_abim="W0cyfW6O27i7GsBKFYbm4zVjiOE0oY2lbOZYQwbYWksuDZG1zwt10x5w42GQ6JDa"
 binance_secret_abim="FdrwJZG7zXTi3qwj9zQaxCb0YFWoYAZexGCTAP2QkUcMhV4dQuq5OGSQYgiQYioE"
 
@@ -47,7 +47,7 @@ patternKA = r'\b(\w+)\s+TS:'
 #Global değişkenler
 dosya_adi = f"usdtlistem-{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.txt"
 mycost=3.5
-myleverage=7
+myleverage=3
 kactanbuyuk=17
 #mytextio = ["15m=> %57,2 🔼 1h=> %51,9 🔼 4h=> %52,2 🔼 12h=> %48,5 🔻 1d=> %48,9 🔻 En çok nakit girişi olanlar.(Sonunda 🔼 olanlarda nakit girişi daha sağlıklıdır) Nakitin nereye aktığını gösterir. (Nakit Göçü Raporu) BTC Nakit: %18,8 15m: %68 🔼🔼🔼🔻🔻 XLM Nakit: %11,3 15m: %58 🔼🔼🔼🔼🔼 SOL Nakit: %5,7 15m: %68 🔼🔼🔼🔻🔻 ETH Nakit: %5,4 15m: %59 🔼🔻🔻🔻🔻 DOGE Nakit: %4,6 15m: %45 🔻🔼🔼🔻🔻 XRP Nakit: %4,4 15m: %54 🔼🔼🔼🔻🔻 ADA Nakit: %2,3 15m: %56 🔼🔼🔼🔻🔻 FTM Nakit: %1,8 15m: %78 🔼🔼🔼🔻🔻 USDC Nakit: %1,6 15m: %46 🔻🔻🔼🔼🔼 SAND Nakit: %1,6 15m: %55 🔼🔼🔼🔻🔼 DOT Nakit: %1,6 15m: %66 🔼🔼🔼🔼🔼 PNUT Nakit: %1,5 15m: %50 🔻🔻🔼🔼🔼 NEAR Nakit: %1,3 15m: %59 🔼🔼🔼🔻🔻 PEPE Nakit: %1,3 15m: %62 🔼🔼🔼🔻🔻 LRC Nakit: %1,2 15m: %53 🔼🔼🔼🔼🔼 AVAX Nakit: %1,0 15m: %55 🔼🔼🔼🔻🔻 WLD Nakit: %0,9 15m: %47 🔻🔻🔻🔻🔻 SEI Nakit: %0,9 15m: %59 🔼🔻🔻🔻🔻 FET Nakit: %0,9 15m: %48 🔻🔼🔻🔻🔻 LTC Nakit: %0,8 15m: %65 🔼🔼🔼🔻🔻 WIF Nakit: %0,8 15m: %64 🔼🔼🔼🔻🔻 LINK Nakit: %0,8 15m: %60 🔼🔼🔼🔻🔻 PYR Nakit: %0,8 15m: %55 🔼🔼🔼🔼🔼 BNB Nakit: %0,8 15m: %32 🔻🔻🔻🔻🔻 SHIB Nakit: %0,7 15m: %57 🔼🔼🔼🔻🔼 NOT Nakit: %0,6 15m: %54 🔼🔻🔼🔼🔼 TIA Nakit: %0,6 15m: %43 🔻🔻🔻🔼🔼 SLF Nakit: %0,6 15m: %56 🔼🔼🔼🔼🔼 LDO Nakit: %0,6 15m: %64 🔼🔼🔼🔻🔼 MANA Nakit: %0,5 15m: %62 🔼🔼🔻🔻🔼 Piyasa ciddi anlamda risk barındırıyor. Alım Yapma! Günlük nakit giriş oranı (1d satirindaki değer) %50 üzerine çıkarsa risk azalacaktır. Bu değer %49 altında oldukça piyasaya bulaşma! Kısa vadede tüm coinlere olan nakit girişini beğendim :). Bu modülün mantığını anlamak için bu kelimeye dokun: /EInOut"]
 mytextio=["merhaba"]
@@ -84,9 +84,12 @@ usdtlistem=[]
 iopower=[]
 yasaklilist=["ETHUSDT","SOLUSDT","BTCUSDT","USDCUSDT"]
 symbolstrailingprices=[]
-trailingyuzde=7 #yüzde düşünce kapanır.
+trailingyuzde=21 #yüzde düşünce kapanır.
 yuzdekackazanincakapatsin=2000
 calissinmi=True
+apkisa=[]
+apuzun=[]
+apalayimmi=True
 
 
 ##################################### Yardımcı Fonksiyonlar:
@@ -233,42 +236,6 @@ def dosyala(karzarardurumu):
     except KeyboardInterrupt:
         print("\nDöngü durduruldu. Dosya kapatıldı.")
 
-def close_position(coin,liste):
-    # Mevcut pozisyonu kapat
-    positions = binanceclient.futures_position_information(symbol=coin)
-    for position in positions:
-        if float(position['positionAmt']) != 0:
-            side = SIDE_SELL if float(position['positionAmt']) > 0 else SIDE_BUY
-            myquantity=abs(float(position['positionAmt']))
-            karzararesapla(coin,myquantity,position['entryPrice'],get_price(coin),liste,1 if side=="SIDE_BUY" else -1)
-            order = binanceclient.futures_create_order(
-                symbol=coin,
-                side=side,
-                type=ORDER_TYPE_MARKET,
-                quantity=myquantity
-            )
-            print(f"Pozisyon kapatıldı: {order}")
-            mtext=f"Kapatılan Çift: {position['symbol']}, Miktar: {position['positionAmt']}, Giriş Fiyatı: {position['entryPrice']}, Çıkış fiyatı: {get_price(position["symbol"])}"
-            acmakapamalistesi.append(mtext)
-            print(mtext)
-            hesapla(coin, side, myquantity)
-            eklesil(coin,liste,"sil")
-            time.sleep(5)  # 5 saniye bekle
-    # Futures cüzdanındaki USDT miktarını öğren
-    account_info = binanceclient.futures_account()  # Futures hesap bilgilerini al
-    usdt_balance = 0
-
-    for asset in account_info['assets']:
-        if asset['asset'] == 'USDT':  # USDT bakiyesini bul
-            usdt_balance = float(asset['availableBalance'])  # Kullanılabilir bakiye
-    usdtlistem.append(usdt_balance)
-    print(f"Futures hesabındaki kullanılabilir USDT miktarı: {usdt_balance}")
-    print(usdtlistem)
-    print(f"Program başlangıcından şu ana kadarki fark: {usdtlistem[0]-usdtlistem[-1]} USDT")
-    dosyala(usdt_balance)
-    if len(usdtlistem)>2:
-        dosyala(usdtlistem[-2]-usdtlistem[-1])
-
 def hesapla(coin, pozisyon, quantity):
     price=get_price(coin)
     if pozisyon=="buy":
@@ -306,58 +273,6 @@ def get_symbol_precision(symbol):
     except Exception as e:
         print(f"Error: {e}")
         return None
-
-def buy_position(symbol, leverage, amount, liste):
-    #if is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod):
-    try:
-        binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
-        #binanceclient.futures_change_margin_type(symbol=symbol, marginType=ISOLATED)
-        precision = get_symbol_precision(symbol)
-        if precision is None:
-            print("Precision could not be determined.")
-            return
-
-        quantity = round(amount * leverage / float(binanceclient.get_symbol_ticker(symbol=symbol.upper())['price']), precision)
-        
-        order = binanceclient.futures_create_order(
-            symbol=symbol.upper(),
-            side='BUY',
-            type='MARKET',
-            quantity=quantity,
-            leverage=leverage
-        )
-        print(order)
-        hesapla(symbol, "buy",1)
-        eklesil(symbol,liste,"ekle")
-        time.sleep(5)  # 5 saniye bekle
-    except Exception as e:
-        print(f"Error: {e}")
-
-def sell_position(symbol, leverage, amount, liste):
-    #•if not is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod):
-    try:
-        binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
-        #binanceclient.futures_change_margin_type(symbol=symbol, marginType=ISOLATED)
-        precision = get_symbol_precision(symbol)
-        if precision is None:
-            print("Precision could not be determined.")
-            return
-
-        quantity = round(amount * leverage / float(binanceclient.get_symbol_ticker(symbol=symbol.upper())['price']), precision)
-        
-        order = binanceclient.futures_create_order(
-            symbol=symbol.upper(),
-            side='SELL',
-            type='MARKET',
-            quantity=quantity,
-            leverage=leverage
-        )
-        print(order)
-        hesapla(symbol,"sell",1)
-        eklesil(symbol,liste,"ekle")
-        time.sleep(5)  # 5 saniye bekle
-    except Exception as e:
-        print(f"Error: {e}")
 
 
 def convert_to_floatIO(text):
@@ -988,6 +903,122 @@ def check_btcusdt_drop():
     else:
         return False
 
+
+######################### CHATGPT DEĞİŞİKLİKLERİ BAŞLIYOR:
+def buy_position(symbol, leverage, amount, liste):
+    try:
+        # Binanceclient için işlem
+        binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
+        precision = get_symbol_precision(symbol)
+        if precision is None:
+            print("Precision could not be determined.")
+            return
+
+        quantity = round(amount * leverage / float(binanceclient.get_symbol_ticker(symbol=symbol.upper())['price']), precision)
+        
+        order1 = binanceclient.futures_create_order(
+            symbol=symbol.upper(),
+            side='BUY',
+            type='MARKET',
+            quantity=quantity,
+            leverage=leverage
+        )
+        print(order1)
+
+        # Binanceclient_abim için işlem
+        binanceclient_abim.futures_change_leverage(symbol=symbol, leverage=leverage)
+        order2 = binanceclient_abim.futures_create_order(
+            symbol=symbol.upper(),
+            side='BUY',
+            type='MARKET',
+            quantity=quantity,
+            leverage=leverage
+        )
+        print(order2)
+
+        hesapla(symbol, "buy", 1)
+        eklesil(symbol, liste, "ekle")
+        time.sleep(5)
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+def sell_position(symbol, leverage, amount, liste):
+    try:
+        # Binanceclient için işlem
+        binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
+        precision = get_symbol_precision(symbol)
+        if precision is None:
+            print("Precision could not be determined.")
+            return
+
+        quantity = round(amount * leverage / float(binanceclient.get_symbol_ticker(symbol=symbol.upper())['price']), precision)
+        
+        order1 = binanceclient.futures_create_order(
+            symbol=symbol.upper(),
+            side='SELL',
+            type='MARKET',
+            quantity=quantity,
+            leverage=leverage
+        )
+        print(order1)
+
+        # Binanceclient_abim için işlem
+        binanceclient_abim.futures_change_leverage(symbol=symbol, leverage=leverage)
+        order2 = binanceclient_abim.futures_create_order(
+            symbol=symbol.upper(),
+            side='SELL',
+            type='MARKET',
+            quantity=quantity,
+            leverage=leverage
+        )
+        print(order2)
+
+        hesapla(symbol, "sell", 1)
+        eklesil(symbol, liste, "ekle")
+        time.sleep(5)
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+def close_position(coin, liste):
+    try:
+        # Binanceclient için pozisyon kapatma
+        positions = binanceclient.futures_position_information(symbol=coin)
+        for position in positions:
+            if float(position['positionAmt']) != 0:
+                side = SIDE_SELL if float(position['positionAmt']) > 0 else SIDE_BUY
+                quantity = abs(float(position['positionAmt']))
+                karzararesapla(coin, quantity, position['entryPrice'], get_price(coin), liste, 1 if side == "SIDE_BUY" else -1)
+
+                order1 = binanceclient.futures_create_order(
+                    symbol=coin,
+                    side=side,
+                    type=ORDER_TYPE_MARKET,
+                    quantity=quantity
+                )
+                print(f"Pozisyon kapatıldı: {order1}")
+
+        # Binanceclient_abim için pozisyon kapatma
+        positions_abim = binanceclient_abim.futures_position_information(symbol=coin)
+        for position in positions_abim:
+            if float(position['positionAmt']) != 0:
+                side = SIDE_SELL if float(position['positionAmt']) > 0 else SIDE_BUY
+                quantity = abs(float(position['positionAmt']))
+                karzararesapla(coin, quantity, position['entryPrice'], get_price(coin), liste, 1 if side == "SIDE_BUY" else -1)
+
+                order2 = binanceclient_abim.futures_create_order(
+                    symbol=coin,
+                    side=side,
+                    type=ORDER_TYPE_MARKET,
+                    quantity=quantity
+                )
+                print(f"Pozisyon kapatıldı: {order2}")
+
+    except Exception as e:
+        print(f"Error: {e}")
+############################## BİTTİ
+
 # Ana fonksiyondakiler: ############################################################################
 def AnaFonkIO(raw_text):
     global symbolstrailingprices
@@ -1042,6 +1073,9 @@ def AnaFonkIO(raw_text):
         print("Açık Pozisyonlar:")
         for pos in positions:
             print(pos)
+            if not pos["Symbol"] in mylonglarKA:
+                mylonglarKA.append(pos["Symbol"])
+                print("coin işlendi")
             if pos["P&L (%)"]>(yuzdekackazanincakapatsin) or pos["P&L (%)"]<(-1*trailingyuzde):
                 kapatılacaklar.append([pos["Symbol"],pos["Mark Price"]])
             kar=pos["Position"]*pos["Entry Price"]*pos['P&L (%)']*0.01
@@ -1220,9 +1254,10 @@ def AnaFonkIO(raw_text):
         toplamkarzarar=sum(hesapkitap) 
         print(f"Toplam kar zarar: {toplamkarzarar}")
         print(f"IO 1d, yukarı trendde mi?: {is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod)}")
-    print("temiz KA toplayıcı trailing çalışıyor v3.py")
+    print("Abimle v4 temiz KA toplayıcı trailing çalışıyor v3 copy.py")
 
 def AnaFonkKA(raw_text):
+    global apalayimmi
     global calissinmi
     calissinmi=False
     #[1,???], ['ETHUSDT', 1.2, 1.1, 1.048, 788, True, 7.3]
@@ -1232,7 +1267,7 @@ def AnaFonkKA(raw_text):
     #['STRKUSDT', 1.8, 1.051, -0.6]
     result = coin_veri_islemeKA(raw_text)
     #print(result)
-    if io1d[-1]>48.9: #result[0][0]>-1:# and io1d[-1]>50.1 and (extract_market_buying_power(mytextio[0])>1 or cift_ema_sinyal(iopower)[0]) and cift_ema_sinyal(io1d)[0]:#and cift_ema_sinyal(io1d)[0] and io1d[-1]!=49.9 and io1d[-1]!=50 and io1d[-1]!=50.1: # and not io15m1h4hdusuktemi():
+    if io1d[-1]>48.9 and apalayimmi: #result[0][0]>-1:# and io1d[-1]>50.1 and (extract_market_buying_power(mytextio[0])>1 or cift_ema_sinyal(iopower)[0]) and cift_ema_sinyal(io1d)[0]:#and cift_ema_sinyal(io1d)[0] and io1d[-1]!=49.9 and io1d[-1]!=50 and io1d[-1]!=50.1: # and not io15m1h4hdusuktemi():
         myFKAlist=[]
         kadakilonglar=[]
         for coin in result:
@@ -1250,7 +1285,7 @@ def AnaFonkKA(raw_text):
             else:
                 #mylonglarKA.append(coin)
                 buy_position(coin, myleverage, get_my_cost(), "mylonglarKA")
-                print(f"{coin} long açıldı")
+                print(f"KA ile {coin} long açıldı")
                 #telegram_client.send_message(alert_user, f"{coin}'a LONG posizyon açıldı. büyüklüğü: {myleverage}x kaldıraçlı, {mycost} USDT harcamalı, yani {myleverage * mycost} dolar büyüklüğünde.")
         
         """
@@ -1521,6 +1556,10 @@ def AnaFonkIOF(raw_text):
         print("io1d>altustsinir[0]")
     print(f"Longlar:{mylonglarIOF}")
     print(f"Shortlar:{myshortlarIOF}")
+    
+
+
+
 
 def parse_crypto_data_with_trend_details_grio(text):
     # Grup genel bilgilerini yakala
@@ -1535,16 +1574,17 @@ def parse_crypto_data_with_trend_details_grio(text):
     }
 
     # Coin bazında bilgileri yakala
-    coin_data_pattern = r"(\w+)\s+Nakit:\s*%(\d+,\d+).*?15m:\s*%(\d+,\d+)\s*([\🔻🔼]+)"
+    coin_data_pattern = r"(\w+)\s+Nakit:\s*%(\d+,\d+).*?15m:%(\d+,\d+)\s+Mts:\s*(\d+,\d+)\s*([\🔻🔼]+)"
     coin_matches = re.findall(coin_data_pattern, text)
 
     coin_data = []
-    for coin, nakit, m15, trend in coin_matches:
+    for coin, nakit, m15, mts, trend in coin_matches:
         trend_details = [True if char == "🔼" else False for char in trend]
         coin_data.append({
             "coin": coin + "USDT",
             "nakit": float(nakit.replace(",", ".")),
             "15m": float(m15.replace(",", ".")),
+            "mts": float(mts.replace(",", ".")),
             "trend_up": trend_details
         })
 
@@ -1552,7 +1592,9 @@ def parse_crypto_data_with_trend_details_grio(text):
 
 
 
+
 def AnaFonkGrio(raw_text):
+    global apalayimmi
     global calissinmi
     calissinmi= False
     parsed_data=parse_crypto_data_with_trend_details_grio(raw_text)
@@ -1560,33 +1602,36 @@ def AnaFonkGrio(raw_text):
     """
     {
         "group_data": {
-            "short_term_buy_power": 1.5,
-            "market_volume_share": 24.9,
-            "12h": 48.8,
-            "1d": 49.6
+            "short_term_buy_power": 1.0,
+            "market_volume_share": 10.3,
+            "12h": 49.8,
+            "1d": 50.7
         },
         "coin_data": [
             {
-                "coin": "XRPUSDT",
-                "nakit": 48.8,
-                "15m": 48.0,
-                "trend_up": [False, True, False, False, False]
+                "coin": "TRXUSDT",
+                "nakit": 54.1,
+                "15m": 59.0,
+                "mts": 2.0,
+                "trend_up": [True, True, True, True, True]
             },
             {
-                "coin": "SOLUSDT",
-                "nakit": 14.1,
-                "15m": 54.0,
-                "trend_up": [True, True, False, False, True]
+                "coin": "SANDUSDT",
+                "nakit": 13.0,
+                "15m": 48.0,
+                "mts": 3.9,
+                "trend_up": [False, True, True, True, True]
             }
         ]
     }
 
+
     """
     longacilacaklar=[]
-    if parsed_data["group_data"]["12h"]>50 and parsed_data["group_data"]["1d"]>50 and parsed_data["group_data"]["short_term_buy_power"]>1:
+    if apalayimmi and parsed_data["group_data"]["12h"]>49.7 and parsed_data["group_data"]["1d"]>49.7 and parsed_data["group_data"]["short_term_buy_power"]>1 and parsed_data["group_data"]["market_volume_share"]>1:
         print("merhaba")
         for coin in parsed_data["coin_data"]:
-            if coin["nakit"]>1 and coin["trend_up"][3] and coin["trend_up"][4] and coin["15m"]>60:
+            if coin["nakit"]>1 and coin["trend_up"][3] and coin["trend_up"][4] and coin["15m"]>55 and coin["mts"]>1.1 and coin["mts"]<1.8:
                 longacilacaklar.append(binle(coin["coin"]))
     
     for coin in longacilacaklar:
@@ -1597,7 +1642,7 @@ def AnaFonkGrio(raw_text):
         else:
             #mylonglarKA.append(coin)
             buy_position(coin, myleverage, get_my_cost(), "mylonglarKA")
-            print(f"{coin} long açıldı")
+            print(f"Grio ile, {coin} long açıldı")
 
 
 
@@ -1606,19 +1651,50 @@ def AnaFonkGrio(raw_text):
 
     calissinmi=True
 
+
+def extract_and_convert_numbers_ap(message):
+    """
+    Extract numbers from specific phrases in a message and convert them to float with '.' as decimal separator.
+
+    Args:
+    message (str): The input message containing the target phrases and numbers.
+
+    Returns:
+    list: A list of floats extracted and converted from the message.
+    """
+    import re
+
+    # Define patterns for the target phrases
+    patterns = [
+        r"Altların Kısa Vadede Gücü\(0-100\): (\d+,\d+)",
+        r"Coinlerin Uzun Vadede Gücü\(0-100\): (\d+,\d+)"
+    ]
+
+    numbers = []
+    for pattern in patterns:
+        match = re.search(pattern, message)
+        if match:
+            # Replace comma with dot and convert to float
+            number = float(match.group(1).replace(',', '.'))
+            numbers.append(number)
+
+    return numbers
+
 ################################# Ana Fonksiyon
 
 async def main():
+    global apalayimmi
     global calissinmi
     await telegram_client.start(phone=phone_number)
     @telegram_client.on(events.NewMessage(from_users=target_user))
     async def handler(event):
         print(f'Mesaj geldi:\n {event.raw_text}')
+        global apalayimmi
 
         if event.raw_text.startswith("Marketteki Tüm Coinlere Olan Nakit Girişi Raporu"): #IO
             AnaFonkIO(event.raw_text)
 
-        if event.raw_text.startswith("?????????????Canlı olan coin sayısı") and check_arrowsIO(mytextio[0]): #KA
+        if event.raw_text.startswith("Canlı olan coin sayısı") and check_arrowsIO(mytextio[0]): #KA
             AnaFonkKA(event.raw_text)
 
         if event.raw_text.startswith("?????Yapay zeka,") and check_arrowsIO(mytextio[0]): #Marketanaliz MA
@@ -1631,10 +1707,20 @@ async def main():
             AnaFonkSDV(event.raw_text)     
 
         if event.raw_text.startswith("?????????Marketteki Tüm Coinlere Olan en çok nakit girişi olanlar."): #IOF
-            AnaFonkIOF(event.raw_text)  
-
+            AnaFonkIOF(event.raw_text)   
+        
         if event.raw_text.startswith("Belirtilen Coin Grubu İçin Nakit Girişi Raporu"): #IGrio
             AnaFonkGrio(event.raw_text)   
+        
+        if event.raw_text.startswith("Altların Kısa Vadede Btc'ye Karşı Gücü"): #Ap
+            altlarinkisaveuzunvadedekigucu=extract_and_convert_numbers_ap(event.raw_text)
+            apkisa.append(altlarinkisaveuzunvadedekigucu[0])
+            apuzun.append(altlarinkisaveuzunvadedekigucu[1])
+            if apkisa[-1]>96.5 or apuzun[-1]>96.5:
+                apalayimmi=False
+            else:
+                apalayimmi=True
+            #AnaFonkGrio(event.raw_text)  
         
     while True:
         if True:
@@ -1648,6 +1734,8 @@ async def main():
             kaio=["ka","io"]
             iofio=["iof","io"]
             kaio=["ka","io"]
+            griolu=["grio","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","io","ka","ka","ka","ka","ka","ka","ka","ka","ka","ka","io :l1","io :meme","io :çin","io :game","io :web3","io :eth","io :lpol","io :defi","io :dex","io :trx","io :depin","io :ai","io :sol","io :l2","io :dcomp","io :file","io :ton","io :rwa","io :rst","io :fan"]
+            random.shuffle(griolu)
             random.shuffle(kaio)
             random.shuffle(mysent48)
             random.shuffle(iokaiof)
@@ -1659,6 +1747,17 @@ async def main():
                 for mesaj in mymesaj:
                     await mesajgonder(f"Otomatik kapatılan coinler: {mesaj}",alert_user)
                 mymesaj.clear()
+            
+            await telegram_client.send_message(target_user, "ap")
+            await asyncio.sleep(rastgele_sayi(15,45))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
+            while True:
+                if calissinmi:
+                    await telegram_client.send_message(target_user, "io")
+                    await asyncio.sleep(rastgele_sayi(30,45))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
+                    break
+                else:
+                    await asyncio.sleep(rastgele_sayi(10,20))
+
             while True:
                 if calissinmi:
                     await telegram_client.send_message(target_user, komutlar[rastgele_sayi(0,len(komutlar)-1)])
@@ -1680,7 +1779,15 @@ async def main():
                     break
                 else:
                     await asyncio.sleep(rastgele_sayi(10,20))
-            
+            for komut in griolu:
+                while True:
+                    if calissinmi:
+                        await telegram_client.send_message(target_user, komut) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
+                        await asyncio.sleep(rastgele_sayi(35,100))
+                        break
+                    else:
+                        await asyncio.sleep(rastgele_sayi(10,20))
+                
             
             await asyncio.sleep(rastgele_sayi(15,30))
             if False: #acmakapamalistesi:
