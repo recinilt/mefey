@@ -90,7 +90,6 @@ calissinmi=True
 apkisa=[]
 apuzun=[]
 apalayimmi=True
-apsatayimmi=False
 apuzunalayimmi=True
 apkisaalayimmi=True
 
@@ -1075,19 +1074,14 @@ def son_bes_esit_mi(liste):
     return all(x == liste[-1] for x in liste[-5:])
 
 def almakkosulu():
-    myresult = (io1d[-1]>48.9 and apalayimmi and (cift_ema_sinyal(io1d)[0]) and (not son_bes_esit_mi(io1d))) or (io1d[-1]>49.8 and apalayimmi and cift_ema_sinyal(io1d)[0])
+    myresult = (io1d[-1]>48.9 and apkisaalayimmi and apuzunalayimmi and (cift_ema_sinyal(io1d)[0]) and (not son_bes_esit_mi(io1d))) or (io1d[-1]>49.8 and apkisaalayimmi and apuzunalayimmi)
     return myresult
     
-def satmakkosulu():
-    myresult = (io1d[-1]<49.5 and (cift_ema_sinyal(io1d)[1]) and (not son_bes_esit_mi(io1d))) or (io1d[-1]<49) or apsatayimmi
-    return myresult
 
 # Ana fonksiyondakiler: ############################################################################
 def AnaFonkIO(raw_text):
     global apkisaalayimmi
     global apuzunalayimmi
-    global apsatayimmi
-    global apalayimmi
     global symbolstrailingprices
     global calissinmi
     calissinmi=False
@@ -1147,7 +1141,7 @@ def AnaFonkIO(raw_text):
                 print("coin işlendi")
             if pos["P&L (%)"]>(yuzdekackazanincakapatsin) or pos["P&L (%)"]<(-1*trailingyuzde):
                 kapatılacaklar.append([binle(pos["Symbol"]),pos["Mark Price"]])
-            if satmakkosulu():
+            if not apkisaalayimmi or not apuzunalayimmi:
                 if not binle(pos["Symbol"]) in kapatılacaklar:
                     kapatılacaklar.append([(binle(pos["Symbol"])),pos["Mark Price"]])
             kar=pos["Position"]*pos["Entry Price"]*pos['P&L (%)']*0.01
@@ -1599,7 +1593,6 @@ def extract_coin_data_IOF2(text):
 def AnaFonkIOF2(raw_text):
     global apkisaalayimmi
     global apuzunalayimmi
-    global apalayimmi
     global calissinmi
     calissinmi=False
     #EOSUSDT 3,8X Payı:%1,4 Pahalılık:2,4 🔼🔼🔼🔼🔼
@@ -1608,7 +1601,7 @@ def AnaFonkIOF2(raw_text):
     parsed_data=extract_coin_data_IOF2(raw_text)
     longacilacaklar=[]
     kapatilacaklar=[]
-    if io1d[-1]>48.9 and apalayimmi:
+    if io1d[-1]>48.9 and apkisaalayimmi and apuzunalayimmi:
         for mylist in parsed_data:
             if binle(mylist[0]) in mysymbols3 and mylist[1]>2 and mylist[2]>0.4 and mylist[3]>1.1 and mylist[3]<1.7 and mylist[4][0] and mylist[4][1] and mylist[4][2] and mylist[4][3] :
                 longacilacaklar.append(binle(mylist[0])) 
@@ -1804,7 +1797,6 @@ def AnaFonkGrio(raw_text):
     global apkisaalayimmi
     global apuzunalayimmi
     global apalayimmi
-    global apalayimmi
     global calissinmi
     calissinmi= False
     parsed_data=parse_crypto_data_with_trend_details_grio(raw_text)
@@ -1839,7 +1831,7 @@ def AnaFonkGrio(raw_text):
     """
     longacilacaklar=[]
     if almakkosulu():
-        if io1d[-1]>48.9 and apalayimmi and parsed_data["group_data"]["12h"]>49.7 and parsed_data["group_data"]["1d"]>49.7 and parsed_data["group_data"]["short_term_buy_power"]>=1 and parsed_data["group_data"]["market_volume_share"]>=1:
+        if io1d[-1]>48.9 and apkisaalayimmi and apuzunalayimmi and parsed_data["group_data"]["12h"]>49.7 and parsed_data["group_data"]["1d"]>49.7 and parsed_data["group_data"]["short_term_buy_power"]>=1 and parsed_data["group_data"]["market_volume_share"]>=1:
             print("grup iyi durumda grio")
             #print("merhaba")
             for coin in parsed_data["coin_data"]:
@@ -1933,7 +1925,6 @@ async def main():
     global iokomutlari
     global iocoins
     global apalayimmi
-    global apsatayimmi
     global apkisaalayimmi
     global apuzunalayimmi
     global calissinmi
@@ -1944,7 +1935,6 @@ async def main():
         global iocoins
         global calissinmi
         global apalayimmi
-        global apsatayimmi
         global apkisaalayimmi
         global apuzunalayimmi
         global iokomutlari
@@ -2038,15 +2028,14 @@ async def main():
                     altlarinkisaveuzunvadedekigucu=extract_and_convert_numbers_ap(event.raw_text)
                     apkisa.append(altlarinkisaveuzunvadedekigucu[0])
                     apuzun.append(altlarinkisaveuzunvadedekigucu[1])
-                    if apkisa[-1]>95 or apuzun[-1]>97:
-                        apsatayimmi=True
+                    if apkisa[-1]>95:# or apuzun[-1]>97:
+                        apkisaalayimmi=False
                     else:
-                        apsatayimmi=False
-                        
-                    if apkisa[-1]>92 or apuzun[-1]>96.5:
-                        apalayimmi=False
+                        apkisaalayimmi=True
+                    if apuzun[-1]>97:# or apuzun[-1]>97:
+                        apuzunalayimmi=False
                     else:
-                        apalayimmi=True
+                        apuzunalayimmi=True
                     print("ap işlendi")
                     #AnaFonkGrio(event.raw_text)
                     break
