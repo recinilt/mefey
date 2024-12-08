@@ -105,7 +105,9 @@ async function fetchData() {
             audio = new Audio('alarm.wav');
             audio.play();
         } else {
-            resultsDiv.innerHTML = 'No pairs meet the criteria for a consistent trend.';
+            resultsDiv.innerHTML = 'Kriterlere uygun sonuç bulunamadı.';
+            audio = new Audio('asagi.wav');
+            audio.play();
         }
         loader.style.display = 'none';
     } catch (error) {
