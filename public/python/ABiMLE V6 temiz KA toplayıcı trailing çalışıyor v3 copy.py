@@ -9,7 +9,21 @@ import requests
 import json
 #import time
 from datetime import datetime
-import pandas as pd
+import os
+#import pandas as pd
+import os
+
+def print_filename():
+    # Mevcut dosyanın tam yolunu alır
+    file_path = __file__
+    # Sadece dosya adını almak için
+    file_name = os.path.basename(file_path)
+    # Dosya adını konsola yazdır
+    print(file_name)
+
+# Fonksiyonu çağırarak dosya adını yazdır
+
+
 
 # API ayarları
 telegram_api_id = '21560699'
@@ -33,7 +47,7 @@ exchange_info = binanceclient.futures_exchange_info()
 symbols = exchange_info['symbols']
 mysymbols3=[]
 for s in symbols:
-    mysymbols3.append(s["symbol"]),
+    mysymbols3.append(s['symbol']),
 # Telegram Client'ı oluşturun
 telegram_client = TelegramClient('session_name', telegram_api_id, telegram_api_hash)
 #patterler
@@ -96,6 +110,12 @@ apkisaalayimmi=True
 
 
 ##################################### Yardımcı Fonksiyonlar:
+def trailinghesapla():
+    if io1d[-1]>50:
+        return trailingyuzde
+    else:
+        return (trailingyuzde / 2)
+    
 def rastgele_sayi(min_deger, max_deger):
     return random.randint(min_deger, max_deger)
 
@@ -434,7 +454,7 @@ def IOkucuksekapat(sayi):
         myacikusdtlist=[]
         for pos in usdt_positions:
             myacikusdtlist.append(pos['symbol'])
-            close_position(pos["symbol"], "mylonglarGenel")
+            close_position(pos['symbol'], "mylonglarGenel")
             print(f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}")
         #return myacikusdtlist
         # Futures cüzdanındaki USDT miktarını öğren
@@ -514,10 +534,10 @@ def closelongs():
     for pos in usdt_positions:
         if float(pos['positionAmt']) > 0:
             myacikusdtlist.append(pos['symbol'])
-            close_position(pos["symbol"], "mylonglarGenel")
-            symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (pos["Symbol"],1),True)
+            close_position(pos['symbol'], "mylonglarGenel")
+            symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (pos['symbol'],1),True)
             print(f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}")
-            mtext=f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}, Çıkış fiyatı: {get_price(pos["symbol"])}"
+            mtext=f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}, Çıkış fiyatı: {get_price(pos['symbol'])}"
             acmakapamalistesi.append(mtext)
             print(mtext)
             time.sleep(7)  # 5 saniye bekle
@@ -559,9 +579,9 @@ def closeshorts():
     for pos in usdt_positions:
         if float(pos['positionAmt']) < 0:
             myacikusdtlist.append(pos['symbol'])
-            close_position(pos["symbol"], "myshortlarKA")
+            close_position(pos['symbol'], "myshortlarKA")
             print(f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}")
-            mtext=f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}, Çıkış fiyatı: {get_price(pos["symbol"])}"
+            mtext=f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}, Çıkış fiyatı: {get_price(pos['symbol'])}"
             acmakapamalistesi.append(mtext)
             print(mtext)
             time.sleep(7)  # 5 saniye bekle
@@ -593,7 +613,7 @@ def IOdusuyorsakapat(): #longlar kapanacak
         for pos in usdt_positions:
             if float(pos['positionAmt']) > 0:
                 myacikusdtlist.append(pos['symbol'])
-                close_position(pos["symbol"], "mylonglarGenel")
+                close_position(pos['symbol'], "mylonglarGenel")
                 print(f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}")
                 time.sleep(7)  # 5 saniye bekle
         #return myacikusdtlist
@@ -621,7 +641,7 @@ def IOcikiyorsakapat(): #shortlar kapanacak
         for pos in usdt_positions:
             if float(pos['positionAmt']) < 0:
                 myacikusdtlist.append(pos['symbol'])
-                close_position(pos["symbol"], "myshortlarKA")
+                close_position(pos['symbol'], "myshortlarKA")
                 print(f"Kapatılan Çift: {pos['symbol']}, Miktar: {pos['positionAmt']}, Giriş Fiyatı: {pos['entryPrice']}")
                 time.sleep(7)  # 5 saniye bekle
         #return myacikusdtlist
@@ -886,7 +906,7 @@ async def mesajgonder(mesaj,alici):
 
 
 ##############
-
+"""
 def check_btcusdt_drop():
     # BTCUSDT için 15 dakikalık mum verilerini al
     klines = binanceclient.get_klines(symbol='BTCUSDT', interval=Client.KLINE_INTERVAL_15MINUTE, limit=4)
@@ -905,7 +925,7 @@ def check_btcusdt_drop():
         return True
     else:
         return False
-
+"""
 
 ######################### CHATGPT DEĞİŞİKLİKLERİ BAŞLIYOR:
 def buy_position(symbol, leverage, amount, liste):
@@ -1145,7 +1165,7 @@ def AnaFonkIO(raw_text):
             if not binle(pos["Symbol"]) in mylonglarGenel:
                 mylonglarGenel.append(binle(pos["Symbol"]))
                 print("coin işlendi")
-            if pos["P&L (%)"]>(yuzdekackazanincakapatsin) or pos["P&L (%)"]<(-1*trailingyuzde):
+            if pos["P&L (%)"]>(yuzdekackazanincakapatsin) or pos["P&L (%)"]<(-1*trailinghesapla()):
                 kapatılacaklar.append([binle(pos["Symbol"]),pos["Mark Price"]])
             if satmakkosulu():
                 if not binle(pos["Symbol"]) in kapatılacaklar:
@@ -1336,7 +1356,8 @@ def AnaFonkIO(raw_text):
         toplamkarzarar=sum(hesapkitap) 
         print(f"Toplam kar zarar: {toplamkarzarar}")
         print(f"IO 1d, yukarı trendde mi?: {is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod)}")
-    print("Abimle v4 temiz KA toplayıcı trailing çalışıyor v3 copy.py")
+    #print("Abimle v4 temiz KA toplayıcı trailing çalışıyor v3 copy.py")
+    print_filename()
     calissinmi=True
 
 
@@ -1713,7 +1734,7 @@ def AnaFonkIOF(raw_text):
 
 
 
-def parse_crypto_data_with_trend_details_grio(text):
+def parse_crypto_data_with_trend_details_io_coin(text):
     # Grup genel bilgilerini yakala
     match = re.search(r"Bu Grup İçin Kısa Vadeli\s+Alım Gücü:\s*(\d+,\d+)X", text)
     short_term_buy_power = float(match.group(1).replace(",", ".")) if match else None
@@ -1752,33 +1773,25 @@ def parse_crypto_data_with_trend_details_grio(text):
     return {"group_data": group_data, "coin_data": coin_data}
 
 
-
-def extract_data_fixed_griov2(text):
-    # Define a regex pattern to match the necessary parts of the text
-    pattern = re.compile(r'(\w+)\s+NakitPayı:%(\d+,\d+)\s+NakitGücü:\s+(\d+,\d+)X\s+=>\s+' +
-                         r'((?:%\d+,\d+\s+[🔼🔻]\s+)+)')
-    
-    # Find all matches
+def extract_data_new_format_grio(text):
+    pattern = re.compile(r'(\w+)\s+N\.Payı:%(\d+,\d+)\s+N\.Gücü:\s+(\d+,\d+)X\s+Pahalılık:\s+(\d+,\d+)\s+=>\s+' +
+                         r'((?:%\d+,\d+\s+[🔼🔻]\s*)+)')
     matches = pattern.findall(text)
-    
-    # Prepare the output data structure
     result = []
-    
+
     for match in matches:
-        coin, cash_share, cash_power, trends = match
-        # Append 'USDT' to the coin name
-        #coin += "USDT"
-        # Replace comma with dot for float conversion
-        cash_share = float(cash_share.replace(',', '.'))
-        cash_power = float(cash_power.replace(',', '.'))
-        # Extract trend percentages and convert them to floats
+        label, npayi, ngucu, pahalilik, trends = match
+        npayi = float(npayi.replace(',', '.'))
+        ngucu = float(ngucu.replace(',', '.'))
+        pahalilik = float(pahalilik.replace(',', '.'))
         trend_percentages = re.findall(r'%(\d+,\d+)', trends)
         trend_percentages = [float(t.replace(',', '.')) for t in trend_percentages]
-        
-        # Append to the result list
-        result.append([coin, cash_share, cash_power, trend_percentages])
-        
+
+        result.append([label, npayi, ngucu, pahalilik, trend_percentages])
+
     return result
+
+
 
 iokomutlari=[]
 
@@ -1789,12 +1802,13 @@ def AnaFonkGriov2(raw_text):
     global apalayimmi
     global calissinmi
     calissinmi= False
-    parsed_data=extract_data_fixed_griov2(raw_text)
+    parsed_data=extract_data_new_format_grio(raw_text)
     print(parsed_data)
-    #L1 NakitPayı:%17,4 NakitGücü: 0,50X => %56,6 🔼 %51,9 🔼 %47,4 🔻 %49,6 🔻 %49,6 🔻
-    #[['L1USDT', 17.4, 0.5, [56.6, 51.9, 47.4, 49.6, 49.6]], ['MEMEUSDT', 10.7, 0.36, [53.5, 47.2, 46.8, 48.9, 49.4]], ['ÇİNUSDT', 6.4, 0.49, [54.4, 55.1, 50.4, 50.2, 50.1]
+    #L1 N.Payı:%20,1 N.Gücü: 0,73X Pahalılık: 1,31 => %51,9 🔼 %48,2 🔻 %49,9 🔻 %49,7 🔻 %49,5 🔻 
+    #['L1', 20.1, 0.73, 1.31, [51.9, 48.2, 49.9, 49.7, 49.5]]
     for mylist in parsed_data:
-        if mylist[1]>1 and mylist[2]>1 and mylist[3][3]>49.6 and mylist[3][4]>49.6:
+        if mylist[1]>1 and mylist[2]>1 and mylist[3]>1 and mylist[4][3]>49.6 and mylist[4][4]>49.6:
+            print(mylist[0])
             if not f"io :{mylist[0]}" in iokomutlari:
                 iokomutlari.append(f"io :{mylist[0]}")
 
@@ -1807,7 +1821,7 @@ def AnaFonkGrio(raw_text):
     global apalayimmi
     global calissinmi
     calissinmi= False
-    parsed_data=parse_crypto_data_with_trend_details_grio(raw_text)
+    parsed_data=parse_crypto_data_with_trend_details_io_coin(raw_text)
     print(parsed_data)
     """
     {
@@ -1844,8 +1858,8 @@ def AnaFonkGrio(raw_text):
             #print("merhaba")
             for coin in parsed_data["coin_data"]:
                 if (coin["nakit"] * 0.01 * parsed_data["group_data"]["market_volume_share"]>=0.05) and coin["trend_up"][3] and coin["trend_up"][4] and coin["mts"]>1.1 and coin["mts"]<1.7:
-                    longacilacaklar.append(binle(coin["coin"]))
-                    print(f"longacilacaklara eklendi {binle(coin["coin"])}")
+                    longacilacaklar.append(binle(coin['coin']))
+                    print(f"longacilacaklara eklendi {binle(coin['coin'])}")
         
         print(f"grio ile long açılacaklar: {longacilacaklar}")
         for coin in longacilacaklar:
@@ -2020,7 +2034,7 @@ async def main():
                 else:
                     await asyncio.sleep(5)
 
-        if "L1 NakitPayı:%" in event.raw_text and "LPOOL NakitPayı:%" in event.raw_text:   #IGrio   # event.raw_text.startswith("Belirtilen Coin Grubu İçin Nakit Girişi Raporu") and not "%100" in event.raw_text: 
+        if "L1 N.Payı:%" in event.raw_text and "LPOOL N.Payı:%" in event.raw_text:   #IGrio   # event.raw_text.startswith("Belirtilen Coin Grubu İçin Nakit Girişi Raporu") and not "%100" in event.raw_text: 
             #AnaFonkGrio(event.raw_text)   
             while True:
                 if calissinmi:
