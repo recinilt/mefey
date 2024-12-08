@@ -76,8 +76,8 @@
             const symbols = pairsResponse.data.symbols.filter(s => s.symbol.endsWith('USDT') && s.status === 'TRADING').map(s => s.symbol);
             
             let validPairs = [];
-            for (let i = 0; i < symbols.length; i += 10) {
-                const batch = symbols.slice(i, i + 10);
+            for (let i = 0; i < symbols.length; i += 5) {
+                const batch = symbols.slice(i, i + 5);
                 const requests = batch.map(symbol => axios.get(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${periods}`));
                 const responses = await Promise.all(requests.map(p => p.catch(e => e)));
     
