@@ -57,7 +57,10 @@
 <div id="results"></div>
 
 <script>
+    let timeoutHandle; // Zamanlayıcı tutucu
+    
     async function fetchData() {
+        clearTimeout(timeoutHandle); // Mevcut zamanlayıcıyı iptal et
         const loader = document.getElementById('loader');
         const resultsDiv = document.getElementById('results');
         loader.style.display = 'block';
@@ -107,7 +110,7 @@
                     }
                 });
     
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 2000));
             }
     
             if (validPairs.length > 0) {
@@ -126,10 +129,10 @@
         loader.style.display = 'none';
     
         // İşlemler bittikten bir dakika sonra tekrar başlat
-        setTimeout(fetchData, 60000);
+        timeoutHandle = setTimeout(fetchData, 60000);
     }
 </script>
-    
+        
 
 </body>
 </html>
