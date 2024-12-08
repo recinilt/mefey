@@ -26,7 +26,6 @@
 </head>
 <body>
 <h1>Crypto Trend Analyzer</h1>
-<p>(Veri çekme ve işleme, yaklaşık 2 dakika sürer.)</p>
 <div id="loader"></div>
 <form id="form">
     <label for="direction">Direction:</label>
@@ -80,10 +79,8 @@ async function fetchData() {
             
             let consistentTrend = true;
             for (let i = 1; i < closes.length; i++) {
-                if (direction === 'up' && closes[i] < closes[i - 1]) {
-                    consistentTrend = false;
-                    break;
-                } else if (direction === 'down' && closes[i] > closes[i - 1]) {
+                if ((direction === 'up' && closes[i] <= closes[i - 1]) ||
+                    (direction === 'down' && closes[i] >= closes[i - 1])) {
                     consistentTrend = false;
                     break;
                 }
@@ -95,8 +92,8 @@ async function fetchData() {
                 const change = ((lastClose - firstClose) / firstClose) * 100;
 
                 if ((direction === 'up' && change >= percentChange) || (direction === 'down' && change <= -percentChange)) {
-                    //const link = `https://www.tradingview.com/symbols/BINANCE:${symbol.replace('USDT', '')}?interval=${interval}`;
-                    const link = `https://www.tradingview.com/chart/?symbol=BINANCE:${symbol}&interval=${interval}`;
+                    myinterval=interval=="1m"?1:interval=="5m"?5:interval=="15m"?15:interval=="1h"?60:interval=="4h"?240:interval=="12h"?720:1440
+                    const link = `https://www.tradingview.com/chart/?symbol=BINANCE:${symbol}&interval=${myinterval}`;
                     validPairs.push(`${symbol}: %${change.toFixed(2)} consistent ${direction} <a href="${link}" target="_blank">View Chart</a>`);
                 }
             }
@@ -107,7 +104,7 @@ async function fetchData() {
             audio = new Audio('alarm.wav');
             audio.play();
         } else {
-            resultsDiv.innerHTML = 'Kritere uyan herhangi bir binance futures usdt çifti bulunamamıştır.';
+            resultsDiv.innerHTML = 'No pairs meet the criteria for a consistent trend.';
         }
         loader.style.display = 'none';
     } catch (error) {
