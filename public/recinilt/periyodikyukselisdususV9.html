@@ -52,7 +52,7 @@
         <label for="percentChange">Minimum Yüzde Değişimi:</label>
         <input type="number" id="percentChange" name="percentChange" value="2">
         <br>
-        <button type="button" onclick="fetchData()" >Analyze Trends</button>
+        <button type="button" onclick="fetchData()" >Analyze Trends</button><span id="loading"></span>
     </form>
     <div id="results"></div>
 <script>
@@ -71,6 +71,7 @@ async function fetchData(){
     const periods = parseInt(document.getElementById('periods').value);
     const percentChange = parseFloat(document.getElementById('percentChange').value);
     var sonucverdimi=true
+    var myload=document.getElementById("loading")
     try {
         const spotResponse = await axios.get('https://api.binance.com/api/v3/exchangeInfo');
         let spotSymbols = spotResponse.data.symbols.filter(s => s.symbol.endsWith('USDT') && s.status === 'TRADING').map(s => s.symbol);
@@ -136,7 +137,7 @@ async function fetchData(){
     loader.style.display = 'none';
 
     // İşlemler bittikten bir dakika sonra tekrar başlat
-    timeoutHandle = setTimeout(fetchData, sonucverdimi? 60000: 10000);
+    timeoutHandle = setTimeout(fetchData, sonucverdimi? 120000: 10000);
 
 }
 </script>
