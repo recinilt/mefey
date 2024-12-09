@@ -79,7 +79,7 @@ async function fetchData() {
             .map(s => s.symbol);
 
         // İlk 250 sembol
-        let validSymbols = futuresSymbols.slice(0, 250);
+        let validSymbols = futuresSymbols.slice(0, 100);
 
         let validPairs = [];
         for (let i = 0; i < validSymbols.length; i += 5) {
