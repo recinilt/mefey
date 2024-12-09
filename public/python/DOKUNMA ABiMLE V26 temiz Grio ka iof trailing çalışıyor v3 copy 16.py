@@ -2084,6 +2084,7 @@ async def main():
     global apkisaalayimmi
     global apuzunalayimmi
     global calissinmi
+    global io1d
     await telegram_client.start(phone=phone_number)
     @telegram_client.on(events.NewMessage(from_users=target_user))
     async def handler(event):
@@ -2095,6 +2096,7 @@ async def main():
         global apkisaalayimmi
         global apuzunalayimmi
         global iokomutlari
+        global io1d
 
         if event.raw_text.startswith("Marketteki Tüm Coinlere Olan Nakit Girişi Raporu"): #IO
             while True:
@@ -2264,7 +2266,7 @@ async def main():
             
             while True:
                 if calissinmi:
-                    await telegram_client.send_message(target_user, "grio")
+                    await telegram_client.send_message(target_user, "grio" if io1d[-1]>48.9 else "io")
                     await asyncio.sleep(rastgele_sayi(30,45))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
                     break
                 else:
@@ -2281,7 +2283,7 @@ async def main():
 
             while True:
                 if calissinmi:
-                    await telegram_client.send_message(target_user, komutlar[rastgele_sayi(0,len(komutlar)-1)])
+                    await telegram_client.send_message(target_user, komutlar[rastgele_sayi(0,len(komutlar)-1)] if io1d[-1]>48.9 else "io")
                     await asyncio.sleep(rastgele_sayi(15,45))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
                     break
                 else:
@@ -2290,7 +2292,7 @@ async def main():
             for komut in iokomutlari:
                 while True:
                     if calissinmi:
-                        await telegram_client.send_message(target_user, komut) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
+                        await telegram_client.send_message(target_user, komut if io1d[-1]>48.9 else "io") #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
                         await asyncio.sleep(rastgele_sayi(35,100))
                         break
                     else:
@@ -2299,7 +2301,7 @@ async def main():
 
             while True:
                 if calissinmi:
-                    await telegram_client.send_message(target_user, "ka") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await telegram_client.send_message(target_user, "ka" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
                     await asyncio.sleep(rastgele_sayi(35,100))
                     break
                 else:
@@ -2307,7 +2309,7 @@ async def main():
             
             while True:
                 if calissinmi:
-                    await telegram_client.send_message(target_user, "iof") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await telegram_client.send_message(target_user, "iof" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
                     await asyncio.sleep(rastgele_sayi(35,100))
                     break
                 else:
@@ -2322,7 +2324,7 @@ async def main():
                     await asyncio.sleep(2)
             while True:
                 if calissinmi:
-                    await telegram_client.send_message(target_user, "grio") #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
+                    await telegram_client.send_message(target_user, "grio" if io1d[-1]>48.9 else "io") #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
                     await asyncio.sleep(rastgele_sayi(35,100))
                     break
                 else:
@@ -2330,7 +2332,7 @@ async def main():
             for komut in iokomutlari:
                 while True:
                     if calissinmi:
-                        await telegram_client.send_message(target_user, komut) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
+                        await telegram_client.send_message(target_user, komut if io1d[-1]>48.9 else "io") #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
                         await asyncio.sleep(rastgele_sayi(35,100))
                         break
                     else:
@@ -2339,7 +2341,7 @@ async def main():
             
             while True:
                 if calissinmi:
-                    await telegram_client.send_message(target_user, "ka") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await telegram_client.send_message(target_user, "ka" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
                     await asyncio.sleep(rastgele_sayi(35,100))
                     break
                 else:
@@ -2347,7 +2349,7 @@ async def main():
             
             while True:
                 if calissinmi:
-                    await telegram_client.send_message(target_user, "iof") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await telegram_client.send_message(target_user, "iof" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
                     await asyncio.sleep(rastgele_sayi(35,100))
                     break
                 else:
@@ -2363,7 +2365,7 @@ async def main():
                 
             while True:
                 if calissinmi:
-                    await telegram_client.send_message(target_user, "grio")
+                    await telegram_client.send_message(target_user, "grio" if io1d[-1]>48.9 else "io")
                     await asyncio.sleep(rastgele_sayi(30,45))  # 100 ile 400 saniye arasında rastgele bir saniyede bir mesaj gönder
                     break
                 else:
@@ -2372,7 +2374,7 @@ async def main():
             for komut in iokomutlari:
                 while True:
                     if calissinmi:
-                        await telegram_client.send_message(target_user, komut) #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
+                        await telegram_client.send_message(target_user, komut if io1d[-1]>48.9 else "io") #mysent[1] if kacinci == 0 else mysent[0])#'sdv')
                         await asyncio.sleep(rastgele_sayi(35,100))
                         break
                     else:
@@ -2381,7 +2383,7 @@ async def main():
 
             while True:
                 if calissinmi:
-                    await telegram_client.send_message(target_user, "ka") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await telegram_client.send_message(target_user, "ka" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
                     await asyncio.sleep(rastgele_sayi(35,100))
                     break
                 else:
@@ -2389,7 +2391,7 @@ async def main():
                 
             while True:
                 if calissinmi:
-                    await telegram_client.send_message(target_user, "iof") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await telegram_client.send_message(target_user, "iof" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
                     await asyncio.sleep(rastgele_sayi(35,100))
                     break
                 else:
