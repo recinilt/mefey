@@ -100,8 +100,8 @@ iopower=[]
 yasaklilist=["ETHUSDT","SOLUSDT","BTCUSDT","USDCUSDT"]
 symbolstrailingprices=[]
 trailingyuzde=8 #yüzde düşünce kapanır.
-trailingyuzde50altindayken=2
-trailingyuzde50altindayken=2
+trailingyuzde50altindayken=4
+
 yuzdekackazanincakapatsin=2000
 calissinmi=True
 apkisa=[]
@@ -1134,7 +1134,7 @@ def almakkosulu():
     return myresult
     
 def satmakkosulu():
-    myresult = (io1d[-1]<49.5 and (cift_ema_sinyal(io1d)[1]) and (not son_bes_esit_mi(io1d))) or (io1d[-1]<49) or apsatayimmi
+    myresult =  (io1d[-1]<49) or apsatayimmi #or (io1d[-1]<49.5 and (cift_ema_sinyal(io1d)[1]) and (not son_bes_esit_mi(io1d)))
     return myresult
 
 # Ana fonksiyondakiler: ############################################################################
