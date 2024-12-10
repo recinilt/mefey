@@ -59,7 +59,7 @@
         <br>
         <label for="percentChange">Minimum Yüzde Değişimi:</label>
         <input type="number" id="percentChange" name="percentChange" value="2">
-        <br>
+        <br><span id="myozet">X zaman dilimindeki son X periyod sürekli X eğiliminde ise ve son periyod ile ilk periyod arasında yüzde X değişim var ise listelenir.</span>
         <button id="mybutton" type="button" onclick="fetchData()">Analyze Trends</button>
     </form>
     <div id="results"></div>
@@ -73,10 +73,12 @@ async function fetchData() {
     const resultsDiv = document.getElementById('results');
     loader.style.display = 'block';
     document.getElementById("mybutton").disabled=true;
+    
     const direction = document.getElementById('direction').value;
     const interval = document.getElementById('interval').value;
     const periods = parseInt(document.getElementById('periods').value);
     const percentChange = parseFloat(document.getElementById('percentChange').value);
+    document.getElementById("myozet").innerText=`${interval} zaman dilimindeki son ${periods} periyod sürekli ${direction} eğiliminde ise ve son periyod ile ilk periyod arasında yüzde ${percentChange} değişim var ise listelenir.`;
     var sonucverdimi = true;
 
     try {
@@ -150,6 +152,7 @@ async function fetchData() {
             sonucverdimi = false;
         }
         document.getElementById("mybutton").disabled=false;
+        document.getElementById("myozet").innerText=`X zaman dilimindeki son X periyod sürekli X eğiliminde ise ve son periyod ile ilk periyod arasında yüzde X değişim var ise listelenir.`
         resultHTML += '</div>';
 
         // Yeni sonuçları en üste ekle
