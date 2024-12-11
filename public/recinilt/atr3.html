@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATR to Price Ratio for Top 100 Coins</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>ATR to Price Ratio for Top 100 Coins</h1>
+    <div id="coinsContainer"></div>
+    <script>
+        const top100Symbols = ['BTCUSDT', 'ETHUSDT', 'BCHUSDT', 'XRPUSDT',"SUSHIUSDT"]
+
+        const fetchATRandPrice = async (symbol) => {
+            try {
+                const atrToPriceRatios = [];
+                for (let i = 0; i < 1000; i += 14) {
+                    const klineResponse = await axios.get('https://api.binance.com/api/v3/klines', {
+                        params: {
+                            symbol: symbol,
+                            interval: '15m',
+                            limit: 14,
+                            startTime: Date.now() - (15 * 60 * 1000 * (1000 - i))
+                        }
+                    });
+                    const closes = klineResponse.data.map(k => parseFloat(k[4]));
+                    const highs = klineResponse.data.map(k => parseFloat(k[2]));
+                    const lows = klineResponse.data.map(k => parseFloat(k[3]));
+                    const trs = highs.map((high, idx) => Math.max(high - lows[idx], Math.abs(high - closes[idx - 1] || 0), Math.abs(lows[idx] - (closes[idx - 1] || 0))));
+                    const atr = trs.reduce((a, b) => a + b, 0) / trs.length;
+                    const price = parseFloat(closes[closes.length - 1]);
+                    const atrToPriceRatio = atr / price;
+                    atrToPriceRatios.push(atrToPriceRatio);
+                }
+                return { symbol, atrToPriceRatios };
+            } catch (error) {
+                console.error(`Error fetching data for ${symbol}:`, error);
+                return { symbol, atrToPriceRatios: [] }; // Handle errors gracefully
+            }
+        };
+
+        const displayATRs = async () => {
+            const results = await Promise.all(top100Symbols.map(symbol => fetchATRandPrice(symbol)));
+            results.forEach(result => {
+                const coinDiv = document.createElement('div');
+                const canvas = document.createElement('canvas');
+                canvas.width = 600;
+                canvas.height = 200;
+                coinDiv.appendChild(canvas);
+                document.getElementById('coinsContainer').appendChild(coinDiv);
+                const ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({length: result.atrToPriceRatios.length}, (_, i) => `Step ${i + 1}`),
+                        datasets: [{
+                            label: `${result.symbol} ATR/Price Ratio`,
+                            data: result.atrToPriceRatios,
+                            fill: false,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            });
+        };
+
+        displayATRs();
+    </script>
+</body>
+</html>
