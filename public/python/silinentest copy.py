@@ -1,92 +1,53 @@
-import ccxt
+import numpy as np
 import pandas as pd
-import ta
-from binance.client import Client
-from binance.enums import *
+import ccxt
 import time
+import sys
 
-# Binance borsasına bağlan
-exchange = ccxt.binance()
-binance_api="PhtkBtWNspyWWUwjQX9rDekZPxVAN6blRvnBUzQsrhlrO4xbvzWvrJCtXircFfPU"
-binance_secret="iAJFQwVXHRVXvA2ffjxb5dxd5nlHEFZjv2yP12FzqUSXxic7mz02rILS54YWOEOH"
-binanceclient = Client(binance_api, binance_secret)
+top_100_symbols=['BTCUSDT', 'ETHUSDT', 'BCHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT', 'ETCUSDT', 'LINKUSDT', 'XLMUSDT', 'ADAUSDT', 'XMRUSDT', 'DASHUSDT', 'ZECUSDT', 'XTZUSDT',
+ 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT', 'BATUSDT', 'VETUSDT', 'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT', 'KNCUSDT', 'ZRXUSDT', 'COMPUSDT', 'OMGUSDT', 'DOGEUSDT', 'SXPUSDT', 'KAVAUSDT', 'BANDUSDT', 'RLCUSDT', 'WAVESUSDT', 'MKRUSDT', 'SNXUSDT', 'DOTUSDT', 'DEFIUSDT', 'YFIUSDT', 'BALUSDT', 'CRVUSDT', 
+'TRBUSDT', 'RUNEUSDT', 'SUSHIUSDT', 'EGLDUSDT', 'SOLUSDT', 'ICXUSDT', 'STORJUSDT', 'BLZUSDT', 'UNIUSDT', 'AVAXUSDT', 'FTMUSDT', 'ENJUSDT', 'FLMUSDT', 'RENUSDT', 'KSMUSDT', 'NEARUSDT', 'AAVEUSDT', 'FILUSDT', 'RSRUSDT', 'LRCUSDT', 'OCEANUSDT', 'CVCUSDT', 'BELUSDT', 'CTKUSDT', 'AXSUSDT', 'ALPHAUSDT', 'ZENUSDT', 'SKLUSDT', 'GRTUSDT', '1INCHUSDT', 'CHZUSDT', 'SANDUSDT', 'ANKRUSDT', 'LITUSDT', 'UNFIUSDT', 'REEFUSDT', 'RVNUSDT', 'SFPUSDT', 'XEMUSDT', 'BTCSTUSDT', 'COTIUSDT', 'CHRUSDT', 'MANAUSDT', 'ALICEUSDT', 'HBARUSDT', 'ONEUSDT', 'LINAUSDT', 'STMXUSDT', 'DENTUSDT', 'CELRUSDT', 'HOTUSDT', 'MTLUSDT', 'OGNUSDT', 'NKNUSDT', 'SCUSDT', 'DGBUSDT']
 
-
-# USDT çiftlerini al
-markets = exchange.load_markets()
-usdt_pairs = [symbol for symbol in markets if symbol.endswith('USDT') and 'future' in markets[symbol]['info']]
-print(usdt_pairs)
-
-def get_ohlcv(symbol):
-    # 5 dakikalık periodun 25 geriye dönük bilgilerini al
-    ohlcv = exchange.fetch_ohlcv(symbol, timeframe='5m', limit=25)
-    df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+def fetch_data(symbol, timeframe='5m', limit=3000):
+    exchange = ccxt.binance()
+    bars = exchange.fetch_ohlcv(symbol.replace('USDT', '/USDT'), timeframe=timeframe, limit=limit)
+    df = pd.DataFrame(bars, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+    df.set_index('timestamp', inplace=True)
     return df
 
-def calculate_ema(df, short_period=14, long_period=25):
-    df['ema_short'] = ta.trend.ema_indicator(df['close'], window=short_period)
-    df['ema_long'] = ta.trend.ema_indicator(df['close'], window=long_period)
-    return df
+def custom_atr(high, low, close, timeperiod=14):
+    high_low = high - low
+    high_close = np.abs(high - close.shift())
+    low_close = np.abs(low - close.shift())
+    ranges = pd.concat([high_low, high_close, low_close], axis=1)
+    true_range = np.max(ranges, axis=1)
+    atr = true_range.rolling(window=timeperiod).mean()
+    return atr
 
-def find_crossing_coins(usdt_pairs):
-    crossing_coins = []
-    for pair in usdt_pairs:
-        df = get_ohlcv(pair)
-        df = calculate_ema(df)
-        if df['ema_short'].iloc[-1] > df['ema_long'].iloc[-1] and df['ema_short'].iloc[-2] <= df['ema_long'].iloc[-2]:
-            crossing_coins.append(pair)
-    return crossing_coins
+def calculate_atr_volatility(symbols):
+    results = []
+    spinner = ['-', '\\', '|', '/']
+    for index, symbol in enumerate(symbols):
+        df = fetch_data(symbol)
+        atr = custom_atr(df['high'], df['low'], df['close'], timeperiod=14)
+        df['atr'] = atr
+        df['atr_ratio'] = 100 * df['atr'] / df['close']
+        average_atr_ratio = df['atr_ratio'].rolling(window=210).mean().iloc[-1]
+        results.append([
+            symbol,
+            round(float(df['atr_ratio'].iloc[-1]), 2),
+            round(float(average_atr_ratio) if not np.isnan(average_atr_ratio) else None, 2)
+        ])
+        sys.stdout.write('\r' + spinner[index % 4] + ' processing ' + symbol)
+        sys.stdout.flush()
+    sys.stdout.write('\rDone!                                       \n')
+    results.sort(key=lambda x: x[2], reverse=True)
+    return results
 
-def get_symbol_precision(symbol):
-    try:
-        info = binanceclient.futures_exchange_info()
-        for item in info['symbols']:
-            if item['symbol'] == symbol.upper():
-                return int(item['quantityPrecision'])
-    except Exception as e:
-        print(f"Error: {e}")
-        return None
+# Kullanımı:
+symbols = ['BTCUSDT', 'ETHUSDT']  # Örnek semboller
+results = calculate_atr_volatility(top_100_symbols)
 
-mylonglist=[]
-def buy_position(symbol, leverage, amount,liste):
-    #if is_above_last_period_average(io1d[len(io1d)-1],io1d,smaperiod):
-    try:
-        binanceclient.futures_change_leverage(symbol=symbol, leverage=leverage)
-        #binanceclient.futures_change_margin_type(symbol=symbol, marginType=ISOLATED)
-        precision = get_symbol_precision(symbol)
-        if precision is None:
-            print("Precision could not be determined.")
-            return
-
-        quantity = round(amount * leverage / float(binanceclient.get_symbol_ticker(symbol=symbol.upper())['price']), precision)
-        
-        order = binanceclient.futures_create_order(
-            symbol=symbol.upper(),
-            side='BUY',
-            type='MARKET',
-            quantity=quantity,
-            leverage=leverage
-        )
-        print(order)
-        #hesapla(symbol, "buy",1)
-        #eklesil(symbol,liste,"ekle")
-        mylonglist.append(symbol)
-        time.sleep(5)  # 5 saniye bekle
-    except Exception as e:
-        print(f"Error: {e}")
-
-
-# Kesişim noktası halindeki coinleri bul
-
-while True:
-    # USDT çiftlerini al
-    markets = exchange.load_markets()
-    usdt_pairs = [symbol for symbol in markets if symbol.endswith('USDT') and 'future' in markets[symbol]['info']]
-    print(usdt_pairs)
-    crossing_coins = find_crossing_coins(usdt_pairs)
-    print(crossing_coins)
-    if crossing_coins:
-        for c in crossing_coins:
-            buy_position(c,7,2,mylonglist)
-    print(mylonglist)
-    time.sleep(300)
+# Sonuçları yazdırma
+print(results)
