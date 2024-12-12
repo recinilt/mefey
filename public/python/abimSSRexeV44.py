@@ -2306,7 +2306,7 @@ def AnaFonkSSR3(raw_text):
     #EIGENUSDT 5,104 + + + + + 4,21 NULL 1,4  
     #['EIGENUSDT', 5.104, [True, True, True, True, True], 4.21, None, 1.4]
     for mylist in parsed_data:
-        if almakkosulu() and mylist[2][0] and mylist[2][1] and mylist[0] in mysymbols3: 
+        if almakkosulu() and mylist[2][0] and mylist[2][1] and mylist[2][2] and mylist[2][3] and mylist[2][4] and mylist[0] in mysymbols3: 
             print(mylist[0])
             longacilacaklar.append(mylist[0])
         tumssr.append(mylist[0])
