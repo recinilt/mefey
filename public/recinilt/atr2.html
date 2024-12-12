@@ -19,7 +19,7 @@
                 const klineResponse = await axios.get('https://api.binance.com/api/v3/klines', {
                     params: {
                         symbol: symbol,
-                        interval: '1d',
+                        interval: '5m',
                         limit: 14
                     }
                 });
