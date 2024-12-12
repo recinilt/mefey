@@ -48,7 +48,7 @@ time.sleep(2)
 symbols = exchange_info['symbols']
 mysymbols3=[]
 for s in symbols:
-    mysymbols3.append(s['symbol']),
+    mysymbols3.append(s['symbol'])
 # Telegram Client'ı oluşturun
 #telegram_client = TelegramClient('session_name', telegram_api_id, telegram_api_hash)
 #patterler

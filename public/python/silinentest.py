@@ -1,81 +1,150 @@
-import ccxt
-import time
-import sys
-from datetime import datetime
-from statistics import mean
+import re
 
-"""
-# API anahtarları ve sembol listesi hazırlama
-binance_api_key = "your_api_key"
-binance_api_secret = "your_api_secret"
-from binance.client import Client
-binanceclient = Client(binance_api_key, binance_api_secret)
-exchange_info = binanceclient.futures_exchange_info()
-time.sleep(2)
-symbols = [s['symbol'] for s in exchange_info['symbols']]
-top_100_symbols = symbols[:100]
-print("Sembol sayısı: ", len(symbols), "Bizim bakacağımız ilk 100 coin.")
-"""
-
-top_100_symbols=['BTCUSDT', 'ETHUSDT', 'BCHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT', 'ETCUSDT', 'LINKUSDT', 'XLMUSDT', 'ADAUSDT', 'XMRUSDT', 'DASHUSDT', 'ZECUSDT', 'XTZUSDT',
- 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT', 'BATUSDT', 'VETUSDT', 'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT', 'KNCUSDT', 'ZRXUSDT', 'COMPUSDT', 'OMGUSDT', 'DOGEUSDT', 'SXPUSDT', 'KAVAUSDT', 'BANDUSDT', 'RLCUSDT', 'WAVESUSDT', 'MKRUSDT', 'SNXUSDT', 'DOTUSDT', 'DEFIUSDT', 'YFIUSDT', 'BALUSDT', 'CRVUSDT', 
-'TRBUSDT', 'RUNEUSDT', 'SUSHIUSDT', 'EGLDUSDT', 'SOLUSDT', 'ICXUSDT', 'STORJUSDT', 'BLZUSDT', 'UNIUSDT', 'AVAXUSDT', 'FTMUSDT', 'ENJUSDT', 'FLMUSDT', 'RENUSDT', 'KSMUSDT', 'NEARUSDT', 'AAVEUSDT', 'FILUSDT', 'RSRUSDT', 'LRCUSDT', 'OCEANUSDT', 'CVCUSDT', 'BELUSDT', 'CTKUSDT', 'AXSUSDT', 'ALPHAUSDT', 'ZENUSDT', 'SKLUSDT', 'GRTUSDT', '1INCHUSDT', 'CHZUSDT', 'SANDUSDT', 'ANKRUSDT', 'LITUSDT', 'UNFIUSDT', 'REEFUSDT', 'RVNUSDT', 'SFPUSDT', 'XEMUSDT', 'BTCSTUSDT', 'COTIUSDT', 'CHRUSDT', 'MANAUSDT', 'ALICEUSDT', 'HBARUSDT', 'ONEUSDT', 'LINAUSDT', 'STMXUSDT', 'DENTUSDT', 'CELRUSDT', 'HOTUSDT', 'MTLUSDT', 'OGNUSDT', 'NKNUSDT', 'SCUSDT', 'DGBUSDT']
-
-def fetch_data(symbol, timeframe='5m', limit=3000):
-    exchange = ccxt.binance()
-    bars = exchange.fetch_ohlcv(symbol.replace('USDT', '/USDT'), timeframe=timeframe, limit=limit)
-    # Convert timestamp to datetime and structure data as a list of dictionaries
-    formatted_data = [
-        {'timestamp': datetime.fromtimestamp(bar[0] / 1000),
-         'open': bar[1], 'high': bar[2], 'low': bar[3], 'close': bar[4], 'volume': bar[5]}
-        for bar in bars
-    ]
-    return formatted_data
-
-def calculate_true_range(high, low, previous_close):
-    true_ranges = []
-    for i in range(len(high)):
-        current_high = high[i]
-        current_low = low[i]
-        if i == 0:
-            # No previous close for the first element
-            true_range = current_high - current_low
-        else:
-            true_range = max(current_high - current_low, abs(current_high - previous_close), abs(current_low - previous_close))
-        true_ranges.append(true_range)
-        previous_close = current_low  # update previous close to current close for next iteration
-    return true_ranges
-
-def calculate_atr(data, timeperiod=14):
-    high = [d['high'] for d in data]
-    low = [d['low'] for d in data]
-    close = [d['close'] for d in data]
-    true_ranges = calculate_true_range(high, low, close[0])
-    atr = [mean(true_ranges[max(0, i-timeperiod+1):i+1]) for i in range(len(true_ranges))]
-    return atr
-
-def calculate_atr_volatility(symbols):
+def parse_text_line_by_line_safe_SSR(text):
+    # Split the text into lines
+    lines = text.strip().split("\n")
+    
+    # Prepare the result list
     results = []
-    spinner = ['-', '\\', '|', '/']
-    for index, symbol in enumerate(symbols):
-        data = fetch_data(symbol)
-        atr = calculate_atr(data)
-        atr_ratio = [100 * a / d['close'] for a, d in zip(atr, data)]
-        average_atr_ratio = mean(atr_ratio[-210:]) if len(atr_ratio) >= 210 else None
-        results.append([
-            symbol,
-            round(atr_ratio[-1], 2) if atr_ratio else None,
-            round(average_atr_ratio, 2) if average_atr_ratio else None
-        ])
-        sys.stdout.write('\r' + spinner[index % 4] + ' processing ' + symbol)
-        sys.stdout.flush()
-    sys.stdout.write('\rDone!                                       \n')
-    results.sort(key=lambda x: x[2], reverse=True if x[2] is not None else False)
+    
+    # Process each line
+    for line in lines:
+        parts = line.split()
+        
+        # Skip lines that don't have enough parts or contain header titles
+        if len(parts) < 10 or not parts[1].replace(',', '').replace('.', '').isdigit():
+            continue
+
+        symbol = parts[0]
+        price = float(parts[1].replace(',', '.'))
+        trend_string = [p == '+' for p in parts[2:7]]
+        smart_score = float(parts[7].replace(',', '.')) if parts[7] != 'NULL' else None
+        trend_score = float(parts[8].replace(',', '.')) if parts[8] != 'NULL' else None
+        minor_trend_score = float(parts[9].replace(',', '.')) if parts[9] != 'NULL' else None
+        
+        # Append the parsed data to the result list
+        results.append([symbol, price, trend_string, smart_score, trend_score, minor_trend_score])
+    
     return results
 
-# Kullanımı:
-symbols = ['BTCUSDT', 'ETHUSDT']  # Örnek semboller
-results = calculate_atr_volatility(top_100_symbols)
+# Sample report text, typically this function will receive the full report as argument
 
-# Sonuçları yazdırma
-print(results)
+
+metin1 = """
+Akıllı Skoru En Fazla Olan Coinler
+Symbol Price TrendString SmartScore TrendSore MinorTrendScore
+AVAXUSDT 54,53 + + + + + 54,47 1,6 1,6 
+TRXUSDT 0,3080 + + + + - 28,15 2,2 1,3 
+LINKUSDT 28,20 + + + + + 16,20 1,9 1,7 
+AAVEUSDT 369,4 - + + + + 8,91 3,1 2,4 
+COWUSDT 0,6016 + + + + + 8,16 NULL 2,4 
+OPUSDT 2,588 + + + + + 8,00 1,1 1,3 
+CRVUSDT 1,133 + + + + + 7,66 2,4 1,1 
+SOLUSDT 233,4 + + + + + 7,49 1,6 1,1 
+BTCUSDT 101648 + + + + + 7,21 1,7 1,1 
+LTCUSDT 124,1 + + + + - 6,68 1,6 1,2 
+MASKUSDT 4,271 + + + + + 6,55 1,3 1,6 
+IOUSDT 4,369 - + + + + 6,53 NULL 1,8 
+TIAUSDT 7,518 + + + + - 6,22 0,8 1,1 
+LDOUSDT 2,342 + + + + + 6,12 1,1 2,0 
+SUIUSDT 4,673 - + + + + 6,07 3,3 1,6 
+ALTUSDT 0,1813 + + + + + 5,98 NULL 1,3 
+ETHUSDT 3948 + + + + + 5,97 1,4 1,1 
+BNBUSDT 719,6 + + + + - 5,36 1,4 1,1 
+BLURUSDT 0,3919 + + + + - 5,28 NULL 1,3 
+CTKUSDT 0,9732 + + + + + 5,10 1,3 1,5 
+APTUSDT 13,89 + + + + + 4,95 1,5 1,3 
+SANDUSDT 0,8003 + + + + - 4,94 1,9 1,1 
+NEARUSDT 7,276 + + + + - 4,93 1,5 1,2 
+DIAUSDT 0,9352 + + + + + 3,59 1,8 1,3 
+XRPUSDT 2,430 + - + + + 3,54 3,7 1,1 
+EIGENUSDT 5,124 + + + + + 3,43 NULL 1,4 
+TROYUSDT 0,006327 + + + + + 3,40 2,5 2,1 
+FTMUSDT 1,280 + + + + + 3,27 2,1 1,2 
+DOGEUSDT 0,4162 + + + - - 2,98 2,9 1,0 
+ARBUSDT 1,063 - + + + - 2,91 1,0 1,1 
+
+Canlı olan coin sayısı:0 olduğu için piyasa iştahsız görünüyor
+Tüm coinlerin günlük alış baskısı %50 altında(49,80 olduğu için piyasa halen risk barındırıyor. Kurnaz avcı öneri yapabilir fakat bu tür piyasadalarda terste kalma ihtimalin daha yüksektir. .
+
+Kurnaz Avcı Modülünün Size Seçtiği Güvenilir Olabilecek Coinler: 
+ALT TS:NULL MTS:1,3 PT:1,017
+ Dk:49✅ Kar:%0,1 🙂 Grafik (http://tradingview.com/chart/?symbol=BINANCE:ALTUSDT)
+
+APT TS:1,5 MTS:1,3 PT:1,027
+ Dk:264✅ Kar:%-1,1 🤕 Grafik (http://tradingview.com/chart/?symbol=BINANCE:APTUSDT)
+
+DIA TS:1,8 MTS:1,3 PT:1,019
+ Dk:9 Kar:%-0,1 🤕 Grafik (http://tradingview.com/chart/?symbol=BINANCE:DIAUSDT)
+
+FTM TS:2,1 MTS:1,2 PT:1,040
+ Dk:138✅ Kar:%-1,4 🤕 Grafik (http://tradingview.com/chart/?symbol=BINANCE:FTMUSDT)
+
+Kurnaz Avcı Mantığını Anlamak Dokunun /EKurnazAvci
+
+
+Bu raporun mantığını anlamak için dokun: /ESSR
+"""
+
+
+
+metin2="""Akıllı Skoru En Fazla Olan Coinler
+Symbol Price TrendString SmartScore TrendSore MinorTrendScore
+AVAXUSDT 54,53 + + + + + 54,47 1,6 1,6 
+TRXUSDT 0,3080 + + + + - 28,15 2,2 1,3 
+LINKUSDT 28,20 + + + + + 16,20 1,9 1,7 
+AAVEUSDT 369,4 - + + + + 8,91 3,1 2,4 
+COWUSDT 0,6016 + + + + + 8,16 NULL 2,4 
+OPUSDT 2,588 + + + + + 8,00 1,1 1,3 
+CRVUSDT 1,133 + + + + + 7,66 2,4 1,1 
+SOLUSDT 233,4 + + + + + 7,49 1,6 1,1 
+BTCUSDT 101648 + + + + + 7,21 1,7 1,1 
+LTCUSDT 124,1 + + + + - 6,68 1,6 1,2 
+MASKUSDT 4,271 + + + + + 6,55 1,3 1,6 
+IOUSDT 4,369 - + + + + 6,53 NULL 1,8 
+TIAUSDT 7,518 + + + + - 6,22 0,8 1,1 
+LDOUSDT 2,342 + + + + + 6,12 1,1 2,0 
+SUIUSDT 4,673 - + + + + 6,07 3,3 1,6 
+ALTUSDT 0,1813 + + + + + 5,98 NULL 1,3 
+ETHUSDT 3948 + + + + + 5,97 1,4 1,1 
+BNBUSDT 719,6 + + + + - 5,36 1,4 1,1 
+BLURUSDT 0,3919 + + + + - 5,28 NULL 1,3 
+CTKUSDT 0,9732 + + + + + 5,10 1,3 1,5 
+APTUSDT 13,89 + + + + + 4,95 1,5 1,3 
+SANDUSDT 0,8003 + + + + - 4,94 1,9 1,1 
+NEARUSDT 7,276 + + + + - 4,93 1,5 1,2 
+DIAUSDT 0,9352 + + + + + 3,59 1,8 1,3 
+XRPUSDT 2,430 + - + + + 3,54 3,7 1,1 
+EIGENUSDT 5,124 + + + + + 3,43 NULL 1,4 
+TROYUSDT 0,006327 + + + + + 3,40 2,5 2,1 
+FTMUSDT 1,280 + + + + + 3,27 2,1 1,2 
+DOGEUSDT 0,4162 + + + - - 2,98 2,9 1,0 
+ARBUSDT 1,063 - + + + - 2,91 1,0 1,1 
+
+Canlı olan coin sayısı:0 olduğu için piyasa iştahsız görünüyor
+Tüm coinlerin günlük alış baskısı %50 altında(49,80 olduğu için piyasa halen risk barındırıyor. Kurnaz avcı öneri yapabilir fakat bu tür piyasadalarda terste kalma ihtimalin daha yüksektir. .
+
+Kurnaz Avcı Modülünün Size Seçtiği Güvenilir Olabilecek Coinler: 
+ALT TS:NULL MTS:1,3 PT:1,017
+ Dk:49✅ Kar:%0,1 🙂 Grafik (http://tradingview.com/chart/?symbol=BINANCE:ALTUSDT)
+
+APT TS:1,5 MTS:1,3 PT:1,027
+ Dk:264✅ Kar:%-1,1 🤕 Grafik (http://tradingview.com/chart/?symbol=BINANCE:APTUSDT)
+
+DIA TS:1,8 MTS:1,3 PT:1,019
+ Dk:9 Kar:%-0,1 🤕 Grafik (http://tradingview.com/chart/?symbol=BINANCE:DIAUSDT)
+
+FTM TS:2,1 MTS:1,2 PT:1,040
+ Dk:138✅ Kar:%-1,4 🤕 Grafik (http://tradingview.com/chart/?symbol=BINANCE:FTMUSDT)
+
+Kurnaz Avcı Mantığını Anlamak Dokunun /EKurnazAvci
+
+
+Bu raporun mantığını anlamak için dokun: /ESSR"""
+
+
+# Calling the function to parse the provided SSR report text
+cikti1=parse_text_line_by_line_safe_SSR(metin1)
+cikti2=parse_text_line_by_line_safe_SSR(metin2)
+print(cikti1)
+print(cikti2)
