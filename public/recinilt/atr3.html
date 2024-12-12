@@ -18,7 +18,7 @@
         <option value="12h">12 Hours</option>
         <option value="1d">1 Day</option>
     </select>
-    <button onclick="displayData()">Fetch Data</button>
+    <button onclick="displayData()" id="my3button">Fetch Data</button>
     <table id="coinsTable">
         <thead>
             <tr>
@@ -78,6 +78,7 @@
         };
 
         const displayData = async () => {
+            document.getElementById("my3button").disabled=true
             const interval = document.getElementById('intervalSelect').value;
             const tableBody = document.getElementById('coinsTable').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = ''; // Clear previous data
@@ -87,6 +88,7 @@
                 row.innerHTML = `<td>${result.symbol}</td><td>${result.currentATRPrice.toFixed(6)}</td><td>${result.expAvgATRPrice.toFixed(6)}</td><td>${result.price.toFixed(4)}</td>`;
                 tableBody.appendChild(row);
             });
+            document.getElementById("my3button").disabled=false
         };
 
         function sortTable(columnIndex) {
