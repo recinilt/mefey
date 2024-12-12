@@ -3,22 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATR to Price Ratio for Top 250 Coins</title>
+    <title>ATR to Price Ratio for Top 250 Coins (5m Interval)</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <h1>ATR to Price Ratio for Top 250 Coins</h1>
-    <label for="intervalSelect">Choose interval:</label>
-    <select id="intervalSelect">
-        <option value="1m">1 Minute</option>
-        <option value="5m" selected>5 Minutes</option>
-        <option value="15m">15 Minutes</option>
-        <option value="1h">1 Hour</option>
-        <option value="4h">4 Hours</option>
-        <option value="12h">12 Hours</option>
-        <option value="1d">1 Day</option>
-    </select>
-    <button onclick="displayData()">Fetch Data</button>
+    <h1>ATR to Price Ratio for Top 250 Coins (5m Interval)</h1>
     <table id="coinsTable">
         <thead>
             <tr>
@@ -44,12 +33,12 @@
             }, 0);
         };
 
-        const getATRandPrice = async (symbol, interval) => {
+        const getATRandPrice = async (symbol) => {
             try {
                 const klineResponse = await axios.get('https://api.binance.com/api/v3/klines', {
                     params: {
                         symbol: symbol,
-                        interval: interval,
+                        interval: '5m',
                         limit: 2500
                     }
                 });
@@ -78,16 +67,16 @@
         };
 
         const displayData = async () => {
-            const interval = document.getElementById('intervalSelect').value;
+            const results = await Promise.all(coins.map(symbol => getATRandPrice(symbol)));
             const tableBody = document.getElementById('coinsTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = ''; // Clear previous data
-            const results = await Promise.all(coins.map(symbol => getATRandPrice(symbol, interval)));
             results.forEach(result => {
                 const row = document.createElement('tr');
                 row.innerHTML = `<td>${result.symbol}</td><td>${result.currentATRPrice.toFixed(6)}</td><td>${result.expAvgATRPrice.toFixed(6)}</td><td>${result.price.toFixed(4)}</td>`;
                 tableBody.appendChild(row);
             });
         };
+
+        displayData();
 
         function sortTable(columnIndex) {
             var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
