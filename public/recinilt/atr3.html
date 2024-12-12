@@ -88,6 +88,9 @@
                 row.innerHTML = `<td>${result.symbol}</td><td>${result.currentATRPrice.toFixed(6)}</td><td>${result.expAvgATRPrice.toFixed(6)}</td><td>${result.price.toFixed(4)}</td>`;
                 tableBody.appendChild(row);
             });
+            setTimeout(function() {
+                console.log("30 saniye sonra çalıştı!");
+            }, 30000);
             document.getElementById("my3button").disabled=false
         };
 
