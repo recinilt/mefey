@@ -38,20 +38,11 @@ binance_secret_reccirik2="WJSYPws6VnoJkMIXKqgu1CVSha9Io6rT7g8YEiNKbkG3dzdBF7vwZ6
 binance_api_abim="W0cyfW6O27i7GsBKFYbm4zVjiOE0oY2lbOZYQwbYWksuDZG1zwt10x5w42GQ6JDa"
 binance_secret_abim="FdrwJZG7zXTi3qwj9zQaxCb0YFWoYAZexGCTAP2QkUcMhV4dQuq5OGSQYgiQYioE"
 
-tgapiyenileme=input("Mikabot için Telegram api ve secret'ı değiştireyim mi? (y/n)")
-if tgapiyenileme=="y":
-    telegram_api_id=input("telegram_api_id giriniz: ")
-    telegram_api_hash=input("telegram_api_hash giriniz: ")
-    phone_number=input("telegram'ın bağlı olduğu telefon numarasını +905051234567 şeklinde giriniz: ")
 
-apiyenileme=input("Binance api ve secret'ı değiştireyim mi? (y/n)")
-if apiyenileme=="y":
-    binance_api_abim=input("Binance Api Key giriniz: ")
-    binance_secret_abim=input("Binance Secret Key giriniz: ")
 ################################################## Değişkeler:
 #binance future listesi
 binanceclient_abim = Client(binance_api_abim, binance_secret_abim)
-binanceclient = Client(binance_api_abim, binance_secret_abim)
+binanceclient = Client(binance_api, binance_secret)
 exchange_info = binanceclient.futures_exchange_info()
 time.sleep(2)
 symbols = exchange_info['symbols']
@@ -98,8 +89,8 @@ hesapkitap=[]
 smaperiod=7
 myacc=[]
 ilkio=float(input("io rakamını giriniz:"))
-ilkkackez=int(input("kaç tane io eklensin?"))
-for i in range(1, ilkkackez + 1):
+#ilkkackez=int(input("kaç tane io eklensin?"))
+for i in range(1, 20):
     #print(i)
     io1d.append(ilkio)
 cirawtext=[]
@@ -990,22 +981,21 @@ def buy_position(symbol, leverage, amount, liste):
 
         # Binanceclient_abim için işlem
         #binanceclient_abim.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
-        if False:
-            try:
-                binanceclient_abim.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
-            except Exception as e:
-                print(e)
-            binanceclient_abim.futures_change_leverage(symbol=symbol, leverage=leverage)
-            time.sleep(2)
-            order2 = binanceclient_abim.futures_create_order(
-                symbol=symbol.upper(),
-                side='BUY',
-                type='MARKET',
-                quantity=quantity,
-                leverage=leverage
-            )
-            time.sleep(2)
-            print(order2)
+        try:
+            binanceclient_abim.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
+        except Exception as e:
+            print(e)
+        binanceclient_abim.futures_change_leverage(symbol=symbol, leverage=leverage)
+        time.sleep(2)
+        order2 = binanceclient_abim.futures_create_order(
+            symbol=symbol.upper(),
+            side='BUY',
+            type='MARKET',
+            quantity=quantity,
+            leverage=leverage
+        )
+        time.sleep(2)
+        print(order2)
 
         hesapla(symbol, "buy", 1)
         eklesil(symbol, liste, "ekle")
@@ -1046,22 +1036,21 @@ def sell_position(symbol, leverage, amount, liste):
 
         # Binanceclient_abim için işlem
         #binanceclient_abim.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
-        if False:
-            try:
-                binanceclient_abim.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
-            except Exception as e:
-                print(e)
-            binanceclient_abim.futures_change_leverage(symbol=symbol, leverage=leverage)
-            time.sleep(2)
-            order2 = binanceclient_abim.futures_create_order(
-                symbol=symbol.upper(),
-                side='SELL',
-                type='MARKET',
-                quantity=quantity,
-                leverage=leverage
-            )
-            time.sleep(2)
-            print(order2)
+        try:
+            binanceclient_abim.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
+        except Exception as e:
+            print(e)
+        binanceclient_abim.futures_change_leverage(symbol=symbol, leverage=leverage)
+        time.sleep(2)
+        order2 = binanceclient_abim.futures_create_order(
+            symbol=symbol.upper(),
+            side='SELL',
+            type='MARKET',
+            quantity=quantity,
+            leverage=leverage
+        )
+        time.sleep(2)
+        print(order2)
 
         hesapla(symbol, "sell", 1)
         eklesil(symbol, liste, "ekle")
@@ -1093,24 +1082,23 @@ def close_position(coin, liste):
                 if coin in mylonglarGenel:
                     mylonglarGenel.remove(coin)
 
-        if False:
-            # Binanceclient_abim için pozisyon kapatma
-            positions_abim = binanceclient_abim.futures_position_information(symbol=coin)
-            time.sleep(2)
-            for position in positions_abim:
-                if float(position['positionAmt']) != 0:
-                    side = SIDE_SELL if float(position['positionAmt']) > 0 else SIDE_BUY
-                    quantity = abs(float(position['positionAmt']))
-                    karzararesapla(coin, quantity, position['entryPrice'], get_price(coin), liste, 1 if side == "SIDE_BUY" else -1)
+        # Binanceclient_abim için pozisyon kapatma
+        positions_abim = binanceclient_abim.futures_position_information(symbol=coin)
+        time.sleep(2)
+        for position in positions_abim:
+            if float(position['positionAmt']) != 0:
+                side = SIDE_SELL if float(position['positionAmt']) > 0 else SIDE_BUY
+                quantity = abs(float(position['positionAmt']))
+                karzararesapla(coin, quantity, position['entryPrice'], get_price(coin), liste, 1 if side == "SIDE_BUY" else -1)
 
-                    order2 = binanceclient_abim.futures_create_order(
-                        symbol=coin,
-                        side=side,
-                        type=ORDER_TYPE_MARKET,
-                        quantity=quantity
-                    )
-                    time.sleep(2)
-                    print(f"Pozisyon kapatıldı: {order2}")
+                order2 = binanceclient_abim.futures_create_order(
+                    symbol=coin,
+                    side=side,
+                    type=ORDER_TYPE_MARKET,
+                    quantity=quantity
+                )
+                time.sleep(2)
+                print(f"Pozisyon kapatıldı: {order2}")
         eklesil(coin, liste, "sil")
         time.sleep(5)
     except Exception as e:
@@ -2302,9 +2290,11 @@ def AnaFonkSSR3(raw_text):
 
     longacilacaklar=[]
     tumssr=[]
+    
     #0-Symbol 1-Price 2-TrendString 3-SmartScore 4-TrendSore 5-MinorTrendScore
     #EIGENUSDT 5,104 + + + + + 4,21 NULL 1,4  
     #['EIGENUSDT', 5.104, [True, True, True, True, True], 4.21, None, 1.4]
+    ilk5ssr = [x[0] for x in parsed_data[:5]]
     for mylist in parsed_data:
         if almakkosulu() and mylist[2][0] and mylist[2][1] and mylist[2][2] and mylist[2][3] and mylist[0] in mysymbols3: 
             print(mylist[0])
@@ -2318,13 +2308,14 @@ def AnaFonkSSR3(raw_text):
         elif coin in yasaklilist:
             print(f"Açılamayan coin: {coin}")
         else:
-            #mylonglarGenel.append(coin)
+            mylonglarGenel.append(coin)
             threaded_buy_position(coin, myleverage, get_my_cost_hazir * 1, "mylonglarGenel")
             print(f"SSR ile, {coin} long açıldı")
     
     for coin in mylonglarGenel:
         if not coin in longacilacaklar:
-            threaded_close_position(coin,"mylonglarGenel")
+            if not coin in ilk5ssr:
+                threaded_close_position(coin,"mylonglarGenel")
 
     """
     for group in kapatilacakgruplar:
