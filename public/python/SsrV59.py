@@ -1182,7 +1182,7 @@ def son_bes_esit_mi(liste):
     return all(x == liste[-1] for x in liste[-5:])
 
 def almakkosulu():
-    myresult = (io1d[-1]>50 and apalayimmi and iopower[-1]>=0.8) or (io1d[-1]>48.9 and apalayimmi and iopower[-1]>=0.8)# and (cift_ema_sinyal(io1d)[0]) and (not son_bes_esit_mi(io1d))) 
+    myresult = (io1d[-1]>50 and apalayimmi and iopower[-1]>=0.6) or (io1d[-1]>48.9 and apalayimmi and iopower[-1]>=0.6)# and (cift_ema_sinyal(io1d)[0]) and (not son_bes_esit_mi(io1d))) 
     return myresult
     
 def satmakkosulu():
@@ -2301,7 +2301,7 @@ def AnaFonkSSR3(raw_text):
     #['EIGENUSDT', 5.104, [True, True, True, True, True], 4.21, None, 1.4]
     ilk5ssr = [x[0] for x in parsed_data[:3]]
     for mylist in parsed_data:
-        if almakkosulu() and mylist[2][1] and mylist[2][2] and mylist[2][3]  and mylist[2][4] and mylist[3]>15 and mylist[5]<3 and mylist[0] in mysymbols3: 
+        if almakkosulu() and mylist[2][1] and mylist[2][2] and mylist[2][3]   and mylist[3]>15 and mylist[5]<3 and mylist[0] in mysymbols3: 
             print(mylist[0])
             longacilacaklar.append(mylist[0])
         tumssr.append(mylist[0])
