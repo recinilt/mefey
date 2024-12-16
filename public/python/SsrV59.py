@@ -78,6 +78,8 @@ myshortlarCi=[]
 mylonglarMA=[]
 mylonglarIOF=[]
 myshortlarIOF=[]
+mylonglarSSR=[]
+mylonglarOB=[]
 ciraporu=0
 karaporu=0
 sdvraporu=0
@@ -115,6 +117,7 @@ apkisaalayimmi=True
 ozelmesaj=[]
 iokomutlari=[]
 myshortlarGenel=[]
+tumcoinlerinalimsatimorani=[1]
 
 
 ##################################### Yardımcı Fonksiyonlar:
@@ -408,6 +411,10 @@ def eklesil(coin, liste, eylem):
     if eylem=="ekle":
         if liste=="mylonglarGenel" and not coin in mylonglarGenel:
             mylonglarGenel.append(coin)
+        elif liste=="mylonglarSSR" and not coin in mylonglarSSR:
+            mylonglarSSR.append(coin)
+        elif liste=="mylonglarOB" and not coin in mylonglarOB:
+            mylonglarOB.append(coin)
         elif liste=="mylonglarSDV" and not coin in mylonglarSDV:
             mylonglarSDV.append(coin)
         elif liste=="mylonglarMA" and not coin in mylonglarMA:
@@ -427,6 +434,10 @@ def eklesil(coin, liste, eylem):
     if eylem=="sil":
         if liste=="mylonglarGenel" and coin in mylonglarGenel:
             mylonglarGenel.remove(coin)
+        elif liste=="mylonglarSSR" and coin in mylonglarSSR:
+            mylonglarSSR.remove(coin)
+        elif liste=="mylonglarOB" and coin in mylonglarOB:
+            mylonglarOB.remove(coin)
         elif liste=="mylonglarSDV" and coin in mylonglarSDV:
             mylonglarSDV.remove(coin)
         elif liste=="mylonglarMA" and coin in mylonglarMA:
@@ -511,7 +522,7 @@ def ema_hesapla(liste, span):
     
     return ema
 
-def cift_ema_sinyal(liste=io1d, kisa_span=2, uzun_span=5):
+def cift_ema_sinyal(liste=io1d, kisa_span=5, uzun_span=20):
     """
     Çift EMA kullanarak al/sat sinyali döndüren bir fonksiyon.
     :param liste: Fiyat listesi
@@ -525,7 +536,7 @@ def cift_ema_sinyal(liste=io1d, kisa_span=2, uzun_span=5):
     uzun_ema = ema_hesapla(liste, uzun_span)
     
     # Sinyal oluştur
-    return [kisa_ema > uzun_ema, kisa_ema < uzun_ema]  # Kısa EMA uzun EMA'dan büyükse AL (True), aksi halde SAT (False)
+    return [kisa_ema >= uzun_ema, kisa_ema < uzun_ema]  # Kısa EMA uzun EMA'dan büyükse AL (True), aksi halde SAT (False)
     #return [io1d[-1]>uzun_ema, io1d[-1]<uzun_ema]
 
 # Örnek veri
@@ -913,6 +924,22 @@ sil_veri = ("BTCUSDT", 50000)
 kripto_listesi = fiyat_guncelle(kripto_listesi, sil_veri, sil=True)
 print(kripto_listesi)
 """
+def fiyat_dalgalanma_takip_ssr(ssrtrailinglist, mysymbol):
+    
+    for coin in ssrtrailinglist:
+        symbol, ssrlist = coin
+        if symbol==mysymbol:
+            return cift_ema_sinyal(ssrlist)[0]
+        break
+
+def fiyat_dalgalanma_takip_ssr2(ssrtrailinglist, mysymbol):
+    for coin in ssrtrailinglist:
+        symbol, ssrlist = coin
+        if symbol == mysymbol:
+            return cift_ema_sinyal(ssrlist)[0]
+    return True  # Eğer aranan sembol bulunamazsa None döndür
+
+       
 
 def fiyat_dalgalanma_takip(symbols_trailing_prices, yuzde):
     dusen_coinler = []
@@ -1003,8 +1030,8 @@ def buy_position(symbol, leverage, amount, liste):
 
         #hesapla(symbol, "buy", 1)
         eklesil(symbol, liste, "ekle")
-        if not symbol in mylonglarGenel:
-            mylonglarGenel.append(symbol)
+        #if not symbol in mylonglarGenel:
+        #    mylonglarGenel.append(symbol)
         time.sleep(5)
 
     except Exception as e:
@@ -1182,7 +1209,7 @@ def son_bes_esit_mi(liste):
     return all(x == liste[-1] for x in liste[-5:])
 
 def almakkosulu():
-    myresult = (io1d[-1]>50 and apalayimmi and iopower[-1]>=0.6) or (io1d[-1]>48.9 and apalayimmi and iopower[-1]>=0.6)# and (cift_ema_sinyal(io1d)[0]) and (not son_bes_esit_mi(io1d))) 
+    myresult = (io1d[-1]>50 and apalayimmi and iopower[-1]>=0.6) or (io1d[-1]>48.9 and apalayimmi and iopower[-1]>=0.6) or tumcoinlerinalimsatimorani[-1]>1 # and (cift_ema_sinyal(io1d)[0]) and (not son_bes_esit_mi(io1d))) 
     return myresult
     
 def satmakkosulu():
@@ -1255,9 +1282,9 @@ def AnaFonkIO(raw_text):
             
                     mypozisyonlar.append(binle(pos["Symbol"]))
                     print(binle(pos["Symbol"]))
-                    #if not binle(pos["Symbol"]) in mylonglarGenel:
-                    #    mylonglarGenel.append(binle(pos["Symbol"]))
-                    #    print("coin işlendi")
+                    if not binle(pos["Symbol"]) in mylonglarGenel:
+                        mylonglarGenel.append(binle(pos["Symbol"]))
+                        print("coin işlendi")
                     if pos["P&L (%)"]>(yuzdekackazanincakapatsin) or pos["P&L (%)"]<(-1*trailinghesapla()):
                         
                         if groupacilanlar:
@@ -2285,13 +2312,14 @@ def parse_text_line_by_line_safe_SSR(text):
     return results
 
 
-
+ssrtrailing=[]
 def AnaFonkSSR3(raw_text):
+    global ssrtrailing
     global calissinmi
     
     calissinmi= False
     parsed_data=parse_text_line_by_line_safe_SSR(raw_text)
-    print(parsed_data)
+    #print(parsed_data)
 
     longacilacaklar=[]
     tumssr=[]
@@ -2301,7 +2329,10 @@ def AnaFonkSSR3(raw_text):
     #['EIGENUSDT', 5.104, [True, True, True, True, True], 4.21, None, 1.4]
     ilk5ssr = [x[0] for x in parsed_data[:3]]
     for mylist in parsed_data:
-        if almakkosulu() and mylist[2][1] and mylist[2][2] and mylist[2][3]   and mylist[3]>15 and mylist[5]<3 and mylist[0] in mysymbols3: 
+        ssrtrailing = fiyat_guncelle(ssrtrailing, (mylist[0],mylist[3]))
+        #print(ssrtrailing)
+        #print(fiyat_dalgalanma_takip_ssr2(ssrtrailing,mylist[0]))
+        if almakkosulu() and ((iopower[-1]<1 and cift_ema_sinyal(iopower)[0]) or (iopower[-1]>0.9) ) and fiyat_dalgalanma_takip_ssr2(ssrtrailing,mylist[0]) and mylist[2][1] and mylist[2][2] and mylist[2][3]   and mylist[3]>12 and mylist[5]<3 and mylist[0] in mysymbols3: 
             print(mylist[0])
             longacilacaklar.append(mylist[0])
         tumssr.append(mylist[0])
@@ -2315,13 +2346,13 @@ def AnaFonkSSR3(raw_text):
         else:
             #if not coin in mylonglarGenel:
             #    mylonglarGenel.append(coin)
-            threaded_buy_position(coin, myleverage, get_my_cost_hazir * 1, "mylonglarGenel")
+            threaded_buy_position(coin, myleverage, get_my_cost_hazir * 1, "mylonglarSSR")
             print(f"SSR ile, {coin} long açıldı")
     
-    for coin in mylonglarGenel:
+    for coin in mylonglarSSR:
         if not coin in longacilacaklar:
-            if not coin in ilk5ssr:
-                threaded_close_position(coin,"mylonglarGenel")
+            if True: #not coin in ilk5ssr:
+                threaded_close_position(coin,"mylonglarSSR")
                 print(f"SSR ile, {coin} kapandı")
                
     if False:
@@ -2349,6 +2380,71 @@ def AnaFonkSSR3(raw_text):
 
 
     
+    calissinmi=True
+
+
+
+def parse_market_data_ob(text):
+    # Total buy order depth
+    total_buy_depth = re.search(r"Tüm Coinlerin Toplam Alım Emri Derinliği -%3:\s*([\d,.]+)M\$", text)
+    total_buy_depth = float(total_buy_depth.group(1).replace(',', '.')) if total_buy_depth else None
+
+    # Total sell order depth
+    total_sell_depth = re.search(r"Tüm Coinlerin Toplam Satış Emri Derinliği \+%3:\s*([\d,.]+)M\$", text)
+    total_sell_depth = float(total_sell_depth.group(1).replace(',', '.')) if total_sell_depth else None
+
+    # List to hold the coin data
+    coin_data = []
+
+    # Pattern to find coin names and buy/sell values
+    coin_pattern = re.compile(r"\$(\w+) => [\d,.]+M\$ +Alım/Satış: ([\d,.]+)")
+    matches = coin_pattern.findall(text)
+
+    for match in matches:
+        coin_name = match[0] + "USDT"
+        buy_sell_value = float(match[1].replace(',', '.'))
+        coin_data.append([coin_name, buy_sell_value])
+
+    # Return all extracted data
+    return {
+        'Total Buy Order Depth (M$)': total_buy_depth,
+        'Total Sell Order Depth (M$)': total_sell_depth,
+        'Coins': coin_data
+    }
+
+
+def AnaFonkOb(raw_text):
+    global calissinmi
+    calissinmi=False
+
+    parsed_data=parse_market_data_ob(raw_text)
+    tumcoinalimsatim=round((parsed_data["Total Buy Order Depth (M$)"]/parsed_data["Total Sell Order Depth (M$)"]),2)
+    tumcoinlerinalimsatimorani.append(tumcoinalimsatim)
+    coins=parsed_data["Coins"]
+    longacilacaklar=[]
+
+    for coincifti in coins:
+        if (coincifti[1]>1.8 and tumcoinlerinalimsatimorani[-1]>1):
+            if coincifti[0] in mysymbols3:
+                longacilacaklar.append(coincifti[0])
+    
+    print(f"ob ile long açılacaklar: {longacilacaklar}")
+    if longacilacaklar:
+        for coin in longacilacaklar:
+            if coin in mylonglarGenel:
+                print(f"{coin} zaten vardı ob")
+            elif coin in yasaklilist:
+                print(f"Açılamayan coin: {coin}")
+            else:
+                #if not coin in mylonglarGenel:
+                #    mylonglarGenel.append(coin)
+                threaded_buy_position(coin, myleverage, get_my_cost_hazir * 1, "mylonglarOB")
+                print(f"ob ile, {coin} long açıldı")
+
+    if tumcoinlerinalimsatimorani[-1]<1:
+        for coin in mylonglarOB:
+            threaded_close_position(coin,"mylonglarOB")
+
     calissinmi=True
 
 ################################# Ana Fonksiyon
@@ -2393,6 +2489,16 @@ async def main():
                 if calissinmi:
                     #AnaFonkKA(event.raw_text)
                     print("ka")
+                    break
+                else:
+                    await asyncio.sleep(5)
+
+        elif event.raw_text.startswith("Tüm Coinlerin Toplam Alım Emri Derinliği -%3:") : #ob
+            #AnaFonkKA(event.raw_text)
+            while True:
+                if calissinmi:
+                    AnaFonkOb(event.raw_text)
+                    print("ob")
                     break
                 else:
                     await asyncio.sleep(5)
@@ -2606,6 +2712,15 @@ async def main():
                     break
                 else:
                     await asyncio.sleep(2)
+
+            while True:
+                if calissinmi:
+                    await telegram_client.send_message(target_user, "ob" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await asyncio.sleep(2*rastgele_sayi(35,100))
+                    break
+                else:
+                    await asyncio.sleep(2)
+
             if ozelmesaj:
                 for mesaj in ozelmesaj:
                     await mesajgonder(f"Özel Mesajınız Var: \n{mesaj}",alert_user)
@@ -2613,6 +2728,14 @@ async def main():
             while True:
                 if calissinmi:
                     await telegram_client.send_message(target_user, "ssr" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await asyncio.sleep(2*rastgele_sayi(35,100))
+                    break
+                else:
+                    await asyncio.sleep(2)
+
+            while True:
+                if calissinmi:
+                    await telegram_client.send_message(target_user, "ob" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
                     await asyncio.sleep(2*rastgele_sayi(35,100))
                     break
                 else:
@@ -2636,6 +2759,15 @@ async def main():
                     break
                 else:
                     await asyncio.sleep(2)
+
+            while True:
+                if calissinmi:
+                    await telegram_client.send_message(target_user, "ob" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await asyncio.sleep(2*rastgele_sayi(35,100))
+                    break
+                else:
+                    await asyncio.sleep(2)
+
             for komut in iokomutlari:
                 while True:
                     if calissinmi:
@@ -2653,6 +2785,14 @@ async def main():
             while True:
                 if calissinmi:
                     await telegram_client.send_message(target_user, "ssr" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await asyncio.sleep(2*rastgele_sayi(35,100))
+                    break
+                else:
+                    await asyncio.sleep(2)
+
+            while True:
+                if calissinmi:
+                    await telegram_client.send_message(target_user, "ob" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
                     await asyncio.sleep(2*rastgele_sayi(35,100))
                     break
                 else:
@@ -2684,6 +2824,15 @@ async def main():
                     break
                 else:
                     await asyncio.sleep(2)
+
+            while True:
+                if calissinmi:
+                    await telegram_client.send_message(target_user, "ob" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await asyncio.sleep(2*rastgele_sayi(35,100))
+                    break
+                else:
+                    await asyncio.sleep(2)
+
             if ozelmesaj:
                 for mesaj in ozelmesaj:
                     await mesajgonder(f"Özel Mesajınız Var: \n{mesaj}",alert_user)
@@ -2705,6 +2854,15 @@ async def main():
                     break
                 else:
                     await asyncio.sleep(2)
+
+            while True:
+                if calissinmi:
+                    await telegram_client.send_message(target_user, "ob" if io1d[-1]>48.9 else "io") #mysent[rastgele_komut()] )#'marketanaliz')
+                    await asyncio.sleep(2*rastgele_sayi(35,100))
+                    break
+                else:
+                    await asyncio.sleep(2)
+
             if ozelmesaj:
                 for mesaj in ozelmesaj:
                     await mesajgonder(f"Özel Mesajınız Var: \n{mesaj}",alert_user)
