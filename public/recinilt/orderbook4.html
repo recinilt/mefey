@@ -113,7 +113,7 @@ function checkAlarm(ratio) {
 function startCalculations() {
     calculateAll();
     if (intervalId !== null) clearInterval(intervalId);
-    intervalId = setInterval(calculateAll, 180000); // Her 3 dakikada bir yenile
+    intervalId = setInterval(calculateAll, 60000); // Her 3 dakikada bir yenile
 }
 
 function sortTable(n) {
