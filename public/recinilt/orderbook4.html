@@ -97,7 +97,7 @@ function calculateAll() {
             document.getElementById('totalBuys').textContent = `Toplam Alışlar: ${totalBids.toFixed(2)}`;
             document.getElementById('totalSells').textContent = `Toplam Satışlar: ${totalAsks.toFixed(2)}`;
             document.getElementById('ratio').textContent = `Alış/Satış Oranı: ${ratio}`;
-            checkAlarm(ratio);
+            //checkAlarm(ratio);
         });
     });
 }
@@ -151,6 +151,7 @@ function sortTable(n) {
             }
         }
     }
+    checkAlarm(totalBids/totalAsks);
 }
 </script>
 </body>
