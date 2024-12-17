@@ -2418,7 +2418,7 @@ def AnaFonkOb(raw_text):
     calissinmi=False
 
     parsed_data=parse_market_data_ob(raw_text)
-    tumcoinalimsatim=round((parsed_data["Total Buy Order Depth (M$)"]/parsed_data["Total Sell Order Depth (M$)"]),2)
+    tumcoinalimsatim=round((parsed_data["Total Buy Order Depth (M$)"]/parsed_data["Total Sell Order Depth (M$)"]) if parsed_data["Total Sell Order Depth (M$)"]!=0 else (1/1) ,2)
     tumcoinlerinalimsatimorani.append(tumcoinalimsatim)
     coins=parsed_data["Coins"]
     longacilacaklar=[]
