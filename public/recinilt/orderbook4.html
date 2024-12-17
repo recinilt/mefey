@@ -81,10 +81,10 @@ function calculateAll() {
             let askSum = 0, bidSum = 0;
 
             data.asks.forEach(([price, amount]) => {
-                if (parseFloat(price) <= upperLimit) askSum += parseFloat(amount);
+                if (parseFloat(price) <= upperLimit) askSum += parseFloat(amount); //yukarıdan satmak isteyenler
             });
             data.bids.forEach(([price, amount]) => {
-                if (parseFloat(price) >= lowerLimit) bidSum += parseFloat(amount);
+                if (parseFloat(price) >= lowerLimit) bidSum += parseFloat(amount); //aşağıdan almak isteyenler
             });
 
             totalAsks += askSum;
