@@ -9,6 +9,7 @@ from binance.enums import *
 import threading
 import queue
 import requests
+import sys
  
 
 print("program başlatılıyor...")
@@ -92,6 +93,8 @@ apkisaalayimmi=True
 ozelmesaj=[]
 iokomutlari=[]
 myshortlarGenel=[]
+tumorankactanbuyukoluncaalsin=1.5
+tumorankactankucukoluncasatsin=1.2
 
 
     
@@ -600,25 +603,163 @@ def fiyat_dalgalanma_takip_ob(ssrtrailinglist, mysymbol):
             return cift_ema_sinyal(ssrlist)[0]
     return True  # Eğer aranan sembol bulunamazsa None döndür
 
+#####################
+    
+
+#############################thread
+import threading
+import time
+import queue
+class StoppableThread(threading.Thread):
+    def __init__(self, target, *args, **kwargs):
+        super().__init__()
+        self._stop_event = threading.Event()
+        self._target = target
+        self._args = args
+        self._kwargs = kwargs
+
+    def run(self):
+        try:
+            while not self._stop_event.is_set():
+                self._target(*self._args, **self._kwargs)
+                time.sleep(0.1)
+        except Exception as e:
+            print(f"Thread hata verdi: {e}")
+
+    def stop(self):
+        self._stop_event.set()
+
+# Kullanıcı input'unu timeout ile almak
+def timed_input(prompt, timeout):
+    q = queue.Queue()
+
+    def input_thread():
+        try:
+            q.put(input(prompt))
+        except EOFError:
+            q.put(None)
+
+    thread = threading.Thread(target=input_thread, daemon=True)  # Daemon thread
+    thread.start()
+    thread.join(timeout)
+
+    if thread.is_alive():
+        print("Süre doldu, cevap verilmedi.")
+        return None
+    else:
+        return q.get()
+
+# Thread içinde çalışacak fonksiyon
+def ask_name():
+    global tumorankactanbuyukoluncaalsin
+    result = timed_input("tumorankactanbuyukoluncaalsin ", 5)
+    if result:
+        print(f"Girilen sayı: {result}")
+        tumorankactanbuyukoluncaalsin=result
+    else:
+        print("Zaman aşımı! İsim girilmedi.")
+
+# Thread başlatma ve durdurma fonksiyonları
+def start_thread(target_function):
+    t = StoppableThread(target=target_function)
+    t.daemon = True  # Daemon thread olarak işaretle
+    t.start()
+    return t
+
+def stop_thread(thread):
+    thread.stop()
+    thread.join(1)  # Thread kapanması için max 1 saniye bekle
+    print("Thread durduruldu.")
+
+"""
+# Kullanım örneği: While Döngüsü
+if __name__ == "__main__":
+    try:
+        while True:  # Döngü başlat
+            print("\nYeni döngü başlıyor...")
+            
+            # Kullanıcıdan input almak için thread başlat
+            thread = start_thread(ask_name)
+            
+            # 5 saniye bekle
+            time.sleep(5)
+            
+            # Thread'i durdur
+            stop_thread(thread)
+            
+            # Diğer işlemler
+            print("Diğer işlemler devam ediyor...\n")
+            
+            # Döngüyü sonlandırmak için bir kontrol ekleyelim
+            if input("Çıkmak için 'q' tuşuna basın, devam etmek için Enter'a basın: ").strip().lower() == 'q':
+                print("Program sonlandırılıyor...")
+                break
+            print("yeni döngü: ")
+            tarananlar=longlarıtara(2)
+            taranansemboller= [item[0] for item in tarananlar]
+            #total = sum(item[1] for item in tarananlar)
+            mytotal=sum(total)
+            tumoran=mytotal/len(total)
+            tumoranlist.append(tumoran)
+            print("tümoran: ",tumoran)
+            if tumoran>1.3 and cift_ema_sinyal()[1]:
+                if mylonglarGenel:
+                    for coin in mylonglarGenel:
+                        if not coin in taranansemboller:
+                            threaded_close_position(coin,"mylonglarGenel",islemyapilacakkisi)
+            if (tumoran<tumorankactankucukoluncasatsin and cift_ema_sinyal()[1]) or tumoran<tumorankactankucukoluncasatsin:
+                print("tümoran ", tumorankactankucukoluncasatsin," altında. hepsi kapanıyor...")
+                if mylonglarGenel:
+                    hepsinikapat(islemyapilacakkisi)
+            if tumoran>tumorankactanbuyukoluncaalsin and cift_ema_sinyal()[0]:
+                for coinac in taranansemboller:
+                    if not coinac in mylonglarGenel:
+                        threaded_buy_position(coinac,6,1.8,"mylonglarGenel",islemyapilacakkisi)
+            total.clear()
+            time.sleep(40)
+
+    except KeyboardInterrupt:
+        print("Program durduruldu.")
+
+"""
+
+#############################thread bitiş
 
 
+giris = [1.4]
 while True:
     print("yeni döngü: ")
+    #######soru
+    """
+    print("Thread başlatıldı. 5 saniye içinde sayı girin...")
+    thread = start_thread(ask_name)
+    
+    # 5 saniye bekle
+    time.sleep(6)  # Ekstra güvenlik için 6 saniye
+    stop_thread(thread)
+
+    
+
+    #print("Giriş:", tumorankactanbuyukoluncaalsin)
+    """
+    ###########
     tarananlar=longlarıtara(2)
     taranansemboller= [item[0] for item in tarananlar]
     #total = sum(item[1] for item in tarananlar)
     mytotal=sum(total)
-    tumoran=mytotal/len(symbols)
+    tumoran=mytotal/len(total)
     tumoranlist.append(tumoran)
     print("tümoran: ",tumoran)
     if tumoran>1.3 and cift_ema_sinyal()[1]:
-        for coin in mylonglarGenel:
-            if not coin in taranansemboller:
-                threaded_close_position(coin,"mylonglarGenel",islemyapilacakkisi)
-    if (tumoran<1.3 and cift_ema_sinyal()[1]) or tumoran<1.2:
-        print("tümoran 1.1'in altında. hepsi kapanıyor...")
-        hepsinikapat(islemyapilacakkisi)
-    if tumoran>1.4 and cift_ema_sinyal()[0]:
+        if mylonglarGenel:
+            for coin in mylonglarGenel:
+                if not coin in taranansemboller:
+                    threaded_close_position(coin,"mylonglarGenel",islemyapilacakkisi)
+    if (tumoran<tumorankactankucukoluncasatsin and cift_ema_sinyal()[1]) or tumoran<tumorankactankucukoluncasatsin:
+        print("tümoran ", tumorankactankucukoluncasatsin," altında. hepsi kapanıyor...")
+        if mylonglarGenel:
+            hepsinikapat(islemyapilacakkisi)
+    if tumoran>tumorankactanbuyukoluncaalsin and cift_ema_sinyal()[0]:
         for coinac in taranansemboller:
             if not coinac in mylonglarGenel:
                 threaded_buy_position(coinac,6,1.8,"mylonglarGenel",islemyapilacakkisi)
