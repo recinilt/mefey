@@ -725,7 +725,7 @@ if __name__ == "__main__":
 import winsound
 
 # WAV dosyasının yolu
-hepsinikapatsesi = "alarm.wav"
+hepsinikapatsesi = "asagi.wav"
 alsesi="alsesi.wav"
 satsesi="satsesi.wav"
 
@@ -788,12 +788,12 @@ def analyze_market():
 #print(result)
 
 ##########################btcEMA bitiş
-tumorankactanbuyukoluncaalsin=1.15
+tumorankactanbuyukoluncaalsin=1.1
 tumorankactankucukoluncasatsin=1.05
 
 giris = [1.4]
 while True:
-    btcdurumu = analyze_market()
+    
     print("yeni döngü: ")
     #######soru
     """
@@ -810,7 +810,8 @@ while True:
     """
     ###########
     if True:
-        tarananlar=longlarıtara(1.75)
+        tarananlar=longlarıtara(1.7)
+        btcdurumu = analyze_market()
         taranansemboller= [item[0] for item in tarananlar]
         #total = sum(item[1] for item in tarananlar)
         mytotal=sum(total)

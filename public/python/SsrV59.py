@@ -100,7 +100,7 @@ for i in range(1, 20):
 cirawtext=[]
 acmakapamalistesi=[]
 usdtlistem=[]
-iopower=[]
+iopower=[1]
 yasaklilist=["ETHUSDT","SOLUSDT","BTCUSDT","USDCUSDT","CTKUSDT"]
 symbolstrailingprices=[]
 trailingyuzde=8 #yüzde düşünce kapanır.
@@ -1209,7 +1209,7 @@ def son_bes_esit_mi(liste):
     return all(x == liste[-1] for x in liste[-5:])
 
 def almakkosulu():
-    myresult = (io1d[-1]>50 and apalayimmi and iopower[-1]>=0.6) or (io1d[-1]>48.9 and apalayimmi and iopower[-1]>=0.6) or tumcoinlerinalimsatimorani[-1]>1 # and (cift_ema_sinyal(io1d)[0]) and (not son_bes_esit_mi(io1d))) 
+    myresult = (io1d[-1]>50 and apalayimmi and iopower[-1]>=0.6) or (io1d[-1]>48.9 and apalayimmi and iopower[-1]>=0.6) # or tumcoinlerinalimsatimorani[-1]>1 # and (cift_ema_sinyal(io1d)[0]) and (not son_bes_esit_mi(io1d))) 
     return myresult
     
 def satmakkosulu():
@@ -1325,20 +1325,22 @@ def AnaFonkIO(raw_text):
 
     for c in kapatılacaklar:
         mymesaj.append(c[0])
-        close_position(c[0],"mylonglarGenel")
+        threaded_close_position(c[0],"mylonglarGenel")
+        #close_position(c[0],"mylonglarGenel")
         symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (c[0],c[1]),True)
         
 
     for c in io49unaltinda:
         mymesaj.append(c)
-        close_position(c,"mylonglarGenel")
+        threaded_close_position(c,"mylonglarGenel")
+        #close_position(c,"mylonglarGenel")
         symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (c,1),True)
         
     if io1d[-1]>49:
         if myshortlarGenel:
             for coin in myshortlarGenel:
-                
-                close_position(coin,"myshortlarGenel")
+                threaded_close_position(coin,"myshortlarGenel")
+                #close_position(coin,"myshortlarGenel")
 
     #{'Symbol': 'ORDIUSDT', 'Position': 0.3, 'Entry Price': 44.203, 'Mark Price': 44.35, 'Leverage': 4, 'P&L (%)': 0.33}
     print(f"Şuanki açık pozisyonların toplam kar zarar durumu: {round(sum(karzarardurumu),2)} USDT")
@@ -1352,7 +1354,8 @@ def AnaFonkIO(raw_text):
     if trailing_dusen_coinler:
         #telegram_client.send_message(alert_user, f"{trailing_dusen_coinler} trailing stop ile kapatılan coinler.")
         for coin in trailing_dusen_coinler:
-            close_position(coin,"mylonglarGenel")
+            threaded_close_position(coin,"mylonglarGenel")
+            #close_position(coin,"mylonglarGenel")
             mymesaj.append(coin)
             symbolstrailingprices = fiyat_guncelle(symbolstrailingprices, (coin,1.1),True)
             
@@ -2424,7 +2427,7 @@ def AnaFonkOb(raw_text):
     longacilacaklar=[]
 
     for coincifti in coins:
-        if (coincifti[1]>1.8 and tumcoinlerinalimsatimorani[-1]>1):
+        if (coincifti[1]>1.8 and tumcoinlerinalimsatimorani[-1]>1.15) and almakkosulu():
             if coincifti[0] in mysymbols3:
                 longacilacaklar.append(coincifti[0])
     
@@ -2441,7 +2444,7 @@ def AnaFonkOb(raw_text):
                 threaded_buy_position(coin, myleverage, get_my_cost_hazir * 1, "mylonglarOB")
                 print(f"ob ile, {coin} long açıldı")
 
-    if tumcoinlerinalimsatimorani[-1]<1:
+    if tumcoinlerinalimsatimorani[-1]<1.05:
         for coin in mylonglarOB:
             threaded_close_position(coin,"mylonglarOB")
 
