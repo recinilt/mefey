@@ -826,7 +826,8 @@ while True:
                         winsound.PlaySound(satsesi, winsound.SND_FILENAME)
                         
         if (tumoran<tumorankactankucukoluncasatsin and cift_ema_sinyal()[1]) or tumoran<tumorankactankucukoluncasatsin or btcdurumu==False:
-            print("tümoran ", tumorankactankucukoluncasatsin," altında. hepsi kapanıyor...")
+            print("Tüm Oran: ", tumoran, " BTC yükselişte mi? ", btcdurumu, " Hepsi kapanıyor...")
+            #print("tümoran ", tumorankactankucukoluncasatsin," altında. veya da kısa ema uzun emanın altında. hepsi kapanıyor...")
             if mylonglarGenel:
                 hepsinikapat(islemyapilacakkisi)
                 winsound.PlaySound(hepsinikapatsesi, winsound.SND_FILENAME)
